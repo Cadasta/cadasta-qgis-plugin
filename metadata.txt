@@ -1,0 +1,39 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=Cadasta QGIS plugin
+qgisMinimumVersion=2.0
+description=This tool helps create, update, upload and download Cadasta projects.
+version=0.1
+author=Kartoza
+email=christian@kartoza.com
+
+about=Cadasta QGIS plugin This plugin provides four tools, outlined below The project creation tool The project creation tool will allow the user to create a new project on Cadasta by pushing an existing GIS layer on their desktop into the Cadasta platform. Users will need to already be registered on Cadasta and have appropriate permissions needed to create a new project on the platform. The user will map their local data tenure concepts to standard concepts in Cadasta. For this proposal it is unclear whether schema’s other than the minimal questionaire need to be supported. Thus we propose for this iteration to support only the minimal schema, and we will build the plugin in such a way that we can add new schemas in the future and then dynamically extend the form (see step 2 above) that does concept mapping to include the new schema. The project update tool The project update tool will allow the user to insert records from a local dataset into an existing Cadasta platform project. The user will be required to map concepts from their local dataset to concepts present in the selected project. The project download tool The project download tool will allow the user to download an existing project to their local computer. The downloaded data will be added to the QGIS project as a memory layer. Only projects for which the user has permissions will be available for selection during the download setup process. ​ The settings tool The settings tool will allow the user to define their connection credentials and the specific Cadasta platform that they wish to use. ​
+
+tracker=https://github.com/kartoza/cadasta-qgis-plugin/issues
+repository=https://github.com/kartoza/cadasta-qgis-plugin
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+# changelog=
+
+# Tags are comma separated with spaces allowed
+tags=cadasta
+
+homepage=
+category=Vector
+icon=icon.png
+# experimental flag
+experimental=True
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
