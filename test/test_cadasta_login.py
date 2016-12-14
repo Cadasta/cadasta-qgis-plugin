@@ -16,18 +16,17 @@ import unittest
 
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 
-from cadasta_dialog import CadastaDialog
-
+from source.gui.login.cadasta_login import CadastaLogin
 from utilities import get_qgis_app
 QGIS_APP = get_qgis_app()
 
 
-class CadastaDialogTest(unittest.TestCase):
+class CadastaLoginTest(unittest.TestCase):
     """Test dialog works."""
 
     def setUp(self):
         """Runs before each test."""
-        self.dialog = CadastaDialog(None)
+        self.dialog = CadastaLogin(None)
 
     def tearDown(self):
         """Runs after each test."""
@@ -49,7 +48,7 @@ class CadastaDialogTest(unittest.TestCase):
         self.assertEqual(result, QDialog.Rejected)
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(CadastaDialogTest)
+    suite = unittest.makeSuite(CadastaLoginTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
 

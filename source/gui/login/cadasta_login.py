@@ -22,20 +22,26 @@
 """
 
 import os
-
 from PyQt4 import QtGui, uic
 
+from source.api.login import Login
+
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'cadasta_dialog_base.ui'))
+    os.path.dirname(__file__), 'cadasta_login_base.ui'))
+
+# this is test
+test_connection = Login('irwan.kartoza', 'Irwankartoza1!')
 
 
-class CadastaDialog(QtGui.QDialog, FORM_CLASS):
+class CadastaLogin(QtGui.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
-        super(CadastaDialog, self).__init__(parent)
-        # Set up the user interface from Designer.
-        # After setupUI you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
+        super(CadastaLogin, self).__init__(parent)
         self.setupUi(self)
+        self.loginButton.clicked.connect(self.login)
+
+    def login(self):  # real signature unknown; restored from __doc__
+        username = self.usernameInput.displayText()
+        password = self.passwordInput.displayText()
+        test_connection = Login(username, password)
+        return 0

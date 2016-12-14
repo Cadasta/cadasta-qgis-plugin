@@ -23,9 +23,8 @@
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt4.QtGui import QAction, QIcon
 # Initialize Qt resources from file resources.py
-import utilities.resources
 # Import the code for the dialog
-from cadasta_dialog import CadastaDialog
+from source.gui.login.cadasta_login import CadastaLogin
 import os.path
 
 
@@ -81,16 +80,16 @@ class Cadasta:
         return QCoreApplication.translate('Cadasta', message)
 
     def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
+            self,
+            icon_path,
+            text,
+            callback,
+            enabled_flag=True,
+            add_to_menu=True,
+            add_to_toolbar=True,
+            status_tip=None,
+            whats_this=None,
+            parent=None):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -131,7 +130,7 @@ class Cadasta:
         """
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = CadastaDialog()
+        self.dlg = CadastaLogin()
 
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
@@ -176,7 +175,6 @@ class Cadasta:
         # remove the toolbar
         del self.toolbar
 
-
     def run(self):
         """Run method that performs all the real work"""
         # show the dialog
@@ -185,6 +183,4 @@ class Cadasta:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
             pass

@@ -18,7 +18,7 @@ from PyQt4.QtGui import QIcon
 
 
 
-class CadastaDialogTest(unittest.TestCase):
+class CadastaResourcesTest(unittest.TestCase):
     """Test rerources work."""
 
     def setUp(self):

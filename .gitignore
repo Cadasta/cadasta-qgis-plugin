@@ -84,3 +84,5 @@ celerybeat-schedule
 venv/
 ENV/
 
+.idea
+*.pyc
