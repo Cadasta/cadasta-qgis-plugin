@@ -15,6 +15,7 @@ class NetworkMixin(QNetworkAccessManager):
         self.result_connection += self.reply.readAll()
 
     def connect(self):
+        print "connect it"
         QObject.connect(
             self.reply, SIGNAL('readyRead()'),
             self, SLOT('connectionReadData()'))
@@ -28,6 +29,7 @@ class NetworkMixin(QNetworkAccessManager):
         self.connect()
 
     def connectPOST(self, data):
+        print "create parameter : %s" % data
         self.reply = self.post(self.req, data)
         self.connect()
 

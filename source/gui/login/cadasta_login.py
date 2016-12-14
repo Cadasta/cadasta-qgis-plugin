@@ -40,5 +40,5 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
     def login(self):  # real signature unknown; restored from __doc__
         username = self.usernameInput.displayText()
         password = self.passwordInput.displayText()
-        test_connection = Login(username, password)
-        self.label_3.setText(test_connection.result_connection)
+        print "login with %s/%s" % (username, password)
+        test_connection = Login(username, password, self.label_3)
