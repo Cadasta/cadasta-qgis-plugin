@@ -29,9 +29,6 @@ from source.api.login import Login
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'cadasta_login_base.ui'))
 
-# this is test
-test_connection = Login('irwan.kartoza', 'Irwankartoza1!')
-
 
 class CadastaLogin(QtGui.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
@@ -44,4 +41,4 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         username = self.usernameInput.displayText()
         password = self.passwordInput.displayText()
         test_connection = Login(username, password)
-        return 0
+        self.label_3.setText(test_connection.result_connection)
