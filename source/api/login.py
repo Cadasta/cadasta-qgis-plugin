@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 from source.mixin.network_mixin import NetworkMixin
-from PyQt4.QtCore import pyqtSlot, QByteArray
+from qgis.PyQt import pyqtSlot, QByteArray
 
 URL_TARGET = 'https://platform-staging-api.cadasta.org/api/v1/'
 

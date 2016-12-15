@@ -22,7 +22,7 @@
 """
 
 import os
-from PyQt4 import QtGui, uic
+from qgis.PyQt import QtGui, uic
 
 from source.api.login import Login
 
@@ -40,5 +40,4 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
     def login(self):  # real signature unknown; restored from __doc__
         username = self.usernameInput.displayText()
         password = self.passwordInput.displayText()
-        print "login with %s/%s" % (username, password)
         test_connection = Login(username, password, self.label_3)
