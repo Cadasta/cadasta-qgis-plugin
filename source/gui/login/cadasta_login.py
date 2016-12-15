@@ -22,12 +22,13 @@
 """
 
 import os
-from qgis.PyQt import QtGui, uic
-
+from qgis.PyQt import QtGui
+from qgis.PyQt.QtNetwork import *
+from qgis.PyQt.QtCore import *
+from utilities.resources import get_ui_class
 from source.api.login import Login
 
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'cadasta_login_base.ui'))
+FORM_CLASS = get_ui_class('cadasta_login_base.ui')
 
 
 class CadastaLogin(QtGui.QDialog, FORM_CLASS):
@@ -36,8 +37,25 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         super(CadastaLogin, self).__init__(parent)
         self.setupUi(self)
         self.loginButton.clicked.connect(self.login)
+        self.manager = QNetworkAccessManager()
+        self.reply = QNetworkReply
 
-    def login(self):  # real signature unknown; restored from __doc__
+    def http_finished(self):
+        self.output_label.setText(str(self.reply.readAll()))
+        self.loginButton.setEnabled(True)
+
+    def login(self):
+        self.loginButton.setEnabled(False)
         username = self.usernameInput.displayText()
         password = self.passwordInput.displayText()
-        test_connection = Login(username, password, self.label_3)
+
+        url = QUrl('https://platform-staging-api.cadasta.org/api/v1/account/login/?')
+        req = QNetworkRequest(url)
+
+        post_data = QByteArray()
+        post_data.append("username=%s&" % username)
+        post_data.append("password=%s" % password)
+
+        self.reply = self.manager.post(req, post_data)
+
+        self.reply.finished.connect(self.http_finished)

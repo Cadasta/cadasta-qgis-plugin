@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 from source.mixin.network_mixin import NetworkMixin
-from qgis.PyQt import pyqtSlot, QByteArray
+from qgis.PyQt.QtCore import pyqtSlot, QByteArray
 
 URL_TARGET = 'https://platform-staging-api.cadasta.org/api/v1/'
 
@@ -13,14 +13,14 @@ class Login(NetworkMixin):
     def __init__(self, USERNAME, PASSWORD, output_label):
         NetworkMixin.__init__(self)
         # extract data
-        postData = QByteArray()
-        postData.append("username=%s&" % USERNAME)
-        postData.append("password=%s" % PASSWORD)
+        post_data = QByteArray()
+        post_data.append("username=%s&" % USERNAME)
+        post_data.append("password=%s" % PASSWORD)
         self.output_label = output_label
-        self.connectPOST(postData)
+        self.connect_post(post_data)
 
     @pyqtSlot()
-    def connectionFinished(self):
+    def connection_finished(self):
         # extract result
         result = self.result_connection.data()
         result = json.loads(result)
@@ -30,4 +30,4 @@ class Login(NetworkMixin):
             output_result = "auth_token is %s" % auth_token
         else:
             output_result = result
-        self.label_3.setText(output_result)
+        self.output_label.setText(output_result)

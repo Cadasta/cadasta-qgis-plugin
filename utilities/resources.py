@@ -89,6 +89,7 @@ def get_ui_class(ui_file):
         os.path.join(
             os.path.dirname(__file__),
             os.pardir,
+            'source',
             'gui',
             'ui',
             ui_file
