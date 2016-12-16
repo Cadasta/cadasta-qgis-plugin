@@ -10,6 +10,13 @@ class Login(NetworkMixin):
     request_url = URL_TARGET + 'account/login/?'
 
     def __init__(self, username, password, on_finished=None):
+        """
+        Constructor
+        :param username:
+        :param password:
+        :param on_finished: is a function that catch login result request
+        :return:
+        """
         super(Login, self).__init__()
         post_data = QByteArray()
         post_data.append("username=%s&" % username)
@@ -19,6 +26,7 @@ class Login(NetworkMixin):
         self.on_finished = on_finished
 
     def connection_finished(self):
+        """On finished function when login request is finished"""
         # extract result
         if self.error:
             self.on_finished(self.error)

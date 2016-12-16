@@ -37,14 +37,17 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         self.loginButton.clicked.connect(self.login)
 
     def login(self):
+        """Login function when login button clicked"""
         self.loginButton.setEnabled(False)
         self.output_label.setText("logging in....")
         username = self.usernameInput.displayText()
         password = self.passwordInput.displayText()
+
+        # call login API
         self.login_api = Login(username, password, self.on_finished)
 
     def on_finished(self, result):
-        # check result
+        """On finished function when login request is finished"""
         if 'auth_token' in result:
             auth_token = result['auth_token']
             output_result = "auth_token is %s" % auth_token
