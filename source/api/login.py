@@ -10,7 +10,7 @@ class Login(NetworkMixin):
     request_url = URL_TARGET + 'account/login/?'
 
     def __init__(self, username, password, on_finished=None):
-        super(Login, self).__init__(self.request_url)
+        super(Login, self).__init__()
         post_data = QByteArray()
         post_data.append("username=%s&" % username)
         post_data.append("password=%s" % password)
@@ -20,6 +20,9 @@ class Login(NetworkMixin):
 
     def connection_finished(self):
         # extract result
-        result = json.loads(str(self.reply.readAll()))
-        if self.on_finished and callable(self.on_finished):
-            self.on_finished(result)
+        if self.error:
+            self.on_finished(self.error)
+        else:
+            result = self.get_json_results()
+            if self.on_finished and callable(self.on_finished):
+                self.on_finished(result)
