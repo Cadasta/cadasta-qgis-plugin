@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Cadasta QGIS plugin</string>
   </property>
-  <widget class="QLineEdit" name="passwordInput">
+  <widget class="QLineEdit" name="password_input">
    <property name="geometry">
     <rect>
      <x>70</x>
@@ -55,7 +55,7 @@
     <string>Username</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="usernameInput">
+  <widget class="QLineEdit" name="username_input">
    <property name="geometry">
     <rect>
      <x>70</x>
@@ -65,7 +65,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="loginButton">
+  <widget class="QPushButton" name="login_button">
    <property name="geometry">
     <rect>
      <x>140</x>

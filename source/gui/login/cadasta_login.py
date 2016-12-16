@@ -34,14 +34,14 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         """Constructor."""
         super(CadastaLogin, self).__init__(parent)
         self.setupUi(self)
-        self.loginButton.clicked.connect(self.login)
+        self.login_button.clicked.connect(self.login)
 
     def login(self):
         """Login function when login button clicked"""
-        self.loginButton.setEnabled(False)
+        self.login_button.setEnabled(False)
         self.output_label.setText("logging in....")
-        username = self.usernameInput.displayText()
-        password = self.passwordInput.displayText()
+        username = self.username_input.displayText()
+        password = self.password_input.displayText()
 
         # call login API
         self.login_api = Login(username, password, self.on_finished)
@@ -54,4 +54,4 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         else:
             output_result = "'%s'" % result
         self.output_label.setText(output_result)
-        self.loginButton.setEnabled(True)
+        self.login_button.setEnabled(True)
