@@ -21,11 +21,9 @@
  ***************************************************************************/
 """
 
-import os
 from qgis.PyQt import QtGui
-from qgis.PyQt.QtNetwork import *
-from qgis.PyQt.QtCore import *
 from utilities.resources import get_ui_class
+
 from source.api.login import Login
 
 FORM_CLASS = get_ui_class('cadasta_login_base.ui')
@@ -37,25 +35,20 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         super(CadastaLogin, self).__init__(parent)
         self.setupUi(self)
         self.loginButton.clicked.connect(self.login)
-        self.manager = QNetworkAccessManager()
-        self.reply = QNetworkReply
-
-    def http_finished(self):
-        self.output_label.setText(str(self.reply.readAll()))
-        self.loginButton.setEnabled(True)
 
     def login(self):
         self.loginButton.setEnabled(False)
+        self.output_label.setText("logging in....")
         username = self.usernameInput.displayText()
         password = self.passwordInput.displayText()
+        self.login_api = Login(username, password, self.on_finished)
 
-        url = QUrl('https://platform-staging-api.cadasta.org/api/v1/account/login/?')
-        req = QNetworkRequest(url)
-
-        post_data = QByteArray()
-        post_data.append("username=%s&" % username)
-        post_data.append("password=%s" % password)
-
-        self.reply = self.manager.post(req, post_data)
-
-        self.reply.finished.connect(self.http_finished)
+    def on_finished(self, result):
+        # check result
+        if 'auth_token' in result:
+            auth_token = result['auth_token']
+            output_result = "auth_token is %s" % auth_token
+        else:
+            output_result = "'%s'" % result
+        self.output_label.setText(output_result)
+        self.loginButton.setEnabled(True)
