@@ -1,8 +1,12 @@
 import logging
 import abc
 import json
-from qgis.PyQt.QtNetwork import *
-from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtNetwork import (
+    QNetworkAccessManager,
+    QNetworkReply,
+    QNetworkRequest
+)
+from qgis.PyQt.QtCore import QUrl, QByteArray
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
@@ -17,7 +21,9 @@ class NetworkMixin(object):
     error = None
     results = None
 
-    def __init__(self):
+    def __init__(self, request_url=None):
+        if request_url is not None:
+            self.request_url = request_url
         self.manager = QNetworkAccessManager()
         self.reply = None
         self.url = QUrl(self.request_url)
