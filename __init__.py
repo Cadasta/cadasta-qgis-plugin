@@ -1,28 +1,27 @@
 # -*- coding: utf-8 -*-
 """
-/***************************************************************************
- Cadasta
-                                 A QGIS plugin
- This tool helps create, update, upload and download Cadasta projects.
-                             -------------------
-        begin                : 2016-11-25
-        copyright            : (C) 2016 by Kartoza
-        email                : christian@kartoza.com
-        git sha              : $Format:%H$
- ***************************************************************************/
+This tool helps create, update, upload and download Cadasta projects.
+ - **Module cadasta.**
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
- This script initializes the plugin, making it known to QGIS.
+This script initializes the plugin, making it known to QGIS.
+
+Contact : christian@kartoza.com
+
+.. note:: This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
 """
+
 import sys
 import os
+
+__copyright__ = "Copyright 2016, Cadasta Project"
+__license__ = "GPL version 3"
+__email__ = "christian@kartoza.com"
+__revision__ = '$Format:%H$'
+
 
 sys.path.append(os.path.dirname(__file__))
 
