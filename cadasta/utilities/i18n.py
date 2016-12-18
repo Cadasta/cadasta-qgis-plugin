@@ -24,7 +24,7 @@ import qgis  # pylint: disable=unused-import
 from PyQt4.QtCore import QCoreApplication, QSettings, QLocale
 import logging
 
-from utilities.unicode import get_unicode
+from cadasta.utilities.unicode import get_unicode
 
 __author__ = 'tim@kartoza.com'
 __revision__ = '$Format:%H$'

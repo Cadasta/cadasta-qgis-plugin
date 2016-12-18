@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 import json
-from source.mixin.network_mixin import NetworkMixin
+from cadasta.mixin.network_mixin import NetworkMixin
 from qgis.PyQt.QtCore import QByteArray
 
 URL_TARGET = 'https://platform-staging-api.cadasta.org/api/v1/'
 
 
 class Login(NetworkMixin):
-    request_url = URL_TARGET + 'account/login/?'
+    request_url = URL_TARGET + 'account/tools/?'
 
     def __init__(self, username, password, on_finished=None):
         """
         Constructor
         :param username:
         :param password:
-        :param on_finished: is a function that catch login result request
+        :param on_finished: is a function that catch tools result request
         :return:
         """
         super(Login, self).__init__()
@@ -26,7 +26,7 @@ class Login(NetworkMixin):
         self.on_finished = on_finished
 
     def connection_finished(self):
-        """On finished function when login request is finished"""
+        """On finished function when tools request is finished"""
         # extract result
         if self.error:
             self.on_finished(self.error)

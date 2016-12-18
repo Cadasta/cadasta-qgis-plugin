@@ -4,10 +4,16 @@ __date__ = '14/12/16'
 
 import unittest
 
-from source.api.login import Login
-from utilities import get_qgis_app
+import qgis
+import logging
+from cadasta.api.login import Login
+from cadasta.test.utilities import get_qgis_app
+from qgis.PyQt.QtCore import QCoreApplication
 
-QGIS_APP = get_qgis_app()
+
+QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+
+LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class LoginTest(unittest.TestCase):
@@ -24,7 +30,11 @@ class LoginTest(unittest.TestCase):
 
     def test_login(self):
         """Test we can click OK."""
-        Login(self.username, self.password)
+        login = Login(self.username, self.password)
+        # Wait until it finished
+        while not login.reply.isFinished():
+            QCoreApplication.processEvents()
+        self.assertIsNotNone(login.get_json_results())
 
 
 if __name__ == "__main__":

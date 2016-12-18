@@ -22,9 +22,10 @@
 """
 
 from qgis.PyQt import QtGui
-from utilities.resources import get_ui_class
+from qgis.gui import QgsMessageBar
+from cadasta.utilities.resources import get_ui_class
 
-from source.api.login import Login
+from cadasta.api.login import Login
 
 FORM_CLASS = get_ui_class('cadasta_login_base.ui')
 
@@ -35,19 +36,24 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         super(CadastaLogin, self).__init__(parent)
         self.setupUi(self)
         self.login_button.clicked.connect(self.login)
+        self.msg_bar = None
 
     def login(self):
-        """Login function when login button clicked"""
-        self.login_button.setEnabled(False)
-        self.output_label.setText("logging in....")
+        """Login function when tools button clicked"""
         username = self.username_input.displayText()
         password = self.password_input.displayText()
 
-        # call login API
-        self.login_api = Login(username, password, self.on_finished)
+        if not username or not password:
+            self.msg_bar = QgsMessageBar()
+            self.msg_bar.pushWarning("Error", "Username/password is empty.")
+        else:
+            self.login_button.setEnabled(False)
+            self.output_label.setText("logging in....")
+            # call tools API
+            self.login_api = Login(username, password, self.on_finished)
 
     def on_finished(self, result):
-        """On finished function when login request is finished"""
+        """On finished function when tools request is finished"""
         if 'auth_token' in result:
             auth_token = result['auth_token']
             output_result = "auth_token is %s" % auth_token

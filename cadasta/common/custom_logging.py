@@ -23,7 +23,7 @@ if safe_extras_dir not in sys.path:
 from qgis.core import QgsMessageLog
 from PyQt4.QtCore import QSettings
 # pylint: enable=F0401
-from utilities.i18n import tr
+from cadasta.utilities.i18n import tr
 
 __author__ = 'tim@kartoza.com'
 __revision__ = '$Format:%H$'

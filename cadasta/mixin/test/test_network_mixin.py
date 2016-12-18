@@ -11,9 +11,9 @@ import unittest
 import qgis
 import logging
 from qgis.PyQt.QtCore import QCoreApplication, QByteArray
-from source.mixin.network_mixin import NetworkMixin
+from cadasta.mixin.network_mixin import NetworkMixin
 
-from test.utilities import get_qgis_app
+from cadasta.test.utilities import get_qgis_app
 
 QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
@@ -66,4 +66,3 @@ class NetworkMixinText(unittest.TestCase):
                 manager.get_json_results()['body'],
                 self.api_results['body']
         )
-

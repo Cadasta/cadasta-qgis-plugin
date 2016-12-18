@@ -24,11 +24,11 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt4.QtGui import QAction, QIcon
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
-from source.gui.login.cadasta_login import CadastaLogin
+from cadasta.gui.tools.cadasta_login import CadastaLogin
 import os.path
 
 
-class Cadasta:
+class CadastaPlugin:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -158,7 +158,7 @@ class Cadasta:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/Cadasta/icon.png'
+        icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
         self.add_action(
             icon_path,
             text=self.tr(u'cadasta'),

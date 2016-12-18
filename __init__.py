@@ -35,5 +35,5 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgsInterface
     """
     #
-    from .cadasta import Cadasta
-    return Cadasta(iface)
+    from cadasta.plugin import CadastaPlugin
+    return CadastaPlugin(iface)

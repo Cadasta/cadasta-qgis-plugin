@@ -14,10 +14,10 @@ __copyright__ = 'Copyright 2016, Kartoza'
 
 import unittest
 
-from PyQt4.QtGui import QDialogButtonBox, QDialog
+from qgis.gui import QgsMessageBar
 
-from source.gui.login.cadasta_login import CadastaLogin
-from utilities import get_qgis_app
+from cadasta.gui.tools.cadasta_login import CadastaLogin
+from cadasta.test.utilities import get_qgis_app
 QGIS_APP = get_qgis_app()
 
 
@@ -32,23 +32,14 @@ class CadastaLoginTest(unittest.TestCase):
         """Runs after each test."""
         self.dialog = None
 
-    def test_dialog_ok(self):
-        """Test we can click OK."""
-
-        button = self.dialog.button_box.button(QDialogButtonBox.Ok)
+    def test_warning_message(self):
+        """Test warning message bar shows up if username/password is empty"""
+        button = self.dialog.login_button
         button.click()
-        result = self.dialog.result()
-        self.assertEqual(result, QDialog.Accepted)
-
-    def test_dialog_cancel(self):
-        """Test we can click cancel."""
-        button = self.dialog.button_box.button(QDialogButtonBox.Cancel)
-        button.click()
-        result = self.dialog.result()
-        self.assertEqual(result, QDialog.Rejected)
+        msg_bar = self.dialog.msg_bar
+        self.assertIsInstance(msg_bar, QgsMessageBar)
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(CadastaLoginTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
-
