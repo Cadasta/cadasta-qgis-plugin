@@ -1,5 +1,5 @@
 # coding=utf-8
-"""Safe Translations Test.
+"""Cadasta Translations Test.
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -7,18 +7,22 @@
      (at your option) any later version.
 
 """
-from utilities import get_qgis_app
 
 __author__ = 'ismailsunni@yahoo.co.id'
 __date__ = '12/10/2011'
-__copyright__ = ('Copyright 2012, Australia Indonesia Facility for '
-                 'Disaster Reduction')
+__copyright__ = (
+    'Copyright 2016, Cadasta')
+
 import unittest
 import os
 from qgis.PyQt.QtCore import (
     QTranslator,
     QCoreApplication
 )
+
+if not os.environ.get('ON_TRAVIS', False):
+    from cadasta.test.utilities import get_qgis_app
+    QGIS_APP = get_qgis_app()
 
 
 class SafeTranslationsTest(unittest.TestCase):
@@ -34,15 +38,13 @@ class SafeTranslationsTest(unittest.TestCase):
         if 'LANG' in os.environ.iterkeys():
             os.environ.__delitem__('LANG')
 
-    # TODO : make it work
     def test_qgis_translations(self):
         """Test that translations work."""
-        return
         parent_path = os.path.join(
                 __file__, os.path.pardir, os.path.pardir, os.pardir)
         dir_path = os.path.abspath(parent_path)
         file_path = os.path.join(
-            dir_path, 'i18n', 'af.ts')
+            dir_path, 'i18n', 'af.qm')
         translator = QTranslator()
         translator.load(file_path)
         QCoreApplication.installTranslator(translator)

@@ -26,13 +26,13 @@
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
 # LOCALES = af
-LOCALES =
+LOCALES = af
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
 # you have trouble compiling the translations, you may have to specify the full path to
 # lrelease
-#LRELEASE = lrelease
-#LRELEASE = lrelease-qt4
+# LRELEASE = lrelease
+LRELEASE = lrelease-qt4
 
 
 # translation
@@ -179,6 +179,8 @@ transcompile:
 	@echo "Compiled translation files to .qm files."
 	@echo "----------------------------------------"
 	@chmod +x scripts/compile-strings.sh
+	@echo $(LRELEASE)
+	@echo $(LOCALES)
 	@scripts/compile-strings.sh $(LRELEASE) $(LOCALES)
 
 transclean:
