@@ -1,8 +1,8 @@
 import logging
 import abc
 import json
+from qgis.core import QgsNetworkAccessManager
 from qgis.PyQt.QtNetwork import (
-    QNetworkAccessManager,
     QNetworkReply,
     QNetworkRequest
 )
@@ -24,7 +24,7 @@ class NetworkMixin(object):
     def __init__(self, request_url=None):
         if request_url is not None:
             self.request_url = request_url
-        self.manager = QNetworkAccessManager()
+        self.manager = QgsNetworkAccessManager.instance()
         self.reply = None
         self.url = QUrl(self.request_url)
         self.req = QNetworkRequest(self.url)
