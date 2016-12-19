@@ -46,8 +46,6 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
     def init_style(self):
         """
         Initiate custom styles for dialog
-        :param
-        :return
         """
         self.setStyleSheet("background-color:white")
         self.disable_button(self.save_button)
@@ -60,8 +58,6 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         Enable button
         :param custom_button: button that is enabled
         :type custom_button: QWidget
-
-        :return
         """
         custom_button.setEnabled(True)
         custom_button.setStyleSheet("background-color:#525252; cursor:pointer;" + CadastaStyle.button_style())
@@ -71,8 +67,6 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         Disable button
         :param custom_button: button that is enabled
         :type custom_button: QWidget
-
-        :return
         """
         custom_button.setStyleSheet("background-color:#A8A8A8;" + CadastaStyle.button_style())
         custom_button.setEnabled(False)
@@ -115,7 +109,6 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
     def save_authtoken(self):
         """
         Save received authtoken to external file
-        :return
         """
         if self.auth_token:
             path = get_project_path()

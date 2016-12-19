@@ -100,6 +100,7 @@ def get_ui_class(ui_file):
 def get_project_path():
     """
     Get absolute project path
+    :rtype: basetring
     :return absolute project path
     """
     project_path = os.path.abspath(
