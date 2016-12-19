@@ -85,3 +85,4 @@ venv/
 ENV/
 
 .idea
+*.pyc
