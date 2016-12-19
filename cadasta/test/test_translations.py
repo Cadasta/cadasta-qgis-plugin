@@ -10,8 +10,7 @@
 
 __author__ = 'ismailsunni@yahoo.co.id'
 __date__ = '12/10/2011'
-__copyright__ = (
-    'Copyright 2016, Cadasta')
+__copyright__ = 'Copyright 2016, Cadasta'
 
 import unittest
 import os
@@ -25,7 +24,7 @@ if not os.environ.get('ON_TRAVIS', False):
     QGIS_APP = get_qgis_app()
 
 
-class SafeTranslationsTest(unittest.TestCase):
+class CadastaTranslationsTest(unittest.TestCase):
     """Test translations work."""
 
     def setUp(self):
@@ -55,6 +54,6 @@ class SafeTranslationsTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(SafeTranslationsTest)
+    suite = unittest.makeSuite(CadastaTranslationsTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)

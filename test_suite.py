@@ -20,8 +20,7 @@ from qgis.core import QGis
 __author__ = 'etiennetrimaille'
 __revision__ = '$Format:%H$'
 __date__ = '14/06/2016'
-__copyright__ = (
-    'Copyright 2016, Cadasta')
+__copyright__ = 'Copyright 2016, Cadasta'
 
 
 def _run_tests(test_suite, package_name):
