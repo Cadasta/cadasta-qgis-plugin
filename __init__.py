@@ -25,17 +25,6 @@ __revision__ = '$Format:%H$'
 
 sys.path.append(os.path.dirname(__file__))
 
-import sip
-
-try:
-    sip.setapi('QString', 2)
-    sip.setapi('QVariant', 2)
-    sip.setapi('QDate', 2)
-except AttributeError:
-    # PyQt < v4.6. The actual check is done by requirements.check_qt()
-    # call from spyder.py
-    pass
-
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
