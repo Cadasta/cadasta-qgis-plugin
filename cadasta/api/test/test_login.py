@@ -12,6 +12,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 if not os.environ.get('ON_TRAVIS', False):
     from cadasta.test.utilities import get_qgis_app
+
     QGIS_APP = get_qgis_app()
 
 
@@ -20,6 +21,7 @@ class LoginTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
+        self.url = 'https://demo.cadasta.org/'
         self.username = 'kartoza.demo'
         self.password = 'demo.kartoza1!'
 
@@ -28,8 +30,8 @@ class LoginTest(unittest.TestCase):
         self.dialog = None
 
     def test_login(self):
-        """Test we can login."""
-        login = Login(self.username, self.password)
+        """Test we can click OK."""
+        login = Login(self.url, self.username, self.password)
         # Wait until it finished
         while not login.reply.isFinished():
             QCoreApplication.processEvents()

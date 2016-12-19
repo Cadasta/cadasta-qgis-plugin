@@ -95,3 +95,17 @@ def get_ui_class(ui_file):
         )
     )
     return uic.loadUiType(ui_file_path)[0]
+
+
+def get_project_path():
+    """
+    Get absolute project path
+    :return absolute project path
+    """
+    project_path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            os.pardir
+        )
+    )
+    return project_path

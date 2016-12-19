@@ -3,13 +3,9 @@ import json
 from cadasta.mixin.network_mixin import NetworkMixin
 from qgis.PyQt.QtCore import QByteArray
 
-URL_TARGET = 'https://demo.cadasta.org/api/v1/'
-
 
 class Login(NetworkMixin):
-    request_url = URL_TARGET + 'account/login/'
-
-    def __init__(self, username, password, on_finished=None):
+    def __init__(self, domain, username, password, on_finished=None):
         """
         Constructor
         :param username:
@@ -17,6 +13,7 @@ class Login(NetworkMixin):
         :param on_finished: is a function that catch tools result request
         :return:
         """
+        self.request_url = domain + 'api/v1/account/login/?'
         super(Login, self).__init__()
         post_data = QByteArray()
         post_data.append("username=%s&" % username)
