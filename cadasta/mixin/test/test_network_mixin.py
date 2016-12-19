@@ -13,9 +13,6 @@ import logging
 from qgis.PyQt.QtCore import QCoreApplication, QByteArray
 from cadasta.mixin.network_mixin import NetworkMixin
 
-from cadasta.test.utilities import get_qgis_app
-
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 

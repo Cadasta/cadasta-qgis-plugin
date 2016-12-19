@@ -17,8 +17,6 @@ import unittest
 from qgis.gui import QgsMessageBar
 
 from cadasta.gui.tools.cadasta_login import CadastaLogin
-from cadasta.test.utilities import get_qgis_app
-QGIS_APP = get_qgis_app()
 
 
 class CadastaLoginTest(unittest.TestCase):

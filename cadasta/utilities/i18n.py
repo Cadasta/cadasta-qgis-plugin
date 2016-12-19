@@ -21,7 +21,7 @@ Contact : ole.moller.nielsen@gmail.com
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
 # noinspection PyPackageRequirements
-from PyQt4.QtCore import QCoreApplication, QSettings, QLocale
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale
 import logging
 
 from cadasta.utilities.unicode import get_unicode

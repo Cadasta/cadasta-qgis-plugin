@@ -4,16 +4,15 @@ __date__ = '14/12/16'
 
 import unittest
 
+import os
 import qgis
 import logging
 from cadasta.api.login import Login
-from cadasta.test.utilities import get_qgis_app
 from qgis.PyQt.QtCore import QCoreApplication
 
-
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
-
-LOGGER = logging.getLogger('CadastaQGISPlugin')
+if not os.environ.get('ON_TRAVIS', False):
+    from cadasta.test.utilities import get_qgis_app
+    QGIS_APP = get_qgis_app()
 
 
 class LoginTest(unittest.TestCase):
@@ -21,15 +20,15 @@ class LoginTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
-        self.username = 'irwan.kartoza'
-        self.password = 'Irwankartoza1!'
+        self.username = 'kartoza.demo'
+        self.password = 'demo.kartoza1!'
 
     def tearDown(self):
         """Runs after each test."""
         self.dialog = None
 
     def test_login(self):
-        """Test we can click OK."""
+        """Test we can login."""
         login = Login(self.username, self.password)
         # Wait until it finished
         while not login.reply.isFinished():
