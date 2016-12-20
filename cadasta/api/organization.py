@@ -19,7 +19,7 @@ __copyright__ = 'Copyright 2016, Cadasta'
 
 
 class Organization(object):
-    """Organization api class"""
+    """Class to fetch available organization data."""
 
     api_url = 'https://demo.cadasta.org/api/v1/organizations/'
 
