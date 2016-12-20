@@ -1,12 +1,17 @@
 # coding=utf-8
-__author__ = 'Dimas Ciputra <dimas@kartoza.com>'
-__date__ = '19/12/16'
+
+"""Tests for organization api.
+"""
 
 import unittest
 
 import os
 from mock.mock import MagicMock
 from cadasta.api.organization import Organization
+
+__author__ = 'Dimas Ciputra <dimas@kartoza.com>'
+__date__ = '19/12/16'
+
 
 if not os.environ.get('ON_TRAVIS', False):
     from cadasta.test.utilities import get_qgis_app
