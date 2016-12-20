@@ -34,8 +34,8 @@ class CadastaLoginTest(unittest.TestCase):
         """Test warning message bar shows up if username/password is empty"""
         button = self.dialog.test_connection_button
         button.click()
-        msg_bar = self.dialog.msg_bar
-        self.assertIsInstance(msg_bar, QgsMessageBar)
+        message_bar = self.dialog.message_bar
+        self.assertIsInstance(message_bar, QgsMessageBar)
 
 
 if __name__ == "__main__":

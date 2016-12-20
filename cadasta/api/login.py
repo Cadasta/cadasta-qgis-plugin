@@ -30,7 +30,8 @@ class Login(NetworkMixin):
         :param password: username for login.
         :type password: QString
 
-        :param on_finished: (optional) is a function that catch tools result request.
+        :param on_finished: (optional) is a function that
+                            catch tools result request.
         :type on_finished: Function
         """
         self.request_url = domain + 'api/v1/account/login/?'

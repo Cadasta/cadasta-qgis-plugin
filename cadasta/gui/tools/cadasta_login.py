@@ -40,7 +40,7 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
 
         super(CadastaLogin, self).__init__(parent)
         self.setupUi(self)
-        self.msg_bar = None
+        self.message_bar = None
         self.text_test_connection_button = self.test_connection_button.text()
         self.ok_label.setVisible(False)
         self.init_style()
@@ -48,7 +48,7 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
     def init_style(self):
         """ Initiate custom styles for dialog. """
 
-        self.setStyleSheet("background-color:white")
+        self.setStyleSheet('background-color:white')
         self.disable_button(self.save_button)
         self.enable_button(self.test_connection_button)
         self.test_connection_button.clicked.connect(self.login)
@@ -62,7 +62,10 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         """
 
         custom_button.setEnabled(True)
-        custom_button.setStyleSheet("background-color:#525252; cursor:pointer;" + CadastaStyle.button_style())
+        custom_button.setStyleSheet(
+                'background-color:#525252; cursor:pointer;' +
+                CadastaStyle.button_style()
+        )
 
     def disable_button(self, custom_button):
         """ Disable button.
@@ -70,8 +73,9 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         :param custom_button: button that is enabled
         :type custom_button: QWidget
         """
-
-        custom_button.setStyleSheet("background-color:#A8A8A8;" + CadastaStyle.button_style())
+        custom_button.setStyleSheet(
+                'background-color:#A8A8A8;' + CadastaStyle.button_style()
+        )
         custom_button.setEnabled(False)
 
     def login(self):
@@ -86,13 +90,20 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         self.ok_label.setVisible(False)
 
         if not self.url or not username or not password:
-            self.msg_bar = QgsMessageBar()
-            self.msg_bar.pushWarning("Error", self.tr("URL/Username/password is empty."))
+            self.message_bar = QgsMessageBar()
+            self.message_bar.pushWarning(
+                    self.tr('Error'),
+                    self.tr('URL/Username/password is empty.')
+            )
         else:
             self.disable_button(self.test_connection_button)
-            self.test_connection_button.setText(self.tr("Logging in..."))
+            self.test_connection_button.setText(self.tr('Logging in...'))
             # call tools API
-            self.login_api = Login(self.url, username, password, self.on_finished)
+            self.login_api = Login(
+                    self.url,
+                    username,
+                    password,
+                    self.on_finished)
 
     def on_finished(self, result):
         """ On finished function when tools request is finished."""
@@ -101,12 +112,12 @@ class CadastaLogin(QtGui.QDialog, FORM_CLASS):
         if 'auth_token' in result:
             self.auth_token = result['auth_token']
             self.enable_button(self.save_button)
-            self.ok_label.setText(self.tr("Success"))
-            self.ok_label.setStyleSheet("color:green")
+            self.ok_label.setText(self.tr('Success'))
+            self.ok_label.setStyleSheet('color:green')
         else:
             self.disable_button(self.save_button)
-            self.ok_label.setText(self.tr("Failed"))
-            self.ok_label.setStyleSheet("color:red")
+            self.ok_label.setText(self.tr('Failed'))
+            self.ok_label.setStyleSheet('color:red')
 
         self.test_connection_button.setText(self.text_test_connection_button)
         self.enable_button(self.test_connection_button)

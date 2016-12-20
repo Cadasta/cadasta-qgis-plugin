@@ -49,7 +49,10 @@ class QgsLogHandler(logging.Handler):
         try:
             # Check logging.LogRecord properties for lots of other goodies
             # like line number etc. you can get from the log message.
-            QgsMessageLog.logMessage(record.getMessage(), 'CadastaQGISPlugin', 0)
+            QgsMessageLog.logMessage(
+                    record.getMessage(),
+                    'CadastaQGISPlugin', 0
+            )
         except MemoryError:
             message = tr(
                 'Due to memory limitations on this machine, InaSAFE can not '
@@ -102,7 +105,8 @@ def setup_logger(logger_name, log_file=None, sentry_url=None):
 
        LOGGER.debug('Some debug message')
 
-    .. note:: The file logs are written to the CadastaQGISPlugin user tmp dir e.g.:
+    .. note:: The file logs are written to the CadastaQGISPlugin
+        user tmp dir e.g.:
        /tmp/CadastaQGISPlugin/23-08-2012/timlinux/logs/CadastaQGISPlugin.log
 
     """
