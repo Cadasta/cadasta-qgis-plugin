@@ -19,7 +19,7 @@ if not os.environ.get('ON_TRAVIS', False):
 
 
 class OrganizationTest(unittest.TestCase):
-    """Test Organization api
+    """Test Organization api.
     """
 
     test_organization = {

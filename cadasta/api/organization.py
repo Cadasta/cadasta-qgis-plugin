@@ -11,6 +11,7 @@ Cadasta project - **Organization api.**
 
 from qgis.PyQt.QtCore import QCoreApplication
 from cadasta.mixin.network_mixin import NetworkMixin
+from cadasta.common.setting import get_url_instance
 
 __author__ = 'dimas@kartoza.com'
 __revision__ = '$Format:%H$'
@@ -21,7 +22,7 @@ __copyright__ = 'Copyright 2016, Cadasta'
 class Organization(object):
     """Class to fetch available organization data."""
 
-    api_url = 'https://demo.cadasta.org/api/v1/organizations/'
+    api_url = 'api/v1/organizations/'
 
     def _call_api(self, network):
         """Private method to execute api.
@@ -29,7 +30,7 @@ class Organization(object):
         :param network: NetworkMixin object
         :type network: NetworkMixin
 
-        :returns: Tuple status request and results,
+        :return: Tuple status request and results,
                   if request failed returns failure messages.
         :rtype: (bool, list/dict/str)
         """
@@ -44,11 +45,11 @@ class Organization(object):
     def all_organizations(self):
         """Get all organizations.
 
-        :returns: Tuple of status request and list of organizations
+        :return: Tuple of status request and list of organizations
                   (if request failed return failure messages).
         :rtype: (bool, list/str)
         """
-        network = NetworkMixin(self.api_url)
+        network = NetworkMixin(get_url_instance() + self.api_url)
         return self._call_api(network)
 
     def summary_organization(self, slug):
@@ -57,11 +58,11 @@ class Organization(object):
         :param slug: organization slug
         :type slug: str
 
-        :returns: Tuple of status request and summary of organization
+        :return: Tuple of status request and summary of organization
                   (if request failed return failure messages).
         :rtype: (bool, dict/str)
         """
         if not slug:
             return False, None
-        network = NetworkMixin(self.api_url + slug + '/')
+        network = NetworkMixin(get_url_instance() + self.api_url + slug + '/')
         return self._call_api(network)

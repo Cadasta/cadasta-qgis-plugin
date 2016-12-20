@@ -1,5 +1,5 @@
 # coding=utf-8
-"""Dialog test.
+"""cadasta login test
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ class CadastaLoginTest(unittest.TestCase):
         button.click()
         msg_bar = self.dialog.msg_bar
         self.assertIsInstance(msg_bar, QgsMessageBar)
+
 
 if __name__ == "__main__":
     suite = unittest.makeSuite(CadastaLoginTest)

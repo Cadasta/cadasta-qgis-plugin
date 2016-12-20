@@ -1,12 +1,14 @@
 # coding=utf-8
+
+"""Tests for login api.
+"""
+
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
 __date__ = '14/12/16'
 
 import unittest
 
 import os
-import qgis
-import logging
 from cadasta.api.login import Login
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -21,16 +23,19 @@ class LoginTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
+
         self.url = 'https://demo.cadasta.org/'
         self.username = 'kartoza.demo'
         self.password = 'demo.kartoza1!'
 
     def tearDown(self):
         """Runs after each test."""
+
         self.dialog = None
 
     def test_login(self):
         """Test we can click OK."""
+
         login = Login(self.url, self.username, self.password)
         # Wait until it finished
         while not login.reply.isFinished():

@@ -14,6 +14,7 @@ Contact : ole.moller.nielsen@gmail.com
 import os
 import sys
 import logging
+
 # This is ugly but we dont have a better solution yet...
 safe_extras_dir = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', 'safe_extras'))
@@ -28,8 +29,7 @@ from cadasta.utilities.i18n import tr
 __author__ = 'tim@kartoza.com'
 __revision__ = '$Format:%H$'
 __date__ = '29/01/2011'
-__copyright__ = 'Copyright 2012, Australia Indonesia Facility for '
-__copyright__ += 'Disaster Reduction'
+__copyright__ = 'Copyright 2016, Cadasta'
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
