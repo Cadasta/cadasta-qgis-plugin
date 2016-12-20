@@ -20,12 +20,15 @@
  *                                                                         *
  ***************************************************************************/
 """
+import logging
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from qgis.PyQt.QtGui import QAction, QIcon
+from qgis.PyQt.QtGui import QAction, QIcon, QMenu, QWidget
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
 from cadasta.gui.tools.cadasta_login import CadastaLogin
 import os.path
+
+LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class CadastaPlugin:
@@ -41,6 +44,8 @@ class CadastaPlugin:
         """
         # Save reference to the QGIS interface
         self.iface = iface
+        self.action_options_wizard = None
+        self.wizard = None
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
@@ -63,6 +68,20 @@ class CadastaPlugin:
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'Cadasta')
         self.toolbar.setObjectName(u'Cadasta')
+
+        # Create menu
+        self.main_menu = QMenu(
+            self.tr(u'&Cadasta'),
+            self.iface.mainWindow().menuBar()
+        )
+        menu_actions = self.iface.mainWindow().menuBar().actions()
+
+        # Add cadasta menu to second last position of menu bar
+        last_action = menu_actions[-1]
+        self.iface.mainWindow().menuBar().insertMenu(
+                last_action,
+                self.main_menu
+        )
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -129,9 +148,6 @@ class CadastaPlugin:
         :rtype: QAction
         """
 
-        # Create the dialog (after translation) and keep reference
-        self.dlg = CadastaLogin()
-
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
         action.triggered.connect(callback)
@@ -147,9 +163,7 @@ class CadastaPlugin:
             self.toolbar.addAction(action)
 
         if add_to_menu:
-            self.iface.addPluginToVectorMenu(
-                self.menu,
-                action)
+            self.main_menu.addAction(action)
 
         self.actions.append(action)
 
@@ -157,30 +171,33 @@ class CadastaPlugin:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
-        icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'cadasta'),
-            callback=self.run,
-            parent=self.iface.mainWindow())
+        self._create_options_wizard_action()
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
+        if self.wizard:
+            self.wizard.deleteLater()
         for action in self.actions:
             self.iface.removePluginVectorMenu(
                 self.tr(u'&Cadasta QGIS plugin'),
                 action)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
-        del self.toolbar
+        self.iface.mainWindow().removeToolBar(self.toolbar)
 
-    def run(self):
-        """Run method that performs all the real work"""
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            pass
+    def _create_options_wizard_action(self):
+        """Create action for options wizard."""
+        icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
+        self.action_options_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'Options'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_options_wizard
+        )
+
+    def show_options_wizard(self):
+        """Show the options wizard."""
+        dialog = CadastaLogin()
+        dialog.exec_()
