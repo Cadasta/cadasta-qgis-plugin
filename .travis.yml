@@ -53,6 +53,7 @@ install:
   - pip install --upgrade pep8
   - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory -e ON_TRAVIS=${ON_TRAVIS} -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
   - sleep 10
+  - docker exec -it qgis-testing-environment sh -c "pip install -r /tests_directory/REQUIREMENTS.txt"
   - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh cadasta"
 
 script:

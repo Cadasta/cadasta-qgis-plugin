@@ -23,11 +23,15 @@ class Organization(object):
 
     api_url = 'https://demo.cadasta.org/api/v1/organizations/'
 
-    def get_api(self, network):
-        """
-        Execute api get call
+    def _call_api(self, network):
+        """Private method to execute api.
+
         :param network: NetworkMixin object
-        :return: status request, if success returns json results, and if failed return failure messages
+        :type network: NetworkMixin
+
+        :returns: Tuple status request and results,
+                  if request failed returns failure messages.
+        :rtype: (bool, list/dict/str)
         """
         network.connect_get()
         while not network.reply.isFinished():
@@ -37,21 +41,27 @@ class Organization(object):
         else:
             return False, network.error
 
-    def get_all_organizations(self):
-        """
-        Get all organizations
-        :return: status request, list of organizations
+    def all_organizations(self):
+        """Get all organizations.
+
+        :returns: Tuple of status request and list of organizations
+                  (if request failed return failure messages).
+        :rtype: (bool, list/str)
         """
         network = NetworkMixin(self.api_url)
-        return self.get_api(network)
+        return self._call_api(network)
 
-    def get_summary_organization(self, slug):
-        """
-        Get detail summary organization
+    def summary_organization(self, slug):
+        """Get detail summary organization.
+
         :param slug: organization slug
-        :return: status request, summary of organization
+        :type slug: str
+
+        :returns: Tuple of status request and summary of organization
+                  (if request failed return failure messages).
+        :rtype: (bool, dict/str)
         """
         if not slug:
             return False, None
         network = NetworkMixin(self.api_url + slug + '/')
-        return self.get_api(network)
+        return self._call_api(network)

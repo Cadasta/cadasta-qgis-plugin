@@ -5,6 +5,7 @@ __date__ = '19/12/16'
 import unittest
 
 import os
+from mock.mock import MagicMock
 from cadasta.api.organization import Organization
 
 if not os.environ.get('ON_TRAVIS', False):
@@ -12,43 +13,53 @@ if not os.environ.get('ON_TRAVIS', False):
     QGIS_APP = get_qgis_app()
 
 
-class LoginTest(unittest.TestCase):
-    """Test dialog works."""
+class OrganizationTest(unittest.TestCase):
+    """Test Organization api
+    """
 
-    def setUp(self):
-        """Runs before each test."""
-        self.username = 'kartoza.demo'
-        self.password = 'demo.kartoza1!'
-
-    def tearDown(self):
-        """Runs after each test."""
-        self.dialog = None
+    test_organization = {
+        'id': 'yzqz5vup4cvz3ukfsyvstdfb',
+        'slug': 'allthethings',
+        'name': 'AllTheThings',
+        'description': '',
+        'archived': 'false',
+        'urls': [],
+        'contacts': []
+    }
 
     def test_get_all_organizations(self):
         """Test we get all organization."""
         organization = Organization()
-        results = organization.get_all_organizations()
+        organization._call_api = MagicMock(
+                return_value=(True, [self.test_organization])
+        )
+        results = organization.all_organizations()
         self.assertTrue(results[0])
-        self.assertIsNotNone(results[1])
+        self.assertIsInstance(results[1], list)
 
     def test_get_summary_organization(self):
-        """Test we get one organization by slug"""
+        """Test we get one organization by slug."""
         slug = 'allthethings'
         organization = Organization()
-        results = organization.get_summary_organization(slug)
+        organization._call_api = MagicMock(
+                return_value=(True, self.test_organization)
+        )
+        results = organization.summary_organization(slug)
         self.assertTrue(results[0])
-        self.assertIsNotNone(results[1])
+        self.assertIsInstance(results[1], dict)
 
     def test_error_get_all_organizations(self):
-        """Test if it gives correct error messages"""
+        """Test if it gives correct error messages."""
         organization = Organization()
-        organization.api_url = 'https://demo.cadasta.org/api/v2/organizations/'
-        results = organization.get_all_organizations()
+        organization._call_api = MagicMock(
+                return_value=(False, '404')
+        )
+        results = organization.all_organizations()
         self.assertFalse(results[0])
         self.assertIn('404', results[1])
 
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(LoginTest)
+    suite = unittest.makeSuite(OrganizationTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
