@@ -52,7 +52,7 @@ class CadastaDialog(QtGui.QDialog):
     def enable_button(self, custom_button):
         """ Enable button.
 
-        :param custom_button: button that is enabled
+        :param custom_button: button that will be enabled
         :type custom_button: QWidget
         """
 
@@ -65,7 +65,7 @@ class CadastaDialog(QtGui.QDialog):
     def disable_button(self, custom_button):
         """ Disable button.
 
-        :param custom_button: button that is enabled
+        :param custom_button: button that will be disabled
         :type custom_button: QWidget
         """
         custom_button.setStyleSheet(
