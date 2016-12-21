@@ -2,6 +2,7 @@
 """This module contains utilities for locating application resources (img etc).
 """
 import os
+import re
 import codecs
 
 # This import is to enable SIP API V2
@@ -77,6 +78,23 @@ def resource_url(path):
     """
     url = QtCore.QUrl.fromLocalFile(path)
     return str(url.toString())
+
+
+def is_valid_url(url):
+    """
+    Check if url is valid
+
+    :param url: Url to be checked
+    :return: bool
+    """
+    regex = re.compile(
+            r'^(?:http|ftp)s?://'  # http:// or https://
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+            r'localhost|'  # localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+            r'(?::\d+)?'  # optional port
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    return regex.match(url) is not None
 
 
 def get_ui_class(ui_file):
