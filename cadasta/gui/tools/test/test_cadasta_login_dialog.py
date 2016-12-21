@@ -41,7 +41,7 @@ class CadastaLoginDialogTest(unittest.TestCase):
         self.password = 'demo.kartoza1!'
         delete_authtoken()
 
-        self.dialog = CadastaLogin(None)
+        self.dialog = CadastaLogin()
 
     def tearDown(self):
         """Runs after each test."""

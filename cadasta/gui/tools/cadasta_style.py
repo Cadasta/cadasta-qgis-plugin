@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Contains main style for cadasta
 
 .. note:: This program is free software; you can redistribute it and/or modify
