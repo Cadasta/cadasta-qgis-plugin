@@ -34,23 +34,17 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class CadastaDialog(QtGui.QDialog):
-    """ Parent class for cadasta dialog."""
+    """Parent class for cadasta dialog."""
 
     def __init__(self, parent=None):
-        """ Constructor."""
+        """Constructor."""
 
         super(CadastaDialog, self).__init__(parent)
         self.setupUi(self)
         self.message_bar = None
-        self.init_style()
-
-    def init_style(self):
-        """ Initiate custom styles for dialog. """
-
-        self.setStyleSheet('background-color:white')
 
     def enable_button(self, custom_button):
-        """ Enable button.
+        """Enable button.
 
         :param custom_button: button that will be enabled
         :type custom_button: QWidget
@@ -63,7 +57,7 @@ class CadastaDialog(QtGui.QDialog):
         )
 
     def disable_button(self, custom_button):
-        """ Disable button.
+        """Disable button.
 
         :param custom_button: button that will be disabled
         :type custom_button: QWidget
