@@ -25,32 +25,69 @@ FORM_CLASS = get_wizard_step_ui_class(__file__)
 class StepProjectCreation2(WizardStep, FORM_CLASS):
     """Step 2 for project creation"""
 
-    layer = None
+    def __init__(self, parent=None):
+        """Constructor
+
+        :param parent: parent - widget to use as parent.
+        :type parent: QWidget
+        """
+        super(StepProjectCreation2, self).__init__(parent)
+        self.layer = None
+        self.layer_attributes = None
+
+    def attributes(self):
+        """Returns data from the layer
+
+        :returns: attributes layer selected
+        :rtype: list of dict or none
+        """
+        cadasta_field = {
+            'location_attribute': self.location_attribute_box.currentText(),
+            'location_type': self.location_type_box.currentText(),
+            'party_name': self.party_name_box.currentText(),
+            'party_type': self.party_type_box.currentText(),
+            'party_attribute': self.party_attribute_box.currentText(),
+            'relationship_type': self.relationship_type_box.currentText(),
+            'relationship_attribute':
+                self.relationship_attribute_box.currentText(),
+
+        }
+
+        cadasta_data = []
+
+        for layer in self.layer_attributes:
+            for key, value in cadasta_field.iteritems():
+                if value in layer:
+                    cadasta_data.append(
+                        {key: layer[value] if layer[value] else ''}
+                    )
+
+        return cadasta_data
 
     def set_widgets(self):
         """Set all widgets on the tab."""
         layer = self.layer
         field_names = [field.name() for field in layer.pendingFields()]
 
+        self.layer_attributes = []
+
+        for elem in layer.getFeatures():
+            self.layer_attributes.append(
+                (dict(zip(field_names, elem.attributes())))
+            )
+
         if 'id' in field_names:
             field_names.remove(u'id')
 
         field_names.insert(0, ' ')
 
-        # Location Attribute
-        self.cbxLocAttr.addItems(field_names)
-        # Location Type
-        self.cbxLocType.addItems(field_names)
-        # Party Name
-        self.cbxPartyName.addItems(field_names)
-        # Relationship Type
-        self.cbxRelType.addItems(field_names)
-        # Party Type
-        self.cbxPartyType.addItems(field_names)
-        # Party Attribute
-        self.cbxPartyAttr.addItems(field_names)
-        # Relationship Attribute
-        self.cbxRelAttr.addItems(field_names)
+        self.location_attribute_box.addItems(field_names)
+        self.location_type_box.addItems(field_names)
+        self.party_name_box.addItems(field_names)
+        self.relationship_type_box.addItems(field_names)
+        self.party_type_box.addItems(field_names)
+        self.party_attribute_box.addItems(field_names)
+        self.relationship_attribute_box.addItems(field_names)
 
     def validate_step(self):
         """Check if the step is valid.

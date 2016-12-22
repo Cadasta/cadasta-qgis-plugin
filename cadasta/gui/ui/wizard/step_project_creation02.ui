@@ -73,7 +73,7 @@
        <string>Party Type</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="cbxRelAttr">
+     <widget class="QComboBox" name="relationship_attribute_box">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -83,7 +83,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QComboBox" name="cbxLocAttr">
+     <widget class="QComboBox" name="location_attribute_box">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -119,7 +119,7 @@
        <string>Relationship Attribute</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="cbxPartyType">
+     <widget class="QComboBox" name="party_type_box">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -142,7 +142,7 @@
        <string>Relationship Type</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="cbxLocType">
+     <widget class="QComboBox" name="location_type_box">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -191,7 +191,7 @@
        <string>Location Type</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="cbxPartyName">
+     <widget class="QComboBox" name="party_name_box">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -201,7 +201,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QComboBox" name="cbxRelType">
+     <widget class="QComboBox" name="relationship_type_box">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -211,7 +211,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QComboBox" name="cbxPartyAttr">
+     <widget class="QComboBox" name="party_attribute_box">
       <property name="geometry">
        <rect>
         <x>60</x>

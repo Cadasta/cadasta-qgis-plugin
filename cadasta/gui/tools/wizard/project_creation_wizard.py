@@ -187,6 +187,6 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         data['project_name'] = self.step_project_creation01.project_name()
         data['project_url'] = self.step_project_creation01.project_url()
         data['organisation'] = self.step_project_creation01.selected_organisation()
-        selected_layer = self.step_project_creation01.selected_layer()
+        data['layer_data'] = self.step_project_creation02.attributes()
 
         return data
