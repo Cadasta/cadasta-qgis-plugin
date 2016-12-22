@@ -29,7 +29,7 @@ from cadasta.gui.tools.cadasta_login import CadastaLogin
 from cadasta.gui.tools.cadasta_project_download_step_1 import (
     CadastaProjectDownloadStep1
 )
-from cadasta.gui.tools.cadasta_project_creation import CadastaProjectCreation
+from cadasta.gui.tools.wizard.project_creation_wizard import ProjectCreationWizard
 import os.path
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
@@ -242,7 +242,7 @@ class CadastaPlugin:
 
     def show_project_creation_wizard(self):
         """Show the project creation wizard."""
-        dialog = CadastaProjectCreation(
+        dialog = ProjectCreationWizard(
             iface=self.iface
         )
         dialog.show()
