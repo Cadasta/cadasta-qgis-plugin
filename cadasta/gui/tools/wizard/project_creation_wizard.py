@@ -19,6 +19,7 @@ from qgis.PyQt.QtCore import pyqtSignature
 from qgis.gui import QgsMessageBar
 from step_project_creation01 import StepProjectCreation1
 from step_project_creation02 import StepProjectCreation2
+from step_project_creation03 import StepProjectCreation3
 
 from cadasta.utilities.resources import get_ui_class, resources_path
 from cadasta.utilities.i18n import tr
@@ -69,9 +70,11 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
 
         self.step_project_creation01 = StepProjectCreation1(self)
         self.step_project_creation02 = StepProjectCreation2(self)
+        self.step_project_creation03 = StepProjectCreation3(self)
 
         self.stackedWidget.addWidget(self.step_project_creation01)
         self.stackedWidget.addWidget(self.step_project_creation02)
+        self.stackedWidget.addWidget(self.step_project_creation03)
 
         self.steps = []
 
@@ -97,15 +100,19 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         """
         self.stackedWidget.setCurrentWidget(step)
 
-        # Enable the Back button unless it's not the first step
+        # Enable the Back button unless it's not the first step or
+        # last step
         self.pbnBack.setEnabled(
-                step not in [self.step_project_creation01, ] or
+                step not in [self.step_project_creation01,
+                             self.step_project_creation03] or
                 self.parent_step is not None)
 
         # Set Next button label
         if (step in [self.step_project_creation02] and
                 self.parent_step is None):
             self.pbnNext.setText(self.tr('Finish'))
+        elif step == self.step_project_creation03:
+            self.pbnNext.setText(self.tr('Close'))
         else:
             self.pbnNext.setText(self.tr('Next'))
 
@@ -171,3 +178,15 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         self.step_index -= 1
         self.set_step_label()
         self.go_to_step(previous_step)
+
+    def get_all_data(self):
+        """Get all data from all steps."""
+        data = dict()
+
+        # Data from step1
+        data['project_name'] = self.step_project_creation01.project_name()
+        data['project_url'] = self.step_project_creation01.project_url()
+        data['organisation'] = self.step_project_creation01.selected_organisation()
+        selected_layer = self.step_project_creation01.selected_layer()
+
+        return data

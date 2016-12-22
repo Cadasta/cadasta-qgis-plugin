@@ -62,7 +62,7 @@ class WizardStep(QWidget):
         :returns: Tuple of validation status and error message if any
         :rtype: ( bool, str )
         """
-        return False, ''
+        return True, ''
 
     def get_next_step(self):
         """Find the proper step when user clicks the Next button.

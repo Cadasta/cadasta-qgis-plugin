@@ -87,7 +87,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         if not self.project_url() or \
                 not is_valid_url(self.project_url()):
             error_message += tr(
-                'Missing or Invalid url. \n'
+                'Missing or Invalid url. '
             )
 
         if not self.project_name():
@@ -101,7 +101,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
             )
 
         return (
-            error_message is None,
+            error_message == '',
             error_message
         )
 

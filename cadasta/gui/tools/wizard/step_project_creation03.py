@@ -11,6 +11,7 @@ This module provides: Project Creation Step 2 : Attribute Selection
 
 """
 
+import json
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 
@@ -22,35 +23,15 @@ __revision__ = '$Format:%H$'
 FORM_CLASS = get_wizard_step_ui_class(__file__)
 
 
-class StepProjectCreation2(WizardStep, FORM_CLASS):
-    """Step 2 for project creation"""
-
-    layer = None
+class StepProjectCreation3(WizardStep, FORM_CLASS):
+    """Step 3 for project creation"""
 
     def set_widgets(self):
         """Set all widgets on the tab."""
-        layer = self.layer
-        field_names = [field.name() for field in layer.pendingFields()]
-
-        if 'id' in field_names:
-            field_names.remove(u'id')
-
-        field_names.insert(0, ' ')
-
-        # Location Attribute
-        self.cbxLocAttr.addItems(field_names)
-        # Location Type
-        self.cbxLocType.addItems(field_names)
-        # Party Name
-        self.cbxPartyName.addItems(field_names)
-        # Relationship Type
-        self.cbxRelType.addItems(field_names)
-        # Party Type
-        self.cbxPartyType.addItems(field_names)
-        # Party Attribute
-        self.cbxPartyAttr.addItems(field_names)
-        # Relationship Attribute
-        self.cbxRelAttr.addItems(field_names)
+        self.textEdit.setText(
+            json.dumps(self.parent.get_all_data(), sort_keys=True,
+                       indent=4, separators=(',', ': '))
+        )
 
     def validate_step(self):
         """Check if the step is valid.
@@ -68,5 +49,4 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         :returns: The step to be switched to
         :rtype: WizardStep instance or None
         """
-        new_step = self.parent.step_project_creation03
-        return new_step
+        return None
