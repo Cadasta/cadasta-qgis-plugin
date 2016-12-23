@@ -33,13 +33,21 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 class StepProjectCreation3(WizardStep, FORM_CLASS):
     """Step 3 for project creation"""
 
+    def __init__(self, parent=None):
+        """Constructor
+
+        :param parent: parent - widget to use as parent.
+        :type parent: QWidget
+        """
+        super(StepProjectCreation3, self).__init__(parent)
+        self.submit_button.clicked.connect(self.processing_data)
+
     def set_widgets(self):
         """Set all widgets on the tab."""
         self.progress_bar.setVisible(False)
         self.lbl_status.setText(
             tr('Are you sure to upload the data?')
         )
-        self.submit_button.clicked.connect(self.processing_data)
 
     def processing_data(self):
         """Processing data from all step"""

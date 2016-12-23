@@ -41,12 +41,12 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         """
         super(StepProjectCreation1, self).__init__(parent)
         self.organisation = Organization()
-
-    def set_widgets(self):
-        """Set all widgets on the tab."""
         self.get_organisation_button.clicked.connect(
                 self.get_available_organisations
         )
+
+    def set_widgets(self):
+        """Set all widgets on the tab."""
         self.get_available_layers()
 
     def project_name(self):
@@ -95,7 +95,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         """
         error_message = ''
 
-        if not self.project_url() or \
+        if self.project_url() and \
                 not is_valid_url(self.project_url()):
             error_message += tr(
                 'Missing or Invalid url. '
