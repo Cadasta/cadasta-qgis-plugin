@@ -26,7 +26,7 @@
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
 # LOCALES = af
-LOCALES = af
+LOCALES = af id
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
 # you have trouble compiling the translations, you may have to specify the full path to
@@ -79,7 +79,7 @@ compile: $(COMPILED_RESOURCE_FILES)
 %.qm : %.ts
 	$(LRELEASE) $<
 
-test: transcompile
+test: compile-translation-strings
 	@echo
 	@echo "----------------------"
 	@echo "Regression Test Suite"
@@ -97,7 +97,7 @@ test: transcompile
 	@echo "e.g. source run-env-linux.sh <path to qgis install>; make test"
 	@echo "----------------------"
 
-deploy: compile doc transcompile
+deploy: compile doc compile-translation-strings
 	@echo
 	@echo "------------------------------------------"
 	@echo "Deploying plugin to your .qgis2 directory."
@@ -165,31 +165,6 @@ upload: zip
 	@echo "-------------------------------------"
 	$(PLUGIN_UPLOAD) $(PLUGINNAME).zip
 
-transup:
-	@echo
-	@echo "------------------------------------------------"
-	@echo "Updating translation files with any new strings."
-	@echo "------------------------------------------------"
-	@chmod +x scripts/update-strings.sh
-	@scripts/update-strings.sh $(LOCALES)
-
-transcompile:
-	@echo
-	@echo "----------------------------------------"
-	@echo "Compiled translation files to .qm files."
-	@echo "----------------------------------------"
-	@chmod +x scripts/compile-strings.sh
-	@echo $(LRELEASE)
-	@echo $(LOCALES)
-	@scripts/compile-strings.sh $(LRELEASE) $(LOCALES)
-
-transclean:
-	@echo
-	@echo "------------------------------------"
-	@echo "Removing compiled translation files."
-	@echo "------------------------------------"
-	rm -f i18n/*.qm
-
 clean:
 	@echo
 	@echo "------------------------------------"
@@ -217,6 +192,31 @@ pylint:
 	@echo "e.g. source run-env-linux.sh <path to qgis install>; make pylint"
 	@echo "----------------------"
 
+# translation
+update-translation-strings:
+	@echo
+	@echo "------------------------------------------------"
+	@echo "Updating translation files with any new strings."
+	@echo "------------------------------------------------"
+	@chmod +x scripts/update-strings.sh
+	@scripts/update-strings.sh $(LOCALES)
+
+compile-translation-strings:
+	@echo
+	@echo "----------------------------------------"
+	@echo "Compiled translation files to .qm files."
+	@echo "----------------------------------------"
+	@chmod +x scripts/compile-strings.sh
+	@echo $(LRELEASE)
+	@echo $(LOCALES)
+	@scripts/compile-strings.sh $(LRELEASE) $(LOCALES)
+
+clean-translation-strings:
+	@echo
+	@echo "------------------------------------"
+	@echo "Removing compiled translation files."
+	@echo "------------------------------------"
+	rm -f i18n/*.qm
 
 # Run pep8 style checking
 #http://pypi.python.org/pypi/pep8

@@ -120,7 +120,7 @@
     <cursorShape>OpenHandCursor</cursorShape>
    </property>
    <property name="text">
-    <string>save</string>
+    <string>Save</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">

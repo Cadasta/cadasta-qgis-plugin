@@ -55,7 +55,7 @@ class QgsLogHandler(logging.Handler):
             )
         except MemoryError:
             message = tr(
-                'Due to memory limitations on this machine, InaSAFE can not '
+                'Due to memory limitations on this machine, Cadasta can not '
                 'handle the full log')
             print message
             QgsMessageLog.logMessage(message, 'CadastaQGISPlugin', 0)
