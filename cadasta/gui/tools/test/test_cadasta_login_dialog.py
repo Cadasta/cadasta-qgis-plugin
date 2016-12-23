@@ -8,9 +8,10 @@
 
 """
 
-__author__ = 'christian@kartoza.com'
-__date__ = '2016-11-25'
-__copyright__ = 'Copyright 2016, Kartoza'
+__author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
+__revision__ = '$Format:%H$'
+__date__ = '15/12/2016'
+__copyright__ = 'Copyright 2016, Cadasta'
 
 import os
 import unittest

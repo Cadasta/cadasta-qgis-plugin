@@ -19,7 +19,7 @@ __copyright__ = 'Copyright 2016, Cadasta'
 
 
 class Project(NetworkMixin):
-    """Class to fetch available organization data."""
+    """Class to fetch available project data."""
 
     api_url = 'api/v1/projects/'
 

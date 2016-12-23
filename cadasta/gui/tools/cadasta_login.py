@@ -7,6 +7,10 @@
      (at your option) any later version.
 
 """
+__author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
+__revision__ = '$Format:%H$'
+__date__ = '15/12/2016'
+__copyright__ = 'Copyright 2016, Cadasta'
 
 from qgis.gui import QgsMessageBar
 from cadasta.utilities.resources import get_ui_class
@@ -20,7 +24,7 @@ FORM_CLASS = get_ui_class('cadasta_login_base.ui')
 
 class CadastaLogin(CadastaDialog, FORM_CLASS):
     def __init__(self):
-        """ Constructor."""
+        """Constructor."""
 
         super(CadastaLogin, self).__init__()
         self.message_bar = None
@@ -29,14 +33,14 @@ class CadastaLogin(CadastaDialog, FORM_CLASS):
         self.init_style()
 
     def init_style(self):
-        """ Initiate custom styles for dialog. """
+        """Initiate custom styles for dialog. """
         self.disable_button(self.save_button)
         self.enable_button(self.test_connection_button)
         self.test_connection_button.clicked.connect(self.login)
         self.save_button.clicked.connect(self.save_authtoken)
 
     def login(self):
-        """ Login function when tools button clicked."""
+        """Login function when tools button clicked."""
 
         username = self.username_input.displayText()
         password = self.password_input.text()
@@ -63,7 +67,7 @@ class CadastaLogin(CadastaDialog, FORM_CLASS):
                 self.on_finished)
 
     def on_finished(self, result):
-        """ On finished function when tools request is finished."""
+        """On finished function when tools request is finished."""
 
         self.ok_label.setVisible(True)
         if 'auth_token' in result:
@@ -80,7 +84,7 @@ class CadastaLogin(CadastaDialog, FORM_CLASS):
         self.enable_button(self.test_connection_button)
 
     def save_authtoken(self):
-        """ Save received authtoken to setting."""
+        """Save received authtoken to setting."""
 
         if self.auth_token:
             save_authtoken(self.auth_token)

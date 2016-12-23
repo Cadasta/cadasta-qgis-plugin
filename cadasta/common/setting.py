@@ -8,7 +8,9 @@ Cadasta project - **Setting utilities**
      (at your option) any later version.
 
 """
+import os
 from qgis.PyQt.QtCore import QSettings
+from cadasta.utilities.resources import get_project_path
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
 __revision__ = '$Format:%H$'
@@ -114,3 +116,36 @@ def get_authtoken():
 def delete_authtoken():
     """ Delete authtoken from QSettings."""
     delete_setting("user/authtoken")
+
+
+def get_path_data(organization_slug=None, project_slug=None):
+    """ Path data based on organization and project slug.
+
+    :param organization_slug: organization slug for the data location
+    :type organization_slug: str
+
+    :param project_slug: project slug for filename
+    :type project_slug: str
+
+    :return: Absoulte data path
+    :rtype: str
+    """
+    data_path = get_project_path()
+    data_path = os.path.join(
+        data_path,
+        'data'
+    )
+    if organization_slug:
+        data_path = os.path.join(
+            data_path,
+            organization_slug
+        )
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+
+    if project_slug:
+        data_path = os.path.join(
+            data_path,
+            '%s.geojson' % project_slug
+        )
+    return data_path
