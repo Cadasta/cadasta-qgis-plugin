@@ -20,10 +20,8 @@ from cadasta.gui.tools.wizard.project_creation_wizard import (
     ProjectCreationWizard
 )
 
-if not os.environ.get('ON_TRAVIS', False):
-    from cadasta.test.utilities import get_qgis_app
-
-    QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+from cadasta.test.utilities import get_qgis_app
+QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
 
 
 class CadastaProjectCreationTest(unittest.TestCase):
