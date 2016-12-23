@@ -184,9 +184,7 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         data = dict()
 
         # Data from step1
-        data['project_name'] = self.step_project_creation01.project_name()
-        data['project_url'] = self.step_project_creation01.project_url()
-        data['organisation'] = self.step_project_creation01.selected_organisation()
-        data['layer_data'] = self.step_project_creation02.attributes()
+        data['step_1'] = self.step_project_creation01.all_data()
+        data['step_2'] = self.step_project_creation02.attributes()
 
         return data

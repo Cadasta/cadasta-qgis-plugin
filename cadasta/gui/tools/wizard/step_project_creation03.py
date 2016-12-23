@@ -2,7 +2,7 @@
 """
 Cadasta project creation step -**Cadasta Wizard**
 
-This module provides: Project Creation Step 2 : Attribute Selection
+This module provides: Project Creation Step 3 : Upload to cadasta
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by

@@ -66,12 +66,11 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
 
     def set_widgets(self):
         """Set all widgets on the tab."""
-        layer = self.layer
-        field_names = [field.name() for field in layer.pendingFields()]
+        field_names = [field.name() for field in self.layer.pendingFields()]
 
         self.layer_attributes = []
 
-        for elem in layer.getFeatures():
+        for elem in self.layer.getFeatures():
             self.layer_attributes.append(
                 (dict(zip(field_names, elem.attributes())))
             )
