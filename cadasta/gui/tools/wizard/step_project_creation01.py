@@ -19,7 +19,6 @@ from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.api.organization import Organization
-from cadasta.utilities.resources import resources_path
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -33,6 +32,15 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 class StepProjectCreation1(WizardStep, FORM_CLASS):
     """Step 1 for project creation"""
+
+    def __init__(self, parent=None):
+        """Constructor
+
+        :param parent: parent - widget to use as parent.
+        :type parent: QWidget
+        """
+        super(StepProjectCreation1, self).__init__(parent)
+        self.organisation = Organization()
 
     def set_widgets(self):
         """Set all widgets on the tab."""
@@ -118,10 +126,11 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         return new_step
 
     def get_available_organisations(self):
-        """Get available organisations."""
+        """Get available organisations and load it to
+           organisation combo box.
+        """
         LOGGER.info('Getting organisations')
-        organization = Organization()
-        status, results = organization.all_organizations()
+        status, results = self.organisation.all_organizations()
         if status:
             self.organisation_box.clear()
             self.parent.organisations_list = results

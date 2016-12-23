@@ -14,8 +14,11 @@ __copyright__ = 'Copyright 2016, Kartoza'
 
 import os
 import unittest
+from mock import MagicMock
 
-from cadasta.gui.tools.cadasta_project_creation import CadastaProjectCreation
+from cadasta.gui.tools.wizard.project_creation_wizard import (
+    ProjectCreationWizard
+)
 
 if not os.environ.get('ON_TRAVIS', False):
     from cadasta.test.utilities import get_qgis_app
@@ -26,25 +29,38 @@ if not os.environ.get('ON_TRAVIS', False):
 class CadastaProjectCreationTest(unittest.TestCase):
     """Test project creation dialog works."""
 
+    test_organization = [{
+        'id': 'yzqz5vup4cvz3ukfsyvstdfb',
+        'slug': 'allthethings',
+        'name': 'AllTheThings',
+        'description': '',
+        'archived': 'false',
+        'urls': [],
+        'contacts': []
+    }]
+
     def setUp(self):
         """Runs before each test."""
-        self.dialog = CadastaProjectCreation(iface=IFACE)
+        self.wizard = ProjectCreationWizard(iface=IFACE)
+        self.step1 = self.wizard.step_project_creation01
+        self.step1.organisation._call_api = MagicMock(
+                return_value=(True, self.test_organization)
+        )
+        self.step2 = self.wizard.step_project_creation02
+        self.step3 = self.wizard.step_project_creation03
 
     def test_get_available_organisations(self):
-        """Test get available button works."""
-        button = self.dialog.get_organisations_button
-        url = 'http://www.google.com'
-        self.dialog.project_url_input.setText(url)
+        """Test get available button works in step 1."""
+        button = self.step1.get_organisation_button
         button.click()
-        self.assertIsInstance(self.dialog.organisations_list, list)
-        self.dialog.organisation_combo_box.setCurrentIndex(1)
-        next_button = self.dialog.next_button
-        next_button.click()
+        self.assertIsInstance(self.wizard.organisations_list, list)
 
-    # def test_valid_form(self):
-    #     """Check if form is valid."""
-    #     url = 'http://www.google.com'
-    #     self.dialog.project_url_input.setText(url)
-    #     button = self.dialog.next_button
-    #     button.click()
-    #     self.assertTrue(self.dialog.form_valid_flag)
+    def test_valid_form(self):
+        """Check if form is valid."""
+        url = 'http://www.google.com'
+        project_name = 'project_name'
+        button = self.step1.get_organisation_button
+        button.click()
+        self.step1.project_url_text.setText(url)
+        self.step1.project_name_text.setText(project_name)
+        self.assertTrue(self.step1.validate_step())
