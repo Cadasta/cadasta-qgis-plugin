@@ -38,8 +38,12 @@ class Project(NetworkMixin):
         """On finished function when tools request is finished."""
         # extract result
         if self.error:
-            self.on_finished(self.error)
+            self.on_finished(
+                (False, self.error)
+            )
         else:
             result = self.get_json_results()
             if self.on_finished and callable(self.on_finished):
-                self.on_finished(result)
+                self.on_finished(
+                    (True, result)
+                )

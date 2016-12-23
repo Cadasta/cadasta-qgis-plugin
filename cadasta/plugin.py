@@ -21,15 +21,16 @@
  ***************************************************************************/
 """
 import logging
-from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, \
+    QCoreApplication
 from qgis.PyQt.QtGui import QAction, QIcon, QMenu, QWidget
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
 from cadasta.gui.tools.cadasta_login import CadastaLogin
-from cadasta.gui.tools.cadasta_project_download_step_1 import (
-    CadastaProjectDownloadStep1
-)
-from cadasta.gui.tools.wizard.project_creation_wizard import ProjectCreationWizard
+from cadasta.gui.tools.wizard.project_creation_wizard import \
+    ProjectCreationWizard
+from cadasta.gui.tools.wizard.project_download_wizard import \
+    ProjectDownloadWizard
 import os.path
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
@@ -227,7 +228,7 @@ class CadastaPlugin:
         icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
         self.action_options_wizard = self.add_action(
             icon_path,
-            text=self.tr(u'Project Download'),
+            text=self.tr(u'Download Project'),
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
             enabled_flag=True,
@@ -236,7 +237,9 @@ class CadastaPlugin:
 
     def show_project_download_wizard(self):
         """Show the project download wizard."""
-        dialog = CadastaProjectDownloadStep1()
+        dialog = ProjectDownloadWizard(
+            iface=self.iface
+        )
         dialog.show()
         dialog.exec_()
 
