@@ -13,9 +13,9 @@ This module provides an abstract class for wizard steps
 
 import re
 import os
-
+import logging
 # noinspection PyPackageRequirements
-from PyQt4.QtGui import QWidget
+from qgis.PyQt.QtGui import QWidget
 
 from cadasta.utilities.resources import get_ui_class
 
@@ -23,6 +23,8 @@ __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
 __email__ = "info@kartoza.org"
 __revision__ = '$Format:%H$'
+
+LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 def get_wizard_step_ui_class(py_file_name):
@@ -82,11 +84,3 @@ class WizardStep(QWidget):
         """
         raise NotImplementedError("The current step class doesn't implement \
             the set_widgets method")
-
-    @property
-    def step_type(self):
-        """Whether it's a IFCW step or Keyword Wizard Step."""
-        if 'stepfc' in self.__class__.__name__.lower():
-            return 'step_fc'
-        if 'stepkw' in self.__class__.__name__.lower():
-            return 'step_kw'

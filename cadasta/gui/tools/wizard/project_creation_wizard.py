@@ -100,18 +100,13 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         """
         self.stackedWidget.setCurrentWidget(step)
 
-        # Enable the Back button unless it's not the first step or
-        # last step
+        # Enable the Back button unless it's not the first step
         self.pbnBack.setEnabled(
-                step not in [self.step_project_creation01,
-                             self.step_project_creation03] or
+                step not in [self.step_project_creation01] or
                 self.parent_step is not None)
 
         # Set Next button label
-        if (step in [self.step_project_creation02] and
-                self.parent_step is None):
-            self.pbnNext.setText(self.tr('Finish'))
-        elif step == self.step_project_creation03:
+        if step == self.step_project_creation03:
             self.pbnNext.setText(self.tr('Close'))
         else:
             self.pbnNext.setText(self.tr('Next'))
@@ -179,12 +174,29 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         self.set_step_label()
         self.go_to_step(previous_step)
 
-    def get_all_data(self):
-        """Get all data from all steps."""
-        data = dict()
+    # prevents actions being handled twice
+    # noinspection PyPep8Naming
+    @pyqtSignature('')
+    def on_pbnCancel_released(self):
+        """Handle the Cancel button release.
 
-        # Data from step1
-        data['step_1'] = self.step_project_creation01.all_data()
-        data['step_2'] = self.step_project_creation02.attributes()
+        .. note:: This is an automatic Qt slot
+           executed when the Back button is released.
+        """
+        self.close()
 
-        return data
+    def step_1_data(self):
+        """Returns step 1 data.
+
+        :returns: Step 1 data
+        :rtype: dict
+        """
+        return self.step_project_creation01.all_data()
+
+    def step_2_data(self):
+        """Returns step 2 data.
+
+        :returns: Step 2 data
+        :rtype: dict
+        """
+        return self.step_project_creation02.attributes()

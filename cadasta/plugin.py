@@ -185,6 +185,7 @@ class CadastaPlugin:
         """Removes the plugin menu item and icon from QGIS GUI."""
         if self.wizard:
             self.wizard.deleteLater()
+        self.main_menu.deleteLater()
         for action in self.actions:
             self.iface.removePluginVectorMenu(
                 self.tr(u'&Cadasta QGIS plugin'),
@@ -248,5 +249,6 @@ class CadastaPlugin:
         dialog = ProjectCreationWizard(
             iface=self.iface
         )
+        self.wizard = dialog
         dialog.show()
         dialog.exec_()
