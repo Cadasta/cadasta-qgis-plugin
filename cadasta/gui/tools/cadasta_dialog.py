@@ -51,10 +51,6 @@ class CadastaDialog(QtGui.QDialog):
         """
 
         custom_button.setEnabled(True)
-        custom_button.setStyleSheet(
-            'background-color:#525252; cursor:pointer;' +
-            CadastaStyle.button_style()
-        )
 
     def disable_button(self, custom_button):
         """Disable button.
@@ -62,7 +58,4 @@ class CadastaDialog(QtGui.QDialog):
         :param custom_button: button that will be disabled
         :type custom_button: QWidget
         """
-        custom_button.setStyleSheet(
-            'background-color:#A8A8A8;' + CadastaStyle.button_style()
-        )
         custom_button.setEnabled(False)
