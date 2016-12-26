@@ -8,15 +8,9 @@ __date__ = '14/12/16'
 
 import unittest
 
-import os
 from mock.mock import MagicMock
 from mock import patch
 from cadasta.api.project import Project
-
-if not os.environ.get('ON_TRAVIS', False):
-    from cadasta.test.utilities import get_qgis_app
-
-    QGIS_APP = get_qgis_app()
 
 
 class ProjectTest(unittest.TestCase):

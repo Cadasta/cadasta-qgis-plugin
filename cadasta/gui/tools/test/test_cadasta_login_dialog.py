@@ -13,11 +13,12 @@ __revision__ = '$Format:%H$'
 __date__ = '15/12/2016'
 __copyright__ = 'Copyright 2016, Cadasta'
 
-import os
 import unittest
 
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing.mocked import get_iface
+from qgis.utils import iface
 
 from cadasta.gui.tools.cadasta_login import CadastaLogin
 from cadasta.common.setting import (
@@ -26,10 +27,11 @@ from cadasta.common.setting import (
     delete_authtoken
 )
 
-if not os.environ.get('ON_TRAVIS', False):
-    from cadasta.test.utilities import get_qgis_app
 
-    QGIS_APP = get_qgis_app()
+if iface:
+    QGIS_APP = iface
+else:
+    QGIS_APP = get_iface()
 
 
 class CadastaLoginDialogTest(unittest.TestCase):

@@ -12,17 +12,17 @@ __revision__ = '$Format:%H$'
 __date__ = '21/12/16'
 __copyright__ = 'Copyright 2016, Cadasta'
 
-import os
 import unittest
-
+from qgis.testing.mocked import get_iface
+from qgis.utils import iface
 from cadasta.gui.tools.cadasta_project_download_step_1 import (
     CadastaProjectDownloadStep1
 )
 
-if not os.environ.get('ON_TRAVIS', False):
-    from cadasta.test.utilities import get_qgis_app
-
-    QGIS_APP = get_qgis_app()
+if iface:
+    QGIS_APP = iface
+else:
+    QGIS_APP = get_iface()
 
 
 class CadastaProjectDownloadDialogTest(unittest.TestCase):

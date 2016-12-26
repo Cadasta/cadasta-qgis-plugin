@@ -18,10 +18,13 @@ from qgis.PyQt.QtCore import (
     QTranslator,
     QCoreApplication
 )
+from qgis.testing.mocked import get_iface
+from qgis.utils import iface
 
-if not os.environ.get('ON_TRAVIS', False):
-    from cadasta.test.utilities import get_qgis_app
-    QGIS_APP = get_qgis_app()
+if iface:
+    QGIS_APP = iface
+else:
+    QGIS_APP = get_iface()
 
 
 class CadastaTranslationsTest(unittest.TestCase):

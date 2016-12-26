@@ -5,17 +5,18 @@
 
 import unittest
 
-import os
 from mock.mock import MagicMock
+from qgis.testing.mocked import get_iface
+from qgis.utils import iface
 from cadasta.api.organization import Organization
 
 __author__ = 'Dimas Ciputra <dimas@kartoza.com>'
 __date__ = '19/12/16'
 
-
-if not os.environ.get('ON_TRAVIS', False):
-    from cadasta.test.utilities import get_qgis_app
-    QGIS_APP = get_qgis_app()
+if iface:
+    QGIS_APP = iface
+else:
+    QGIS_APP = get_iface()
 
 
 class OrganizationTest(unittest.TestCase):

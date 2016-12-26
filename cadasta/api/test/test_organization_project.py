@@ -8,18 +8,20 @@ __date__ = '14/12/16'
 
 import unittest
 
-import os
 from mock.mock import MagicMock
 from mock import patch
+from qgis.testing.mocked import get_iface
+from qgis.utils import iface
 from cadasta.api.organization_project import (
     OrganizationProject,
     OrganizationProjectSpatial
 )
 
-if not os.environ.get('ON_TRAVIS', False):
-    from cadasta.test.utilities import get_qgis_app
 
-    QGIS_APP = get_qgis_app()
+if iface:
+    QGIS_APP = iface
+else:
+    QGIS_APP = get_iface()
 
 
 class OrganizationProjectTest(unittest.TestCase):

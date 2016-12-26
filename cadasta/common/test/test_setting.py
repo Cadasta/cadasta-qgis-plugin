@@ -9,7 +9,6 @@ __copyright__ = 'Copyright 2016, Cadasta'
 
 import unittest
 
-import os
 from cadasta.common.setting import (
     delete_authtoken,
     delete_setting,
@@ -22,11 +21,6 @@ from cadasta.common.setting import (
     save_url_instance,
     default_domain
 )
-
-if not os.environ.get('ON_TRAVIS', False):
-    from cadasta.test.utilities import get_qgis_app
-
-    QGIS_APP = get_qgis_app()
 
 
 class SettingTest(unittest.TestCase):
