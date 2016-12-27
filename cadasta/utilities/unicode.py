@@ -1,10 +1,12 @@
 # coding=utf-8
 """
-Cadasta -**Cadasta Unicode.**
+InaSAFE Disaster risk assessment tool by AusAid -**Unicode Utilities.**
 
 The module provides utilities function to convert between unicode and byte
 string for Python 2.x. When we move to Python 3, this module and its usage
 should be removed as string in Python 3 is already stored in unicode.
+
+Contact : ole.moller.nielsen@gmail.com
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by

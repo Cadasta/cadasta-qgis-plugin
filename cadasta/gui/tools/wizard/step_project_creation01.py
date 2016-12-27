@@ -19,7 +19,6 @@ from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.api.organization import Organization
-from cadasta.utilities.utilities import convert_wkt_to_geojson
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -179,14 +178,10 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         layer = self.selected_layer()
         if self.use_layer_extents.isChecked():
             # Layer extent
-            data['extent'] = convert_wkt_to_geojson(
-                    layer.extent().asWktPolygon()
-            )
+            data['extent'] = layer.extent().asWktPolygon()
         else:
             # Canvas extent
-            data['extent'] = convert_wkt_to_geojson(
-                    self.parent.iface.mapCanvas().extent().asWktPolygon()
-            )
+            data['extent'] = self.parent.iface.mapCanvas().extent().asWktPolygon()
 
         # Save layer to geojson format
         output_file = '/tmp/project.json'
