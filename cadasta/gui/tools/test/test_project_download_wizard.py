@@ -35,7 +35,10 @@ class CadastaProjectDownloadWizardTest(unittest.TestCase):
             'id': "j9zk7y9hbrdfaeam5j7aampx",
             'slug': "any-given-sunday",
             'name': "Any Given Sunday",
-            'description': "Mapping & drawing publicly available municipal datasets in the interest of sussing out unforeseen relationships",
+            'description': "Mapping & drawing publicly "
+                           "available municipal datasets "
+                           "in the interest of sussing out "
+                           "unforeseen relationships",
         },
         'slug': "san-jose-open-data-portal-affordable-housing"
     }
