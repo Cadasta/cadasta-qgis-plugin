@@ -14,6 +14,7 @@ import logging
 import os
 import json
 from qgis.core import QgsVectorFileWriter
+from qgis.core import QgsGeometry
 from cadasta.utilities.resources import is_valid_url
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
@@ -178,10 +179,13 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         layer = self.selected_layer()
         if self.use_layer_extents.isChecked():
             # Layer extent
-            data['extent'] = layer.extent().asWktPolygon()
+            extent = layer.extent()
         else:
             # Canvas extent
-            data['extent'] = self.parent.iface.mapCanvas().extent().asWktPolygon()
+            extent = self.parent.iface.mapCanvas().extent()
+
+        geometry = QgsGeometry().fromRect(extent)
+        data['extent'] = geometry.exportToGeoJSON()
 
         # Save layer to geojson format
         output_file = '/tmp/project.json'
