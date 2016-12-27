@@ -26,7 +26,8 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, \
 from qgis.PyQt.QtGui import QAction, QIcon, QMenu, QWidget
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
-from cadasta.gui.tools.cadasta_login import CadastaLogin
+from cadasta.gui.tools.wizard.login_wizard import \
+    LoginWizard
 from cadasta.gui.tools.wizard.project_creation_wizard import \
     ProjectCreationWizard
 from cadasta.gui.tools.wizard.project_download_wizard import \
@@ -162,8 +163,8 @@ class CadastaPlugin:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        self._create_options_wizard_action()
-        self._create_project_download_wizard_action()
+        self._create_options_wizard()
+        self._create_project_download_wizard()
         self._create_project_creation_wizard()
 
     def unload(self):
@@ -179,7 +180,7 @@ class CadastaPlugin:
         # remove the toolbar
         self.iface.mainWindow().removeToolBar(self.toolbar)
 
-    def _create_options_wizard_action(self):
+    def _create_options_wizard(self):
         """Create action for options wizard."""
         icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
         self.action_options_wizard = self.add_action(
@@ -203,13 +204,7 @@ class CadastaPlugin:
             callback=self.show_project_creation_wizard
         )
 
-    def show_options_wizard(self):
-        """Show the options wizard."""
-        dialog = CadastaLogin()
-        dialog.show()
-        dialog.exec_()
-
-    def _create_project_download_wizard_action(self):
+    def _create_project_download_wizard(self):
         """Create action for project download wizard."""
         icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
         self.action_options_wizard = self.add_action(
@@ -220,6 +215,14 @@ class CadastaPlugin:
             enabled_flag=True,
             callback=self.show_project_download_wizard
         )
+
+    def show_options_wizard(self):
+        """Show the options wizard."""
+        dialog = LoginWizard(
+            iface=self.iface
+        )
+        dialog.show()
+        dialog.exec_()
 
     def show_project_download_wizard(self):
         """Show the project download wizard."""

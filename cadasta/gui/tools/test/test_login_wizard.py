@@ -7,10 +7,9 @@
      (at your option) any later version.
 
 """
-
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
 __revision__ = '$Format:%H$'
-__date__ = '15/12/2016'
+__date__ = '21/12/16'
 __copyright__ = 'Copyright 2016, Cadasta'
 
 import unittest
@@ -20,13 +19,14 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing.mocked import get_iface
 from qgis.utils import iface
 
-from cadasta.gui.tools.cadasta_login import CadastaLogin
+from cadasta.gui.tools.wizard.login_wizard import (
+    LoginWizard
+)
 from cadasta.common.setting import (
     get_authtoken,
     get_url_instance,
     delete_authtoken
 )
-
 
 if iface:
     QGIS_APP = iface
@@ -34,17 +34,16 @@ else:
     QGIS_APP = get_iface()
 
 
-class CadastaLoginDialogTest(unittest.TestCase):
-    """Test dialog works."""
+class CadastaLoginWizardTest(unittest.TestCase):
+    """Test Login wizard dialog works."""
 
     def setUp(self):
         """Runs before each test."""
         self.url = 'https://demo.cadasta.org/'
         self.username = 'kartoza.demo'
         self.password = 'demo.kartoza1!'
-        delete_authtoken()
-
-        self.dialog = CadastaLogin()
+        self.wizard = LoginWizard()
+        self.dialog = self.wizard.get_current_step()
 
     def tearDown(self):
         """Runs after each test."""
@@ -89,6 +88,6 @@ class CadastaLoginDialogTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(CadastaLoginDialogTest)
+    suite = unittest.makeSuite(CadastaLoginWizardTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
