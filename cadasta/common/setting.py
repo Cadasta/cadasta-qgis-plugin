@@ -149,36 +149,3 @@ def get_path_data(organization_slug=None, project_slug=None):
             '%s.geojson' % project_slug
         )
     return data_path
-
-
-def get_path_assets():
-    """ Path assets of project.
-
-    :return: Absoulte data path
-    :rtype: str
-    """
-    data_path = get_project_path()
-    data_path = os.path.join(
-        data_path,
-        'assets'
-    )
-    return data_path
-
-
-def get_path_assets_image(filename=None):
-    """ Path assets images of project.
-
-    :return: Absoulte data path
-    :rtype: str
-    """
-    data_path = os.path.join(
-        get_path_assets(),
-        'images'
-    )
-    if filename:
-        data_path = os.path.join(
-            data_path,
-            filename
-        )
-
-    return data_path

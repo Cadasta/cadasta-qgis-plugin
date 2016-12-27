@@ -22,15 +22,13 @@ from step_project_creation01 import StepProjectCreation1
 from step_project_creation02 import StepProjectCreation2
 from step_project_creation03 import StepProjectCreation3
 
-from cadasta.common.setting import get_path_assets_image
-from cadasta.utilities.resources import get_ui_class
+from cadasta.utilities.resources import get_ui_class, resources_path
 from cadasta.utilities.i18n import tr
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
 __email__ = "info@kartoza.org"
 __revision__ = '$Format:%H$'
-
 
 FORM_CLASS = get_ui_class('wizard/wizard_dialog_base.ui')
 
@@ -86,7 +84,7 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         self.set_logo()
 
     def set_logo(self):
-        filename = get_path_assets_image("white_icon.png")
+        filename = resources_path("images/white_icon.png")
         LOGGER.debug(filename)
         pixmap = QPixmap(filename)
         self.lblMainIcon.setPixmap(pixmap)
@@ -111,8 +109,8 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
 
         # Enable the Back button unless it's not the first step
         self.pbnBack.setEnabled(
-                step not in [self.step_project_creation01] or
-                self.parent_step is not None)
+            step not in [self.step_project_creation01] or
+            self.parent_step is not None)
 
         # Set Next button label
         if step == self.step_project_creation03:
@@ -143,8 +141,8 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         if not valid_status:
             self.message_bar = QgsMessageBar()
             self.message_bar.pushWarning(
-                    tr('Error'),
-                    message
+                tr('Error'),
+                message
             )
             LOGGER.info(message)
             return
