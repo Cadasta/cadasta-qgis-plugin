@@ -98,7 +98,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         if self.project_url() and \
                 not is_valid_url(self.project_url()):
             error_message += tr(
-                'Missing or Invalid url. '
+                'Invalid url. '
             )
 
         if not self.project_name():
@@ -130,7 +130,9 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
            organisation combo box.
         """
         LOGGER.info('Getting organisations')
+        self.get_organisation_button.setEnabled(False)
         status, results = self.organisation.all_organizations()
+        self.get_organisation_button.setEnabled(True)
         if status:
             self.organisation_box.clear()
             self.parent.organisations_list = results
