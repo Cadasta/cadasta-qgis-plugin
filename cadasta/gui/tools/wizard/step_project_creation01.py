@@ -177,9 +177,11 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         # Get extent
         layer = self.selected_layer()
         if self.use_layer_extents.isChecked():
-            data['extent'] = layer.extent().asPolygon()
+            # Layer extent
+            data['extent'] = layer.extent().asWktPolygon()
         else:
-            data['extent'] = 'Canvas extents'
+            # Canvas extent
+            data['extent'] = self.parent.iface.mapCanvas().extent().asWktPolygon()
 
         # Save layer to geojson format
         output_file = '/tmp/project.json'
