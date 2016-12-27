@@ -61,7 +61,7 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
 
         self.iface = iface
         self.organisations_list = None
-        self.layers = None
+        self.layer = None
         self.parent_step = None
         self.step_index = 1
         self.step_length = 3
@@ -148,7 +148,7 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         if new_step is not None:
             # Prepare the next tab
             if new_step == self.step_project_creation02:
-                new_step.layer = self.step_project_creation01.selected_layer()
+                self.layer = self.step_project_creation01.selected_layer()
             new_step.set_widgets()
             self.step_index += 1
             self.set_step_label()

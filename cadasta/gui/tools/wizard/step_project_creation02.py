@@ -66,6 +66,12 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
 
     def set_widgets(self):
         """Set all widgets on the tab."""
+        if not self.layer or self.layer != self.parent.layer:
+            self.layer = self.parent.layer
+            self.set_attribute_box()
+
+    def set_attributes_box(self):
+        """Set all attribute box widgets."""
         field_names = [field.name() for field in self.layer.pendingFields()]
 
         self.layer_attributes = []
@@ -80,12 +86,25 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
 
         field_names.insert(0, ' ')
 
+        self.location_attribute_box.clear()
         self.location_attribute_box.addItems(field_names)
+
+        self.location_type_box.clear()
         self.location_type_box.addItems(field_names)
+
+        self.party_name_box.clear()
         self.party_name_box.addItems(field_names)
+
+        self.relationship_type_box.clear()
         self.relationship_type_box.addItems(field_names)
+
+        self.party_type_box.clear()
         self.party_type_box.addItems(field_names)
+
+        self.party_attribute_box.clear()
         self.party_attribute_box.addItems(field_names)
+
+        self.relationship_attribute_box.clear()
         self.relationship_attribute_box.addItems(field_names)
 
     def validate_step(self):
