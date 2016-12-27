@@ -14,9 +14,11 @@ import logging
 
 from qgis.PyQt.QtGui import (
     QDialog,
+    QPixmap
 )
 from step_login01 import StepLogin1
 
+from cadasta.common.setting import get_path_assets_image
 from cadasta.utilities.resources import get_ui_class
 from cadasta.utilities.i18n import tr
 
@@ -73,6 +75,14 @@ class LoginWizard(QDialog, FORM_CLASS):
         step.set_widgets()
         self.go_to_step(step)
         self.footerSection.setVisible(False)
+        self.lblStep.setVisible(False)
+        self.set_logo()
+
+    def set_logo(self):
+        filename = get_path_assets_image("white_icon.png")
+        LOGGER.debug(filename)
+        pixmap = QPixmap(filename)
+        self.lblMainIcon.setPixmap(pixmap)
 
     def set_step_label(self):
         """Display step label."""

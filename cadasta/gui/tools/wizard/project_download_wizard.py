@@ -14,12 +14,14 @@ import logging
 
 from qgis.PyQt.QtGui import (
     QDialog,
+QPixmap
 )
 from qgis.PyQt.QtCore import pyqtSignature
 from qgis.gui import QgsMessageBar
 from step_project_download01 import StepProjectDownload01
 from step_project_download02 import StepProjectDownload02
 
+from cadasta.common.setting import get_path_assets_image
 from cadasta.utilities.resources import get_ui_class
 from cadasta.utilities.i18n import tr
 
@@ -77,6 +79,13 @@ class ProjectDownloadWizard(QDialog, FORM_CLASS):
         step = self.step_project_download01
         step.set_widgets()
         self.go_to_step(step)
+        self.set_logo()
+
+    def set_logo(self):
+        filename = get_path_assets_image("white_icon.png")
+        LOGGER.debug(filename)
+        pixmap = QPixmap(filename)
+        self.lblMainIcon.setPixmap(pixmap)
 
     def set_step_label(self):
         """Display step label."""
