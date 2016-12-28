@@ -23,9 +23,9 @@ from cadasta.gui.tools.wizard.project_creation_wizard import (
 )
 
 if iface:
-    QGIS_APP = iface
+    IFACE = iface
 else:
-    QGIS_APP = get_iface()
+    IFACE = get_iface()
 
 
 class CadastaProjectCreationTest(unittest.TestCase):

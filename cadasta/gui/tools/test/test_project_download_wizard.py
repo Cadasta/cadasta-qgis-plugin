@@ -75,7 +75,7 @@ class CadastaProjectDownloadWizardTest(unittest.TestCase):
         while not current_step.spatial_api.reply.isFinished():
             QCoreApplication.processEvents()
 
-        self.assertTrue(self.dialog.pbnNext.isEnabled())
+        self.assertTrue(self.dialog.next_button.isEnabled())
 
 
 if __name__ == "__main__":
