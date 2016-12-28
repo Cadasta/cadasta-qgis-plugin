@@ -17,7 +17,8 @@ import os
 import qgis
 from cadasta.utilities.resources import (
     resources_path,
-    resource_url
+    resource_url,
+    is_valid_url
 )
 
 
@@ -35,6 +36,14 @@ class CadastaResourcesTest(unittest.TestCase):
         self.assertTrue(
             'file://' in url,
             url + ' is not valid')
+
+    def test_valid_url(self):
+        """Test to check url validation."""
+        url1 = 'google'
+        url2 = 'http://www.kartoza.com'
+
+        self.assertFalse(is_valid_url(url1))
+        self.assertTrue(is_valid_url(url2))
 
 if __name__ == '__main__':
     unittest.main()
