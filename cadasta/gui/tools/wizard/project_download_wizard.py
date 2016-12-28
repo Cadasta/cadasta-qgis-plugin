@@ -54,7 +54,7 @@ class ProjectDownloadWizard(QDialog, FORM_CLASS):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.setWindowTitle('Cadasta')
-        self.lblSubtitle.setText(
+        self.label_subtitle.setText(
             tr('Cadasta project download wizard')
         )
 
@@ -84,11 +84,11 @@ class ProjectDownloadWizard(QDialog, FORM_CLASS):
         filename = resources_path("images/white_icon.png")
         LOGGER.debug(filename)
         pixmap = QPixmap(filename)
-        self.lblMainIcon.setPixmap(pixmap)
+        self.label_main_icon.setPixmap(pixmap)
 
     def set_step_label(self):
         """Display step label."""
-        self.lblStep.setText('%d/%d' % (self.step_index, self.step_length))
+        self.label_step.setText('%d/%d' % (self.step_index, self.step_length))
 
     # ===========================
     # NAVIGATION
@@ -106,15 +106,15 @@ class ProjectDownloadWizard(QDialog, FORM_CLASS):
 
         # Enable the Back button unless it's not the first step or
         # last step
-        self.pbnBack.setEnabled(
+        self.back_button.setEnabled(
             step not in [self.step_project_download01] or
             self.parent_step is not None)
 
         # Set Next button label
         if step == self.step_project_download02:
-            self.pbnNext.setText(self.tr('Close'))
+            self.next_button.setText(self.tr('Close'))
         else:
-            self.pbnNext.setText(self.tr('Next'))
+            self.next_button.setText(self.tr('Next'))
 
     def get_current_step(self):
         """Return current step of the wizard.
@@ -127,7 +127,7 @@ class ProjectDownloadWizard(QDialog, FORM_CLASS):
     # prevents actions being handled twice
     # noinspection PyPep8Naming
     @pyqtSignature('')
-    def on_pbnNext_released(self):
+    def on_next_button_released(self):
         """Handle the Next button release.
 
         .. note:: This is an automatic Qt slot
@@ -168,14 +168,14 @@ class ProjectDownloadWizard(QDialog, FORM_CLASS):
     # prevents actions being handled twice
     # noinspection PyPep8Naming
     @pyqtSignature('')
-    def on_pbnBack_released(self):
+    def on_back_button_released(self):
         """Handle the Back button release.
 
         .. note:: This is an automatic Qt slot
            executed when the Back button is released.
         """
         previous_step = self.steps.pop()
-        self.pbnNext.setEnabled(True)
+        self.next_button.setEnabled(True)
         self.step_index -= 1
         self.set_step_label()
         self.go_to_step(previous_step)

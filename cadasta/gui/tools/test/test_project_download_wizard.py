@@ -70,7 +70,7 @@ class CadastaProjectDownloadWizardTest(unittest.TestCase):
         current_step.selected_project = MagicMock(
             return_value=self.test_project
         )
-        self.dialog.pbnNext.click()
+        self.dialog.next_button.click()
         current_step = self.dialog.get_current_step()
         while not current_step.spatial_api.reply.isFinished():
             QCoreApplication.processEvents()

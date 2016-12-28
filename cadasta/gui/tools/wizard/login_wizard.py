@@ -51,7 +51,7 @@ class LoginWizard(QDialog, FORM_CLASS):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.setWindowTitle('Cadasta')
-        self.lblSubtitle.setText(
+        self.label_subtitle.setText(
             tr('Cadasta project download wizard')
         )
 
@@ -74,18 +74,18 @@ class LoginWizard(QDialog, FORM_CLASS):
         step.set_widgets()
         self.go_to_step(step)
         self.footerSection.setVisible(False)
-        self.lblStep.setVisible(False)
+        self.label_step.setVisible(False)
         self.set_logo()
 
     def set_logo(self):
         filename = resources_path("images/white_icon.png")
         LOGGER.debug(filename)
         pixmap = QPixmap(filename)
-        self.lblMainIcon.setPixmap(pixmap)
+        self.label_main_icon.setPixmap(pixmap)
 
     def set_step_label(self):
         """Display step label."""
-        self.lblStep.setText('%d/%d' % (self.step_index, self.step_length))
+        self.label_step.setText('%d/%d' % (self.step_index, self.step_length))
 
     # ===========================
     # NAVIGATION

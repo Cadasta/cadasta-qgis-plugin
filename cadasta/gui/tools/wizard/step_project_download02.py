@@ -41,7 +41,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         self.warning_label.setText(self.loading_label_string)
         self.get_project_spatial(
             self.project['organization']['slug'], self.project['slug'])
-        self.parent.pbnNext.setEnabled(False)
+        self.parent.next_button.setEnabled(False)
 
     def validate_step(self):
         """Check if the step is valid.
@@ -86,7 +86,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         else:
             pass
         self.progress_bar.setValue(self.progress_bar.maximum())
-        self.parent.pbnNext.setEnabled(True)
+        self.parent.next_button.setEnabled(True)
         self.warning_label.setText(self.loaded_label_string)
 
     def save_layer(self, geojson, organization_slug, project_slug):
