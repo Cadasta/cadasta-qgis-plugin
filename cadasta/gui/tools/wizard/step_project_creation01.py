@@ -74,9 +74,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         :returns: Layer data
         :rtype: QgsVectorLayer
         """
-        layer_data = self.qgis_layer_box.itemData(
-                self.qgis_layer_box.currentIndex()
-        )
+        layer_data = self.qgis_layer_box.currentLayer()
         return layer_data
 
     def selected_organisation(self):
@@ -195,7 +193,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
             LOGGER.debug('Wrote layer to geojson: %s' % output_file)
             with open(output_file) as json_data:
                 layer_data = json.load(json_data)
-                data['layer'] = layer_data
+                data['locations'] = layer_data
             os.remove(output_file)
         else:
             LOGGER.error('Failed with error: %s' % result)

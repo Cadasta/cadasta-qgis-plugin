@@ -35,34 +35,25 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         self.layer = None
         self.layer_attributes = None
 
-    def attributes(self):
-        """Returns data from the layer
+    def cadasta_fields(self):
+        """Returns layer fields that mapped to cadasta attribute.
 
-        :returns: attributes layer selected
-        :rtype: list of dict or none
+        :returns: cadasta fields
+        :rtype: dict
         """
-        cadasta_field = {
-            'location_attribute': self.location_attribute_box.currentText(),
-            'location_type': self.location_type_box.currentText(),
-            'party_name': self.party_name_box.currentText(),
-            'party_type': self.party_type_box.currentText(),
-            'party_attribute': self.party_attribute_box.currentText(),
-            'relationship_type': self.relationship_type_box.currentText(),
-            'relationship_attribute':
-                self.relationship_attribute_box.currentText(),
-
+        cadasta_fields = {
+            'location_attribute': self.location_attribute_box.currentField(),
+            'location_type': self.location_type_box.currentField(),
+            'party_name': self.party_name_box.currentField(),
+            'party_type': self.party_type_box.currentField(),
+            'party_attribute': self.party_attribute_box.currentField(),
+            'relationship_type': self.relationship_type_box.currentField(),
+            'relationship_attribute': (
+                self.relationship_attribute_box.currentField()
+            )
         }
 
-        cadasta_data = []
-
-        for layer in self.layer_attributes:
-            for key, value in cadasta_field.iteritems():
-                if value in layer:
-                    cadasta_data.append(
-                        {key: layer[value] if layer[value] else ''}
-                    )
-
-        return cadasta_data
+        return cadasta_fields
 
     def set_widgets(self):
         """Set all widgets on the tab."""
@@ -81,31 +72,26 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
                 (dict(zip(field_names, elem.attributes())))
             )
 
-        if 'id' in field_names:
-            field_names.remove(u'id')
-
-        field_names.insert(0, ' ')
-
         self.location_attribute_box.clear()
-        self.location_attribute_box.addItems(field_names)
+        self.location_attribute_box.setLayer(self.layer)
 
         self.location_type_box.clear()
-        self.location_type_box.addItems(field_names)
+        self.location_type_box.setLayer(self.layer)
 
         self.party_name_box.clear()
-        self.party_name_box.addItems(field_names)
+        self.party_name_box.setLayer(self.layer)
 
         self.relationship_type_box.clear()
-        self.relationship_type_box.addItems(field_names)
+        self.relationship_type_box.setLayer(self.layer)
 
         self.party_type_box.clear()
-        self.party_type_box.addItems(field_names)
+        self.party_type_box.setLayer(self.layer)
 
         self.party_attribute_box.clear()
-        self.party_attribute_box.addItems(field_names)
+        self.party_attribute_box.setLayer(self.layer)
 
         self.relationship_attribute_box.clear()
-        self.relationship_attribute_box.addItems(field_names)
+        self.relationship_attribute_box.setLayer(self.layer)
 
     def validate_step(self):
         """Check if the step is valid.

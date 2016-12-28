@@ -59,14 +59,26 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             tr('Processing data')
         )
 
-        data = dict()
-
         self.set_progress_bar(25)
 
-        data['step_1'] = self.parent.step_1_data()
+        step_1_data = self.parent.step_1_data()
         self.set_progress_bar(50)
 
-        data['step_2'] = self.parent.step_2_data()
+        step_2_data = self.parent.step_2_data()
+        self.set_progress_bar(75)
+
+        data = step_1_data
+
+        # Finalize the data
+        for location in data['locations']['features']:
+            for cadasta_field, layer_field in step_2_data.iteritems():
+                properties = location['properties']
+                if layer_field in properties:
+                    try:
+                        location['fields']
+                    except KeyError:
+                        location['fields'] = dict()
+                    location['fields'][cadasta_field] = properties[layer_field]
         self.set_progress_bar(100)
 
         self.text_edit.setText(
@@ -74,7 +86,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         )
 
         self.lbl_status.setText(
-            tr('Finish')
+            tr('Finished')
         )
 
     def set_progress_bar(self, value):

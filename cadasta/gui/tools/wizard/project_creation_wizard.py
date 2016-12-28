@@ -206,4 +206,4 @@ class ProjectCreationWizard(QDialog, FORM_CLASS):
         :returns: Step 2 data
         :rtype: dict
         """
-        return self.step_project_creation02.attributes()
+        return self.step_project_creation02.cadasta_fields()
