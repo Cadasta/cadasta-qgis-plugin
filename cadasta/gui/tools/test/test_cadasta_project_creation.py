@@ -15,13 +15,17 @@ __copyright__ = 'Copyright 2016, Kartoza'
 import os
 import unittest
 from mock import MagicMock
+from qgis.testing.mocked import get_iface
+from qgis.utils import iface
 
 from cadasta.gui.tools.wizard.project_creation_wizard import (
     ProjectCreationWizard
 )
 
-from cadasta.test.utilities import get_qgis_app
-QGIS_APP, CANVAS, IFACE, PARENT = get_qgis_app()
+if iface:
+    QGIS_APP = iface
+else:
+    QGIS_APP = get_iface()
 
 
 class CadastaProjectCreationTest(unittest.TestCase):

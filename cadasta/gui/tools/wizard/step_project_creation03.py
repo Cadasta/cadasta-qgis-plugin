@@ -53,7 +53,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         """Processing data from all step"""
         self.progress_bar.setVisible(True)
         self.submit_button.setVisible(False)
-        self.parent.pbnBack.setEnabled(False)
+        self.parent.back_button.setEnabled(False)
 
         self.lbl_status.setText(
             tr('Processing data')

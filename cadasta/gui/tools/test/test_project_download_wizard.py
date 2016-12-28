@@ -17,14 +17,16 @@ import unittest
 
 from mock.mock import MagicMock
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing.mocked import get_iface
+from qgis.utils import iface
 from cadasta.gui.tools.wizard.project_download_wizard import (
     ProjectDownloadWizard
 )
 
-if not os.environ.get('ON_TRAVIS', False):
-    from cadasta.test.utilities import get_qgis_app
-
-    QGIS_APP = get_qgis_app()
+if iface:
+    QGIS_APP = iface
+else:
+    QGIS_APP = get_iface()
 
 
 class CadastaProjectDownloadWizardTest(unittest.TestCase):
