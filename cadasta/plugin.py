@@ -21,15 +21,25 @@
  ***************************************************************************/
 """
 import logging
-from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from qgis.PyQt.QtGui import QAction, QIcon, QMenu, QWidget
+import os.path
+from qgis.PyQt.QtCore import (
+    QSettings,
+    QTranslator,
+    qVersion,
+    QCoreApplication
+)
+from qgis.PyQt.QtGui import (
+    QAction,
+    QIcon,
+    QWidget
+)
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
+from cadasta.utilities.resources import resources_path
 from cadasta.gui.tools.cadasta_login import CadastaLogin
 from cadasta.gui.tools.cadasta_project_download_step_1 import (
     CadastaProjectDownloadStep1
 )
-import os.path
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
@@ -67,24 +77,6 @@ class CadastaPlugin:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&Cadasta QGIS plugin')
-        # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'Cadasta')
-        self.toolbar.setObjectName(u'Cadasta')
-
-        # Create menu
-        self.main_menu = QMenu(
-            self.tr(u'&Cadasta'),
-            self.iface.mainWindow().menuBar()
-        )
-        menu_actions = self.iface.mainWindow().menuBar().actions()
-
-        # Add cadasta menu to second last position of menu bar
-        last_action = menu_actions[-1]
-        self.iface.mainWindow().menuBar().insertMenu(
-            last_action,
-            self.main_menu
-        )
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -151,6 +143,8 @@ class CadastaPlugin:
         :rtype: QAction
         """
 
+        icon_path = resources_path('images/%s' % icon_path)
+
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
         action.triggered.connect(callback)
@@ -162,12 +156,6 @@ class CadastaPlugin:
         if whats_this is not None:
             action.setWhatsThis(whats_this)
 
-        if add_to_toolbar:
-            self.toolbar.addAction(action)
-
-        if add_to_menu:
-            self.main_menu.addAction(action)
-
         self.actions.append(action)
 
         return action
@@ -176,6 +164,10 @@ class CadastaPlugin:
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         self._create_options_wizard_action()
         self._create_project_download_wizard_action()
+        for action in self.actions:
+            self.iface.addPluginToVectorMenu(
+                self.tr(u'&Cadasta'),
+                action)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -183,15 +175,12 @@ class CadastaPlugin:
             self.wizard.deleteLater()
         for action in self.actions:
             self.iface.removePluginVectorMenu(
-                self.tr(u'&Cadasta QGIS plugin'),
+                self.tr(u'&Cadasta'),
                 action)
-            self.iface.removeToolBarIcon(action)
-        # remove the toolbar
-        self.iface.mainWindow().removeToolBar(self.toolbar)
 
     def _create_options_wizard_action(self):
         """Create action for options wizard."""
-        icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
+        icon_path = 'icon.png'
         self.action_options_wizard = self.add_action(
             icon_path,
             text=self.tr(u'Options'),
@@ -209,7 +198,7 @@ class CadastaPlugin:
 
     def _create_project_download_wizard_action(self):
         """Create action for project download wizard."""
-        icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
+        icon_path = 'icon.png'
         self.action_options_wizard = self.add_action(
             icon_path,
             text=self.tr(u'Project Download'),
