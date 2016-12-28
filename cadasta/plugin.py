@@ -21,7 +21,17 @@
  ***************************************************************************/
 """
 import logging
-import os.path
+# Initialize Qt resources from file resources.py
+# Import the code for the dialog
+from cadasta.gui.tools.wizard.login_wizard import (
+    LoginWizard
+)
+from cadasta.gui.tools.wizard.project_creation_wizard import (
+    ProjectCreationWizard
+)
+from cadasta.gui.tools.wizard.project_download_wizard import (
+    ProjectDownloadWizard
+)
 from qgis.PyQt.QtCore import (
     QSettings,
     QTranslator,
@@ -36,10 +46,7 @@ from qgis.PyQt.QtGui import (
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
 from cadasta.utilities.resources import resources_path
-from cadasta.gui.tools.cadasta_login import CadastaLogin
-from cadasta.gui.tools.cadasta_project_download_step_1 import (
-    CadastaProjectDownloadStep1
-)
+
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
@@ -58,22 +65,8 @@ class CadastaPlugin:
         # Save reference to the QGIS interface
         self.iface = iface
         self.action_options_wizard = None
+        self.project_creation_wizard = None
         self.wizard = None
-        # initialize plugin directory
-        self.plugin_dir = os.path.dirname(__file__)
-        # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'Cadasta_{}.qm'.format(locale))
-
-        if os.path.exists(locale_path):
-            self.translator = QTranslator()
-            self.translator.load(locale_path)
-
-            if qVersion() > '4.3.3':
-                QCoreApplication.installTranslator(self.translator)
 
         # Declare instance attributes
         self.actions = []
@@ -162,8 +155,9 @@ class CadastaPlugin:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        self._create_options_wizard_action()
-        self._create_project_download_wizard_action()
+        self._create_options_wizard()
+        self._create_project_download_wizard()
+        self._create_project_creation_wizard()
         for action in self.actions:
             self.iface.addPluginToVectorMenu(
                 self.tr(u'&Cadasta'),
@@ -178,7 +172,7 @@ class CadastaPlugin:
                 self.tr(u'&Cadasta'),
                 action)
 
-    def _create_options_wizard_action(self):
+    def _create_options_wizard(self):
         """Create action for options wizard."""
         icon_path = 'icon.png'
         self.action_options_wizard = self.add_action(
@@ -190,26 +184,51 @@ class CadastaPlugin:
             callback=self.show_options_wizard
         )
 
-    def show_options_wizard(self):
-        """Show the options wizard."""
-        dialog = CadastaLogin()
-        dialog.show()
-        dialog.exec_()
+    def _create_project_creation_wizard(self):
+        """Create action for project creation wizard."""
+        icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
+        self.project_creation_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'Create Project'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_project_creation_wizard
+        )
 
-    def _create_project_download_wizard_action(self):
+    def _create_project_download_wizard(self):
         """Create action for project download wizard."""
         icon_path = 'icon.png'
         self.action_options_wizard = self.add_action(
             icon_path,
-            text=self.tr(u'Project Download'),
+            text=self.tr(u'Download Project'),
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
             enabled_flag=True,
             callback=self.show_project_download_wizard
         )
 
+    def show_options_wizard(self):
+        """Show the options wizard."""
+        dialog = LoginWizard(
+            iface=self.iface
+        )
+        dialog.show()
+        dialog.exec_()
+
     def show_project_download_wizard(self):
         """Show the project download wizard."""
-        dialog = CadastaProjectDownloadStep1()
+        dialog = ProjectDownloadWizard(
+            iface=self.iface
+        )
+        dialog.show()
+        dialog.exec_()
+
+    def show_project_creation_wizard(self):
+        """Show the project creation wizard."""
+        dialog = ProjectCreationWizard(
+            iface=self.iface
+        )
+        self.wizard = dialog
         dialog.show()
         dialog.exec_()

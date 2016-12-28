@@ -1,5 +1,8 @@
-# -*- coding: utf-8 -*-
-"""Contains login dialog
+# coding=utf-8
+"""
+Cadasta Login step -**Cadasta Wizard**
+
+This module provides: Project Creation Step 1 : Define basic project properties
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -7,37 +10,64 @@
      (at your option) any later version.
 
 """
-__author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
-__revision__ = '$Format:%H$'
-__date__ = '15/12/2016'
-__copyright__ = 'Copyright 2016, Cadasta'
-
+import logging
 from qgis.gui import QgsMessageBar
-from cadasta.utilities.resources import get_ui_class
-
-from cadasta.gui.tools.cadasta_dialog import CadastaDialog
 from cadasta.api.login import Login
 from cadasta.common.setting import save_authtoken, save_url_instance
+from cadasta.gui.tools.wizard.wizard_step import WizardStep
+from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 
-FORM_CLASS = get_ui_class('cadasta_login_base.ui')
+__copyright__ = "Copyright 2016, Cadasta"
+__license__ = "GPL version 3"
+__email__ = "info@kartoza.org"
+__revision__ = '$Format:%H$'
+
+FORM_CLASS = get_wizard_step_ui_class(__file__)
+
+LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
-class CadastaLogin(CadastaDialog, FORM_CLASS):
-    def __init__(self):
-        """Constructor."""
+class StepLogin1(WizardStep, FORM_CLASS):
+    """Step 1 for Login"""
 
-        super(CadastaLogin, self).__init__()
-        self.message_bar = None
+    def __init__(self, parent=None):
+        """Constructor
+
+        :param parent: parent - widget to use as parent.
+        :type parent: QWidget
+        """
+        super(StepLogin1, self).__init__(parent)
+
+    def set_widgets(self):
+        """Set all widgets on the tab."""
         self.text_test_connection_button = self.test_connection_button.text()
         self.ok_label.setVisible(False)
-        self.init_style()
+        self.save_button.setEnabled(False)
 
-    def init_style(self):
-        """Initiate custom styles for dialog. """
-        self.disable_button(self.save_button)
-        self.enable_button(self.test_connection_button)
-        self.test_connection_button.clicked.connect(self.login)
-        self.save_button.clicked.connect(self.save_authtoken)
+        self.test_connection_button.clicked.connect(
+            self.login
+        )
+        self.save_button.clicked.connect(
+            self.save_authtoken
+        )
+
+    def validate_step(self):
+        """Check if the step is valid.
+
+        :returns: Tuple of validation status and error message if any
+        :rtype: ( bool, str )
+        """
+        return True, ''
+
+    def get_next_step(self):
+        """Find the proper step when user clicks the Next button.
+
+           This method must be implemented in derived classes.
+
+        :returns: The step to be switched to
+        :rtype: WizardStep instance or None
+        """
+        return None
 
     def login(self):
         """Login function when tools button clicked."""
@@ -47,7 +77,7 @@ class CadastaLogin(CadastaDialog, FORM_CLASS):
         self.url = self.url_input.displayText()
         self.auth_token = None
 
-        self.disable_button(self.save_button)
+        self.save_button.setEnabled(False)
         self.ok_label.setVisible(False)
 
         if not self.url or not username or not password:
@@ -57,7 +87,7 @@ class CadastaLogin(CadastaDialog, FORM_CLASS):
                 self.tr('URL/Username/password is empty.')
             )
         else:
-            self.disable_button(self.test_connection_button)
+            self.test_connection_button.setEnabled(False)
             self.test_connection_button.setText(self.tr('Logging in...'))
             # call tools API
             self.login_api = Login(
@@ -72,16 +102,16 @@ class CadastaLogin(CadastaDialog, FORM_CLASS):
         self.ok_label.setVisible(True)
         if 'auth_token' in result:
             self.auth_token = result['auth_token']
-            self.enable_button(self.save_button)
+            self.save_button.setEnabled(True)
             self.ok_label.setText(self.tr('Success'))
             self.ok_label.setStyleSheet('color:green')
         else:
-            self.disable_button(self.save_button)
+            self.save_button.setEnabled(False)
             self.ok_label.setText(self.tr('Failed'))
             self.ok_label.setStyleSheet('color:red')
 
         self.test_connection_button.setText(self.text_test_connection_button)
-        self.enable_button(self.test_connection_button)
+        self.test_connection_button.setEnabled(True)
 
     def save_authtoken(self):
         """Save received authtoken to setting."""
@@ -89,4 +119,4 @@ class CadastaLogin(CadastaDialog, FORM_CLASS):
         if self.auth_token:
             save_authtoken(self.auth_token)
             save_url_instance(self.url)
-            self.close()
+            self.parent.close()
