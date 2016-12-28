@@ -7,7 +7,7 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Cadasta QGIS plugin
+name=Cadasta
 qgisMinimumVersion=2.0
 description=This tool helps create, update, upload and download Cadasta projects.
 version=0.1
@@ -30,7 +30,7 @@ tags=cadasta
 
 homepage=
 category=Vector
-icon=icon.png
+icon=resources/images/icon.png
 # experimental flag
 experimental=True
 
