@@ -68,7 +68,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         """Set all widgets on the tab."""
         if not self.layer or self.layer != self.parent.layer:
             self.layer = self.parent.layer
-            self.set_attribute_box()
+            self.set_attributes_box()
 
     def set_attributes_box(self):
         """Set all attribute box widgets."""

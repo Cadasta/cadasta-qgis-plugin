@@ -20,6 +20,7 @@ from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.api.organization import Organization
+from cadasta.common.setting import get_path_data
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -188,7 +189,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         data['extent'] = geometry.exportToGeoJSON()
 
         # Save layer to geojson format
-        output_file = '/tmp/project.json'
+        output_file = get_path_data(project_slug='temp_project')
 
         result = QgsVectorFileWriter.writeAsVectorFormat(
             layer,
@@ -200,7 +201,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
 
         if result == QgsVectorFileWriter.NoError:
             LOGGER.debug('Wrote layer to geojson: %s' % output_file)
-            with open('/tmp/project.json') as json_data:
+            with open(output_file) as json_data:
                 layer_data = json.load(json_data)
                 data['layer'] = layer_data
             os.remove(output_file)
