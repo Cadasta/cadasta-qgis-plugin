@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>772</width>
-        <height>436</height>
+        <width>782</width>
+        <height>457</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -146,7 +146,7 @@
           <widget class="QLineEdit" name="contact_name_text"/>
          </item>
          <item>
-          <widget class="QComboBox" name="qgis_layer_box">
+          <widget class="QgsMapLayerComboBox" name="qgis_layer_box">
            <property name="minimumSize">
             <size>
              <width>250</width>
@@ -261,6 +261,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgis.gui</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

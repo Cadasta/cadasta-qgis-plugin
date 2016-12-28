@@ -22,6 +22,7 @@ from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.api.organization import Organization
 from cadasta.common.setting import get_path_data
 
+
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
 __email__ = "info@kartoza.org"
@@ -49,7 +50,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
 
     def set_widgets(self):
         """Set all widgets on the tab."""
-        self.get_available_layers()
+        return
 
     def project_name(self):
         """Get project name from input.
@@ -147,15 +148,6 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
             self.message_bar.pushWarning(
                     self.tr('Error'),
                     self.tr(results)
-            )
-
-    def get_available_layers(self):
-        """Get layer from qgis and load it to combo box."""
-        layers = self.parent.iface.legendInterface().layers()
-        for layer in layers:
-            self.qgis_layer_box.addItem(
-                    layer.name(),
-                    layer
             )
 
     def all_data(self):
