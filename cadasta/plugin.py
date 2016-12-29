@@ -47,7 +47,6 @@ from qgis.PyQt.QtGui import (
 # Import the code for the dialog
 from cadasta.utilities.resources import resources_path
 
-
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
@@ -136,8 +135,6 @@ class CadastaPlugin:
         :rtype: QAction
         """
 
-        icon_path = resources_path('images/%s' % icon_path)
-
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
         action.triggered.connect(callback)
@@ -174,7 +171,7 @@ class CadastaPlugin:
 
     def _create_options_wizard(self):
         """Create action for options wizard."""
-        icon_path = 'icon.png'
+        icon_path = resources_path('images', 'icon.png')
         self.action_options_wizard = self.add_action(
             icon_path,
             text=self.tr(u'Options'),
@@ -186,7 +183,7 @@ class CadastaPlugin:
 
     def _create_project_creation_wizard(self):
         """Create action for project creation wizard."""
-        icon_path = 'icon.png'
+        icon_path = resources_path('images', 'icon.png')
         self.project_creation_wizard = self.add_action(
             icon_path,
             text=self.tr(u'Create Project'),
@@ -198,7 +195,7 @@ class CadastaPlugin:
 
     def _create_project_download_wizard(self):
         """Create action for project download wizard."""
-        icon_path = 'icon.png'
+        icon_path = resources_path('images', 'icon.png')
         self.action_options_wizard = self.add_action(
             icon_path,
             text=self.tr(u'Download Project'),
