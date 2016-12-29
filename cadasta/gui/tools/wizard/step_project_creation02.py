@@ -13,6 +13,7 @@ This module provides: Project Creation Step 2 : Attribute Selection
 
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
+from cadasta.utilities.i18n import tr
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -99,7 +100,16 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         :returns: Tuple of validation status and error message if any
         :rtype: ( bool, str )
         """
-        return True, ''
+        error_message = ''
+        if not self.location_type_box.currentField():
+            error_message = tr(
+                'Empty location type. '
+            )
+
+        return (
+            error_message == '',
+            error_message
+        )
 
     def get_next_step(self):
         """Find the proper step when user clicks the Next button.

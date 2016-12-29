@@ -12,13 +12,13 @@ This module provides: Project Creation Step 3 : Upload to cadasta
 """
 
 import json
-import time
 import logging
-from qgis.PyQt.QtCore import pyqtSignature
-from qgis.PyQt.QtCore import QEvent, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QByteArray
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
+from cadasta.mixin.network_mixin import NetworkMixin
+from cadasta.common.setting import get_url_instance
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -41,6 +41,9 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         """
         super(StepProjectCreation3, self).__init__(parent)
         self.submit_button.clicked.connect(self.processing_data)
+        self.project_upload_result = None
+        self.current_progress = 0
+        self.data = None
 
     def set_widgets(self):
         """Set all widgets on the tab."""
@@ -49,45 +52,14 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             tr('Are you sure to upload the data?')
         )
 
-    def processing_data(self):
-        """Processing data from all step"""
-        self.progress_bar.setVisible(True)
-        self.submit_button.setVisible(False)
-        self.parent.back_button.setEnabled(False)
+    def set_status(self, status):
+        """Show status in label and text edit.
 
-        self.lbl_status.setText(
-            tr('Processing data')
-        )
-
-        self.set_progress_bar(25)
-
-        step_1_data = self.parent.step_1_data()
-        self.set_progress_bar(50)
-
-        step_2_data = self.parent.step_2_data()
-        self.set_progress_bar(75)
-
-        data = step_1_data
-
-        # Finalize the data
-        for location in data['locations']['features']:
-            for cadasta_field, layer_field in step_2_data.iteritems():
-                properties = location['properties']
-                if layer_field in properties:
-                    try:
-                        location['fields']
-                    except KeyError:
-                        location['fields'] = dict()
-                    location['fields'][cadasta_field] = properties[layer_field]
-        self.set_progress_bar(100)
-
-        self.text_edit.setText(
-            json.dumps(data, indent=4, separators=(',', ': '))
-        )
-
-        self.lbl_status.setText(
-            tr('Finished')
-        )
+        :param status: Given status
+        :type status: str
+        """
+        self.lbl_status.setText(status)
+        self.text_edit.append(status + '\n')
 
     def set_progress_bar(self, value):
         """Set progress bar value.
@@ -98,9 +70,135 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         self.progress_bar.setValue(value)
         QCoreApplication.processEvents()
 
-    def upoading_data(self):
-        """Uploading data to cadasta."""
-        pass
+    def processing_data(self):
+        """Processing data from all step"""
+        self.progress_bar.setVisible(True)
+        self.submit_button.setVisible(False)
+        self.parent.back_button.setEnabled(False)
+
+        self.set_status(
+            tr('Processing data')
+        )
+
+        self.set_progress_bar(self.current_progress+25)
+
+        step_1_data = self.parent.step_1_data()
+        self.set_progress_bar(self.current_progress+25)
+
+        step_2_data = self.parent.step_2_data()
+        self.set_progress_bar(self.current_progress+25)
+
+        self.data = step_1_data
+
+        # Finalize the data
+        for location in self.data['locations']['features']:
+            for cadasta_field, layer_field in step_2_data.iteritems():
+                properties = location['properties']
+                if layer_field in properties:
+                    try:
+                        location['fields']
+                    except KeyError:
+                        location['fields'] = dict()
+                    location['fields'][cadasta_field] = properties[layer_field]
+        self.set_progress_bar(100)
+
+        self.set_status(
+            tr('Finished processing data')
+        )
+
+        # Upload project
+        self.upload_project()
+
+    def upload_project(self):
+        """Upload project to cadasta."""
+        self.set_status(
+            tr('Uploading project')
+        )
+        self.current_progress = 0
+        self.set_progress_bar(self.current_progress)
+
+        post_data = QByteArray()
+        post_data.append('name=%s&' % self.data['project_name'])
+        post_data.append('description=%s&' % self.data['description'])
+        post_data.append('extent=%s&' % self.data['extent'])
+        post_data.append('urls=%s&' % self.data['project_url'])
+        if self.data['private']:
+            access = 'access=private'
+        else:
+            access = 'access=public'
+        post_data.append(access + '&')
+        post_data.append('contacts[0][name]: %s&' % self.data['contact']['name'])
+        post_data.append('contacts[0][email]: %s&' % self.data['contact']['email'])
+        post_data.append('contacts[0][tel]: %s' % self.data['contact']['tel'])
+
+        post_url = '/api/v1/organizations/%s/projects/' % self.data['organisation']['slug']
+
+        network = NetworkMixin(get_url_instance() + post_url)
+        network.connect_post(post_data)
+        while not network.reply.isFinished():
+            QCoreApplication.processEvents()
+
+        self.set_progress_bar(self.current_progress+25)
+        self.set_status(
+            tr('Finished uploading project')
+        )
+
+        if not network.error:
+            self.project_upload_result = network.get_json_results()
+            self.upload_locations()
+        else:
+            self.set_progress_bar(0)
+            self.set_status(
+                'Error: %s' % network.results.data()
+            )
+
+    def upload_locations(self):
+        """Upload project locations to cadasta."""
+        self.set_status(
+            tr('Uploading locations')
+        )
+        total_locations = len(self.data['locations']['features'])
+        progress_left = (100 - self.current_progress) / total_locations
+
+        post_url = '/api/v1/organizations/%s/projects/%s/spatial/' % (
+            self.data['organisation']['slug'],
+            self.project_upload_result['slug']
+        )
+
+        failed = 0
+
+        for location in self.data['locations']['features']:
+            post_data = QByteArray()
+            post_data.append('geometry=%s&' % json.dumps(location['geometry']))
+            post_data.append('type=%s' % location['fields']['location_type'])
+
+            LOGGER.debug(post_data)
+            LOGGER.debug(post_url)
+
+            network = NetworkMixin(get_url_instance() + post_url)
+            network.connect_post(post_data)
+            while not network.reply.isFinished():
+                QCoreApplication.processEvents()
+
+            if not network.error:
+                self.set_progress_bar(self.current_progress + progress_left)
+            else:
+                self.set_progress_bar(0)
+                self.set_status(
+                    'Error: %s' % network.results.data()
+                )
+                failed += 1
+
+        self.set_progress_bar(100)
+
+        if failed == 0:
+            self.set_status(
+                tr('Finished uploading all locations')
+            )
+        else:
+            self.set_status(
+                tr('Finish with %d failed' % failed)
+            )
 
     def get_next_step(self):
         """Find the proper step when user clicks the Next button.

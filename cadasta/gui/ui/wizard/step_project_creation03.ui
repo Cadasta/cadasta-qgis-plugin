@@ -42,8 +42,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>669</width>
-           <height>408</height>
+           <width>657</width>
+           <height>396</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -154,7 +154,11 @@
            </spacer>
           </item>
           <item>
-           <widget class="QTextEdit" name="text_edit"/>
+           <widget class="QTextEdit" name="text_edit">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

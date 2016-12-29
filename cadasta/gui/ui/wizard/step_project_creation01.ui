@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>806</width>
-    <height>426</height>
+    <width>814</width>
+    <height>585</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,15 +33,15 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>782</width>
-        <height>457</height>
+        <width>790</width>
+        <height>561</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_12">
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Organisation</string>
+          <string>Organisation *</string>
          </property>
         </widget>
        </item>
@@ -76,14 +76,14 @@
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Project name</string>
+            <string>Project name *</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Project url</string>
+            <string>Project url *</string>
            </property>
           </widget>
          </item>
@@ -134,7 +134,7 @@
             </size>
            </property>
            <property name="text">
-            <string>QGIS layer to upload</string>
+            <string>QGIS layer to upload *</string>
            </property>
           </widget>
          </item>
@@ -254,6 +254,20 @@
        </item>
        <item>
         <widget class="QTextEdit" name="project_description_text"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>* required field</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
