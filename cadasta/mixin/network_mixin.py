@@ -4,9 +4,10 @@ import json
 from qgis.core import QgsNetworkAccessManager
 from qgis.PyQt.QtNetwork import (
     QNetworkReply,
-    QNetworkRequest
+    QNetworkRequest,
 )
 from qgis.PyQt.QtCore import QUrl, QByteArray
+from cadasta.common.setting import get_authtoken
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
@@ -29,39 +30,45 @@ class NetworkMixin(object):
         self.url = QUrl(self.request_url)
         self.req = QNetworkRequest(self.url)
         self.results = QByteArray()
+        self.auth_token = get_authtoken()
 
     def connect_request(self):
-        """Process the request"""
+        """Process the request."""
         LOGGER.info('Requesting...')
         self.reply.readyRead.connect(self.connection_read_data)
         self.reply.finished.connect(self.connection_finished)
         self.reply.error.connect(self.connection_error)
 
     def connect_get(self):
-        """Send get request
-        """
+        """Send get request."""
+        if self.auth_token:
+            # Add authentication token to request
+            self.req.setRawHeader('Authorization', 'token %s' % self.auth_token)
         self.reply = self.manager.get(self.req)
         self.connect_request()
 
     def connect_post(self, data):
-        """Send post request
+        """Send post request.
 
         :param data: Context data to use with template
         :type data: QByteArray
         """
+        if self.auth_token:
+            # Add authentication token to request
+            self.req.setRawHeader('Authorization', 'token %s' % self.auth_token)
         self.reply = self.manager.post(self.req, data)
         self.connect_request()
 
     def connection_read_data(self):
-        """Get data from self.reply and append it to results"""
+        """Get data from self.reply and append it to results."""
         self.results += self.reply.readAll()
 
     def get_json_results(self):
-        """Convert results to json object"""
+        """Convert results to json object."""
         return json.loads(str(self.results))
 
     def connection_error(self):
-        """Connection got an error"""
+        """Handle error connection."""
         error_result = self.reply.error
 
         try:

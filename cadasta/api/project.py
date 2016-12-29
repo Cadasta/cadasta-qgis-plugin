@@ -10,7 +10,10 @@ Cadasta project - **Project api.**
 """
 
 from cadasta.mixin.network_mixin import NetworkMixin
-from cadasta.common.setting import get_url_instance
+from cadasta.common.setting import (
+    get_url_instance,
+    get_authtoken
+)
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
 __revision__ = '$Format:%H$'

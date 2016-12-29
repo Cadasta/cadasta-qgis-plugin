@@ -13,7 +13,17 @@ This module provides: Project Creation Step 1 : Define basic project properties
 import logging
 from qgis.gui import QgsMessageBar
 from cadasta.api.login import Login
-from cadasta.common.setting import save_authtoken, save_url_instance
+from cadasta.common.setting import (
+    save_authtoken,
+    save_url_instance,
+    get_url_instance,
+    set_setting,
+    get_setting,
+    delete_authtoken,
+    delete_setting,
+    get_authtoken
+)
+from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 
@@ -50,6 +60,44 @@ class StepLogin1(WizardStep, FORM_CLASS):
         self.save_button.clicked.connect(
             self.save_authtoken
         )
+        self.clear_button.setText(
+            tr('Clear')
+        )
+
+        self.clear_button.setEnabled(False)
+        self.clear_button.clicked.connect(
+            self.clear_information
+        )
+        self.url_input.setText(get_url_instance())
+
+        # If login information exists
+        if get_authtoken():
+            self.clear_button.setEnabled(True)
+            self.username_input.setText(get_setting('username'))
+            self.token_status.setText(
+                tr(
+                    'Auth token is saved.'
+                )
+            )
+        else:
+            self.token_status.setText(
+                tr(
+                    'Auth token is empty.'
+                )
+            )
+
+    def clear_information(self):
+        """Clear login information."""
+        self.username_input.clear()
+        self.password_input.clear()
+        delete_authtoken()
+        delete_setting('username')
+        self.clear_button.setEnabled(False)
+        self.token_status.setText(
+            tr(
+                'Auth token is empty.'
+            )
+        )
 
     def validate_step(self):
         """Check if the step is valid.
@@ -71,7 +119,7 @@ class StepLogin1(WizardStep, FORM_CLASS):
 
     def login(self):
         """Login function when tools button clicked."""
-
+        self.clear_button.setEnabled(False)
         username = self.username_input.displayText()
         password = self.password_input.text()
         self.url = self.url_input.displayText()
@@ -117,6 +165,8 @@ class StepLogin1(WizardStep, FORM_CLASS):
         """Save received authtoken to setting."""
 
         if self.auth_token:
+            set_setting('username', self.username_input.displayText())
+            self.clear_button.setEnabled(True)
             save_authtoken(self.auth_token)
             save_url_instance(self.url)
             self.parent.close()
