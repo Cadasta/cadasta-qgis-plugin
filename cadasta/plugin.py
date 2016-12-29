@@ -245,7 +245,3 @@ class CadastaPlugin:
         self.wizard = dialog
         dialog.show()
         dialog.exec_()
-
-    def project_creation_set_enabled(self, flag):
-        """enabled"""
-        self.project_creation_wizard.setEnabled(flag)
