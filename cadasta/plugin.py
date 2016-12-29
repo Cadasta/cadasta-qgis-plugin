@@ -23,6 +23,14 @@
 import logging
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
+from qgis.PyQt.QtCore import (
+    QCoreApplication
+)
+from qgis.PyQt.QtGui import (
+    QAction,
+    QIcon,
+    QWidget
+)
 from cadasta.gui.tools.wizard.login_wizard import (
     LoginWizard
 )
@@ -32,17 +40,8 @@ from cadasta.gui.tools.wizard.project_creation_wizard import (
 from cadasta.gui.tools.wizard.project_download_wizard import (
     ProjectDownloadWizard
 )
-from qgis.PyQt.QtCore import (
-    QSettings,
-    QTranslator,
-    qVersion,
-    QCoreApplication
-)
-from qgis.PyQt.QtGui import (
-    QAction,
-    QIcon,
-    QWidget
-)
+from cadasta.common.setting import get_authtoken
+
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
 from cadasta.utilities.resources import resources_path
@@ -160,6 +159,11 @@ class CadastaPlugin:
                 self.tr(u'&Cadasta'),
                 action)
 
+        if get_authtoken():
+            self._enable_authenticated_menu()
+        else:
+            self._disable_authenticated_menu()
+
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         if self.wizard:
@@ -210,8 +214,20 @@ class CadastaPlugin:
         dialog = LoginWizard(
             iface=self.iface
         )
+
+        dialog.authenticated.connect(self._enable_authenticated_menu)
+        dialog.unauthenticated.connect(self._disable_authenticated_menu)
+
         dialog.show()
         dialog.exec_()
+
+    def _enable_authenticated_menu(self):
+        """Enable menu that requires auth token to proceed."""
+        self.project_creation_wizard.setEnabled(True)
+
+    def _disable_authenticated_menu(self):
+        """Disable menu that requires auth token to proceed."""
+        self.project_creation_wizard.setEnabled(False)
 
     def show_project_download_wizard(self):
         """Show the project download wizard."""
@@ -229,3 +245,7 @@ class CadastaPlugin:
         self.wizard = dialog
         dialog.show()
         dialog.exec_()
+
+    def project_creation_set_enabled(self, flag):
+        """enabled"""
+        self.project_creation_wizard.setEnabled(flag)

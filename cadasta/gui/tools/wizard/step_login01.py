@@ -46,6 +46,7 @@ class StepLogin1(WizardStep, FORM_CLASS):
         :param parent: parent - widget to use as parent.
         :type parent: QWidget
         """
+        self.parent = parent
         super(StepLogin1, self).__init__(parent)
 
     def set_widgets(self):
@@ -75,15 +76,11 @@ class StepLogin1(WizardStep, FORM_CLASS):
             self.clear_button.setEnabled(True)
             self.username_input.setText(get_setting('username'))
             self.token_status.setText(
-                tr(
-                    'Auth token is saved.'
-                )
+                tr('Auth token is saved.')
             )
         else:
             self.token_status.setText(
-                tr(
-                    'Auth token is empty.'
-                )
+                tr('Auth token is empty.')
             )
 
     def clear_information(self):
@@ -98,6 +95,7 @@ class StepLogin1(WizardStep, FORM_CLASS):
                 'Auth token is empty.'
             )
         )
+        self.parent.unauthenticated.emit()
 
     def validate_step(self):
         """Check if the step is valid.
@@ -153,6 +151,7 @@ class StepLogin1(WizardStep, FORM_CLASS):
             self.save_button.setEnabled(True)
             self.ok_label.setText(self.tr('Success'))
             self.ok_label.setStyleSheet('color:green')
+            self.parent.authenticated.emit()
         else:
             self.save_button.setEnabled(False)
             self.ok_label.setText(self.tr('Failed'))

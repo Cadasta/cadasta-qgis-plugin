@@ -98,16 +98,12 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
 
         if self.project_url() and \
                 not is_valid_url(self.project_url()):
-            error_message = tr(
-                'Invalid url. '
-            )
+            error_message = tr('Invalid url.')
 
         if not self.project_name() or \
                 not self.selected_organisation() or \
                 not self.project_url():
-            error_message = tr(
-                'Empty required field. '
-            )
+            error_message = tr('Empty required field.')
 
         return (
             error_message == '',

@@ -16,6 +16,7 @@ from qgis.PyQt.QtGui import (
     QDialog,
     QPixmap
 )
+from qgis.PyQt.QtCore import pyqtSignal
 from step_login01 import StepLogin1
 
 from cadasta.utilities.resources import get_ui_class, resources_path
@@ -33,6 +34,9 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 class LoginWizard(QDialog, FORM_CLASS):
     """Dialog implementation class for Login Wizard"""
+
+    authenticated = pyqtSignal()
+    unauthenticated = pyqtSignal()
 
     def __init__(self, parent=None, iface=None):
         """Constructor for the dialog.
@@ -64,7 +68,7 @@ class LoginWizard(QDialog, FORM_CLASS):
         self.set_step_label()
         self.message_bar = None
 
-        self.step_login_1 = StepLogin1(self)
+        self.step_login_1 = StepLogin1(parent=self)
 
         self.stackedWidget.addWidget(self.step_login_1)
 
