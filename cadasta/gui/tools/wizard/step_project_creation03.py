@@ -80,13 +80,13 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             tr('Processing data')
         )
 
-        self.set_progress_bar(self.current_progress+25)
+        self.set_progress_bar(self.current_progress + 25)
 
         step_1_data = self.parent.step_1_data()
-        self.set_progress_bar(self.current_progress+25)
+        self.set_progress_bar(self.current_progress + 25)
 
         step_2_data = self.parent.step_2_data()
-        self.set_progress_bar(self.current_progress+25)
+        self.set_progress_bar(self.current_progress + 25)
 
         self.data = step_1_data
 
@@ -117,28 +117,27 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         self.current_progress = 0
         self.set_progress_bar(self.current_progress)
 
-        post_data = QByteArray()
-        post_data.append('name=%s&' % self.data['project_name'])
-        post_data.append('description=%s&' % self.data['description'])
-        post_data.append('extent=%s&' % self.data['extent'])
-        post_data.append('urls=%s&' % self.data['project_url'])
-        if self.data['private']:
-            access = 'access=private'
-        else:
-            access = 'access=public'
-        post_data.append(access + '&')
-        post_data.append('contacts[0][name]: %s&' % self.data['contact']['name'])
-        post_data.append('contacts[0][email]: %s&' % self.data['contact']['email'])
-        post_data.append('contacts[0][tel]: %s' % self.data['contact']['tel'])
+        post_data = {
+            'name': self.data['project_name'],
+            'description': self.data['description'],
+            'extent': self.data['extent'],
+            'urls': [
+                self.data['project_url']
+            ],
+            'access': 'private' if self.data['private'] else 'public',
+            'contacts': [self.data['contact']]
+        }
 
-        post_url = '/api/v1/organizations/%s/projects/' % self.data['organisation']['slug']
+        post_url = '/api/v1/organizations/%s/projects/' % (
+            self.data['organisation']['slug']
+        )
 
         network = NetworkMixin(get_url_instance() + post_url)
-        network.connect_post(post_data)
+        network.connect_json_post(json.dumps(post_data))
         while not network.reply.isFinished():
             QCoreApplication.processEvents()
 
-        self.set_progress_bar(self.current_progress+25)
+        self.set_progress_bar(self.current_progress + 25)
         self.set_status(
             tr('Finished uploading project')
         )
@@ -171,9 +170,6 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             post_data = QByteArray()
             post_data.append('geometry=%s&' % json.dumps(location['geometry']))
             post_data.append('type=%s' % location['fields']['location_type'])
-
-            LOGGER.debug(post_data)
-            LOGGER.debug(post_url)
 
             network = NetworkMixin(get_url_instance() + post_url)
             network.connect_post(post_data)

@@ -43,7 +43,10 @@ class NetworkMixin(object):
         """Send get request."""
         if self.auth_token:
             # Add authentication token to request
-            self.req.setRawHeader('Authorization', 'token %s' % self.auth_token)
+            self.req.setRawHeader(
+                    'Authorization',
+                    'token %s' % self.auth_token
+            )
         self.reply = self.manager.get(self.req)
         self.connect_request()
 
@@ -55,7 +58,26 @@ class NetworkMixin(object):
         """
         if self.auth_token:
             # Add authentication token to request
-            self.req.setRawHeader('Authorization', 'token %s' % self.auth_token)
+            self.req.setRawHeader(
+                    'Authorization',
+                    'token %s' % self.auth_token
+            )
+        self.reply = self.manager.post(self.req, data)
+        self.connect_request()
+
+    def connect_json_post(self, data):
+        """Send post request with json string.
+
+        :param data: Json string data
+        :type data: str
+        """
+        if self.auth_token:
+            # Add authentication token to request
+            self.req.setRawHeader(
+                    'Authorization',
+                    'token %s' % self.auth_token
+            )
+        self.req.setRawHeader("Content-Type", "application/json")
         self.reply = self.manager.post(self.req, data)
         self.connect_request()
 
