@@ -186,7 +186,7 @@ class CadastaPlugin:
 
     def _create_project_creation_wizard(self):
         """Create action for project creation wizard."""
-        icon_path = ':/plugins/cadasta-qgis-plugin/icon.png'
+        icon_path = 'icon.png'
         self.project_creation_wizard = self.add_action(
             icon_path,
             text=self.tr(u'Create Project'),
