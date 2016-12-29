@@ -9,6 +9,8 @@ This repository contains the [QGIS](http://qgis.org) plugin for Cadasta. The QGI
 
 [![Build Status](https://travis-ci.org/kartoza/cadasta-qgis-plugin.svg?branch=develop)](https://travis-ci.org/kartoza/cadasta-qgis-plugin)
 
+[![Code Health](https://landscape.io/github/kartoza/cadasta-qgis-plugin/develop/landscape.svg?style=flat)](https://landscape.io/github/kartoza/cadasta-qgis-plugin/develop)
+
 [![Join the chat at https://gitter.im/Cadasta/cadasta](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Cadasta/cadasta?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 License:

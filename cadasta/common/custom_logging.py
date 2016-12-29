@@ -22,7 +22,6 @@ if safe_extras_dir not in sys.path:
     sys.path.append(safe_extras_dir)
 
 from qgis.core import QgsMessageLog
-from qgis.PyQt.QtCore import QSettings
 # pylint: enable=F0401
 from cadasta.utilities.i18n import tr
 

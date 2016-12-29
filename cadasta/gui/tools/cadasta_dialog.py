@@ -28,8 +28,6 @@ __copyright__ = 'Copyright 2016, Cadasta'
 import logging
 from qgis.PyQt import QtGui
 
-from cadasta.gui.tools.cadasta_style import CadastaStyle
-
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
