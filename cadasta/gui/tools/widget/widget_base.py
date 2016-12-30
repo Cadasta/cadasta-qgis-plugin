@@ -45,11 +45,10 @@ def get_widget_step_ui_class(py_file_name):
 
 
 class WidgetBase(QWidget):
-    """An abstract widget for cadasta.
-    """
+    """An abstract widget for cadasta."""
 
     def __init__(self, parent=None):
-        """Constructor
+        """Constructor.
 
         :param parent: parent - widget to use as parent.
         :type parent: QWidget

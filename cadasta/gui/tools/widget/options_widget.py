@@ -11,6 +11,8 @@ This module provides: Login : Login for cadasta and save authnetication
 
 """
 import logging
+from qgis.PyQt.QtCore import pyqtSignal
+
 from qgis.gui import QgsMessageBar
 from cadasta.api.login import Login
 from cadasta.gui.tools.widget.widget_base import (
@@ -40,7 +42,10 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class OptionsWidget(WidgetBase, FORM_CLASS):
-    """Options widget"""
+    """Options widget."""
+
+    authenticated = pyqtSignal()
+    unauthenticated = pyqtSignal()
 
     def __init__(self, parent=None):
         """Constructor
@@ -101,7 +106,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
                 'Auth token is empty.'
             )
         )
-        self.parent.unauthenticated.emit()
+        self.unauthenticated.emit()
 
     def login(self):
         """Login function when tools button clicked."""
@@ -139,7 +144,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
             self.save_button.setEnabled(True)
             self.ok_label.setText(self.tr('Success'))
             self.ok_label.setStyleSheet('color:green')
-            self.parent.authenticated.emit()
+            self.authenticated.emit()
         else:
             self.save_button.setEnabled(False)
             self.ok_label.setText(self.tr('Failed'))

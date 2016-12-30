@@ -45,13 +45,20 @@ class ContactDatabaseTest(unittest.TestCase):
             phone='0000'
         )
         test_contact.save()
+        test_contact_2 = Contact(
+            name='test2',
+            email='test2@gmail.com',
+            phone='0000'
+        )
+        test_contact_2.save()
         self.assertIsNotNone(test_contact.id)
 
         # get the row
-        contacts = Contact.get_rows(id=test_contact.id)
-        self.assertEqual(len(contacts), 1)
+        contacts = Contact.get_rows()
+        self.assertGreater(len(contacts), 1)
 
         test_contact.delete()
+        test_contact_2.delete()
 
     def test_update_database(self):
         """Test Insert success Database."""

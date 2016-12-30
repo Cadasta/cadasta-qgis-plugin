@@ -9,24 +9,25 @@ Cadasta project - **Contact Model.**
 
 """
 
+from qgis.PyQt.QtSql import QSqlQuery
+from cadasta.database.cadasta_database import CadastaDatabase
+
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
 __revision__ = '$Format:%H$'
 __date__ = '28/12/16'
 __copyright__ = 'Copyright 2016, Cadasta'
 
-from qgis.PyQt.QtSql import QSqlQuery
-from cadasta.database.cadasta_database import CadastaDatabase
 
-
-class Contact():
+class Contact(object):
     """Contact model."""
+
     id = None
     name = None
     email = None
     phone = None
     _fields = ['id', 'name', 'email', 'phone']
 
-    def __init__(self, id=None,
+    def __init__(self, contact_id=None,
                  name=None, email=None, phone=None):
         """Constructor.
 
@@ -42,14 +43,14 @@ class Contact():
         :param phone: phone of contact.
         :type phone: str
         """
-        self.id = id
+        self.id = contact_id
         self.name = name
         self.email = email
         self.phone = phone
         Contact.create_database()
 
     def save(self):
-        """Save this object to database
+        """Save this object to database.
 
         :return: id of row that is inserted
         :rtype: int
@@ -101,10 +102,10 @@ class Contact():
 
     @staticmethod
     def get_rows(**kwargs):
-        """Get filtered rows from kwargs
+        """Get filtered rows from kwargs.
 
-        :return: List of json of the rows
-        :rtype: [dict]
+        :return: List of Contact
+        :rtype: [Contact]
         """
         query_filter = []
         filter_string = '%(FIELD)s=%(VALUE)s'
@@ -122,10 +123,12 @@ class Contact():
 
         #  convert
         output = []
-        while (query.next()):
+        query.first()
+        query.previous()
+        while query.next():
             output.append(
                 Contact(
-                    id=query.value(0),
+                    contact_id=query.value(0),
                     name=query.value(1),
                     email=query.value(2),
                     phone=query.value(3)
@@ -135,7 +138,7 @@ class Contact():
 
     @staticmethod
     def table_model():
-        """Get Table Model for Contact
+        """Get Table Model for Contact.
 
         :return: Table Model for contact
         :rtype: QSqlTableModel

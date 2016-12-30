@@ -75,14 +75,14 @@ class CadastaDatabase(object):
                     'FIELD': key,
                     'VALUE': value
                 })
-            query_string = (
-                               'UPDATE %(TABLE)s SET %(SET)s '
-                               'WHERE id=%(ID)s'
-                           ) % {
-                               'TABLE': table,
-                               'SET': ','.join(query_filter),
-                               'ID': row_id
-                           }
+            query_data = {
+                'TABLE': table,
+                'SET': ','.join(query_filter),
+                'ID': row_id
+            }
+            query_string = ('UPDATE %(TABLE)s SET %(SET)s '
+                            'WHERE id=%(ID)s')
+            query_string = query_string % query_data
         else:
             # inserting new data
             fields = []
@@ -90,14 +90,15 @@ class CadastaDatabase(object):
             for key, value in data.iteritems():
                 fields.append(key)
                 values.append(value)
-            query_string = (
-                               'INSERT INTO %(TABLE)s (%(FIELDS)s) '
-                               'VALUES (%(VALUES)s)'
-                           ) % {
-                               'TABLE': table,
-                               'FIELDS': ','.join(fields),
-                               'VALUES': ','.join(values)
-                           }
+
+            query_data = {
+                'TABLE': table,
+                'FIELDS': ','.join(fields),
+                'VALUES': ','.join(values)
+            }
+            query_string = ('INSERT INTO %(TABLE)s (%(FIELDS)s) '
+                            'VALUES (%(VALUES)s)')
+            query_string = query_string % query_data
         query = QtSql.QSqlQuery(db)
         query.exec_(query_string)
         db.close()
@@ -120,13 +121,12 @@ class CadastaDatabase(object):
         :rtype: QSqlQuery
         """
         db = CadastaDatabase.open_database()
-        query_string = (
-            'SELECT * FROM %(TABLE)s ' % {'TABLE': table}
-        )
+        query_string = ('SELECT * FROM %(TABLE)s ' % {'TABLE': table})
         if filter_string:
             query_string += 'WHERE %s' % filter_string
         query = QtSql.QSqlQuery(db)
         query.exec_(query_string)
+        query.last()
         db.close()
         return query
 
@@ -142,11 +142,11 @@ class CadastaDatabase(object):
         """
         db = CadastaDatabase.open_database()
         row_ids = ['%s' % row_id for row_id in row_ids]
-        query_string = (
-            'DELETE FROM %(TABLE)s WHERE ID IN (%(ID)s)' % {
-                'TABLE': table, 'ID': ','.join(row_ids)
-            }
-        )
+        query_data = {
+            'TABLE': table, 'ID': ','.join(row_ids)
+        }
+        query_string = 'DELETE FROM %(TABLE)s WHERE ID IN (%(ID)s)'
+        query_string = query_string % query_data
         query = QtSql.QSqlQuery(db)
         query.exec_(query_string)
         db.close()

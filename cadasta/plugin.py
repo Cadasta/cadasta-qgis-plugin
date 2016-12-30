@@ -228,8 +228,8 @@ class CadastaPlugin:
             widget=OptionsWidget()
         )
 
-        dialog.authenticated.connect(self._enable_authenticated_menu)
-        dialog.unauthenticated.connect(self._disable_authenticated_menu)
+        dialog.widget.authenticated.connect(self._enable_authenticated_menu)
+        dialog.widget.unauthenticated.connect(self._disable_authenticated_menu)
 
         dialog.show()
         dialog.exec_()
