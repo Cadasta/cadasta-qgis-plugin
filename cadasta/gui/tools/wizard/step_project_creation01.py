@@ -13,6 +13,8 @@ This module provides: Project Creation Step 1 : Define basic project properties
 import logging
 import os
 import json
+from qgis.PyQt.QtGui import QAbstractItemView, QListWidgetItem
+from qgis.PyQt.QtCore import Qt
 from qgis.core import QgsVectorFileWriter
 from qgis.core import QgsGeometry
 from cadasta.utilities.resources import is_valid_url
@@ -21,6 +23,7 @@ from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.api.organization import Organization
 from cadasta.common.setting import get_path_data
+from cadasta.model.contact import Contact
 
 
 __copyright__ = "Copyright 2016, Cadasta"
@@ -50,7 +53,25 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
 
     def set_widgets(self):
         """Set all widgets on the tab."""
-        return
+        contacts = Contact.get_rows()
+
+        for contact in contacts:
+            contact_name = contact.name
+            contact_email = ' - ' + contact.email if contact.email else ''
+            contact_phone = ' - ' + contact.phone if contact.phone else ''
+
+            contact_item = QListWidgetItem(
+                contact_name + contact_email + contact_phone
+            )
+
+            contact_item.setData(Qt.UserRole, contact)
+            self.project_contact_list.addItem(
+                contact_item
+            )
+
+        self.project_contact_list.setSelectionMode(
+            QAbstractItemView.ExtendedSelection
+        )
 
     def project_name(self):
         """Get project name from input.
@@ -151,13 +172,19 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         data['organisation'] = self.selected_organisation()
         data['project_name'] = self.project_name()
         data['project_url'] = self.project_url()
-        data['contact'] = {
-            'name': self.contact_name_text.displayText(),
-            'tel': self.contact_phone_text.displayText(),
-            'email': self.contact_email_text.displayText()
-        }
         data['description'] = self.project_description_text.toPlainText()
         data['private'] = self.is_project_private.isChecked()
+
+        # Get contacts
+        data['contacts'] = []
+        contact_item_list = self.project_contact_list.selectedItems()
+        for contact_item in contact_item_list:
+            contact = contact_item.data(Qt.UserRole)
+            data['contacts'].append({
+                'name': contact.name,
+                'tel': contact.phone,
+                'email': contact.email
+            })
 
         # Get extent
         layer = self.selected_layer()

@@ -104,23 +104,15 @@
         </layout>
        </item>
        <item>
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>Project contact</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QLabel" name="label_5">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>250</width>
@@ -129,12 +121,18 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>200</width>
+             <width>9999</width>
              <height>16777215</height>
             </size>
            </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
            <property name="text">
             <string>QGIS layer to upload *</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
@@ -142,9 +140,6 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QLineEdit" name="contact_name_text"/>
-         </item>
          <item>
           <widget class="QgsMapLayerComboBox" name="qgis_layer_box">
            <property name="minimumSize">
@@ -155,7 +150,7 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>200</width>
+             <width>9999</width>
              <height>16777215</height>
             </size>
            </property>
@@ -166,26 +161,29 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_8">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QLabel" name="label_10">
+            <widget class="QLabel" name="label_3">
              <property name="text">
-              <string>Phone </string>
+              <string>Project Contacts</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="contact_phone_text"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>Email</string>
+            <widget class="QListWidget" name="project_contact_list">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>99999</width>
+               <height>150</height>
+              </size>
              </property>
             </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="contact_email_text"/>
            </item>
           </layout>
          </item>
@@ -202,7 +200,7 @@
              <property name="maximumSize">
               <size>
                <width>250</width>
-               <height>16777215</height>
+               <height>20</height>
               </size>
              </property>
              <property name="text">
