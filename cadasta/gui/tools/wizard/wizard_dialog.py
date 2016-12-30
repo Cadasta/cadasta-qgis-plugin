@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Cadasta **Cadasta project creation Dialog.**
+Cadasta **Cadasta Wizard Dialog.**
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class WizardDialog(QDialog, FORM_CLASS):
-    """Dialog implementation class for Project Creation Wizard"""
+    """Dialog implementation class for Wizard"""
 
     def __init__(self, parent=None, iface=None):
         """Constructor for the dialog.
