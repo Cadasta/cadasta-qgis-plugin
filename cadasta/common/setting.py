@@ -149,3 +149,28 @@ def get_path_data(organization_slug=None, project_slug=None):
             '%s.geojson' % project_slug
         )
     return data_path
+
+
+def get_path_database(database=None):
+    """Path databased based on database.
+
+    :param database: database for the data location
+    :type database: str
+
+    :return: Absoulte database path
+    :rtype: str
+    """
+    data_path = get_project_path()
+    data_path = os.path.join(
+        data_path,
+        'database',
+        'db'
+    )
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+    if database:
+        data_path = os.path.join(
+            data_path,
+            database
+        )
+    return data_path

@@ -28,6 +28,18 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 def get_wizard_step_ui_class(py_file_name):
+    """Get ui class based on python filename.
+
+    Load a Qt Designer .ui file and return the generated form class and the Qt
+    base class.
+    .ui file is based on py filename.
+
+    :param py_file_name: Filename of the widget
+    :type py_file_name: str
+
+    :return: Loaded .ui file
+    :rtype: loaded ui
+    """
     return get_ui_class(os.path.join(
         'wizard', re.sub(r"pyc?$", "ui", os.path.basename(py_file_name))))
 

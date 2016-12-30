@@ -1,8 +1,8 @@
 # coding=utf-8
 """
-Cadasta Login step -**Cadasta Wizard**
+Cadasta Options -**Cadasta Widget**
 
-This module provides: Project Creation Step 1 : Define basic project properties
+This module provides: Login : Login for cadasta and save authnetication
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -13,6 +13,10 @@ This module provides: Project Creation Step 1 : Define basic project properties
 import logging
 from qgis.gui import QgsMessageBar
 from cadasta.api.login import Login
+from cadasta.gui.tools.widget.widget_base import (
+    get_widget_step_ui_class,
+    WidgetBase
+)
 from cadasta.common.setting import (
     save_authtoken,
     save_url_instance,
@@ -24,21 +28,19 @@ from cadasta.common.setting import (
     get_authtoken
 )
 from cadasta.utilities.i18n import tr
-from cadasta.gui.tools.wizard.wizard_step import WizardStep
-from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
 __email__ = "info@kartoza.org"
 __revision__ = '$Format:%H$'
 
-FORM_CLASS = get_wizard_step_ui_class(__file__)
+FORM_CLASS = get_widget_step_ui_class(__file__)
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
-class StepLogin1(WizardStep, FORM_CLASS):
-    """Step 1 for Login"""
+class OptionsWidget(WidgetBase, FORM_CLASS):
+    """Options widget"""
 
     def __init__(self, parent=None):
         """Constructor
@@ -46,11 +48,15 @@ class StepLogin1(WizardStep, FORM_CLASS):
         :param parent: parent - widget to use as parent.
         :type parent: QWidget
         """
-        self.parent = parent
-        super(StepLogin1, self).__init__(parent)
+        super(OptionsWidget, self).__init__(parent)
+        self.text_test_connection_button = None
+        self.url = None
+        self.auth_token = None
+        self.login_api = None
+        self.set_widgets()
 
     def set_widgets(self):
-        """Set all widgets on the tab."""
+        """Set all widgets."""
         self.text_test_connection_button = self.test_connection_button.text()
         self.ok_label.setVisible(False)
         self.save_button.setEnabled(False)
@@ -96,24 +102,6 @@ class StepLogin1(WizardStep, FORM_CLASS):
             )
         )
         self.parent.unauthenticated.emit()
-
-    def validate_step(self):
-        """Check if the step is valid.
-
-        :returns: Tuple of validation status and error message if any
-        :rtype: ( bool, str )
-        """
-        return True, ''
-
-    def get_next_step(self):
-        """Find the proper step when user clicks the Next button.
-
-           This method must be implemented in derived classes.
-
-        :returns: The step to be switched to
-        :rtype: WizardStep instance or None
-        """
-        return None
 
     def login(self):
         """Login function when tools button clicked."""
@@ -161,7 +149,10 @@ class StepLogin1(WizardStep, FORM_CLASS):
         self.test_connection_button.setEnabled(True)
 
     def save_authtoken(self):
-        """Save received authtoken to setting."""
+        """Save received authtoken to setting.
+
+        Authoken is saved to setting, and close dialog after that.
+        """
 
         if self.auth_token:
             set_setting('username', self.username_input.displayText())

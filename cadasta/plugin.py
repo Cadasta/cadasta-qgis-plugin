@@ -21,19 +21,17 @@
  ***************************************************************************/
 """
 import logging
-# Initialize Qt resources from file resources.py
-# Import the code for the dialog
-from qgis.PyQt.QtCore import (
-    QCoreApplication
-)
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import (
     QAction,
     QIcon,
     QWidget
 )
-from cadasta.gui.tools.wizard.login_wizard import (
-    LoginWizard
-)
+# Initialize Qt resources from file resources.py
+# Import the code for the dialog
+from cadasta.gui.tools.cadasta_dialog import CadastaDialog
+from cadasta.gui.tools.widget.contact_widget import ContactWidget
+from cadasta.gui.tools.widget.options_widget import OptionsWidget
 from cadasta.gui.tools.wizard.project_creation_wizard import (
     ProjectCreationWizard
 )
@@ -151,9 +149,10 @@ class CadastaPlugin:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-        self._create_options_wizard()
+        self._create_options_dialog()
         self._create_project_download_wizard()
         self._create_project_creation_wizard()
+        self._create_contact_dialog()
         for action in self.actions:
             self.iface.addPluginToVectorMenu(
                 self.tr(u'&Cadasta'),
@@ -173,8 +172,8 @@ class CadastaPlugin:
                 self.tr(u'&Cadasta'),
                 action)
 
-    def _create_options_wizard(self):
-        """Create action for options wizard."""
+    def _create_options_dialog(self):
+        """Create action for options dialog."""
         icon_path = resources_path('images', 'icon.png')
         self.action_options_wizard = self.add_action(
             icon_path,
@@ -182,7 +181,7 @@ class CadastaPlugin:
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
             enabled_flag=True,
-            callback=self.show_options_wizard
+            callback=self.show_options_dialog
         )
 
     def _create_project_creation_wizard(self):
@@ -209,10 +208,24 @@ class CadastaPlugin:
             callback=self.show_project_download_wizard
         )
 
-    def show_options_wizard(self):
-        """Show the options wizard."""
-        dialog = LoginWizard(
-            iface=self.iface
+    def _create_contact_dialog(self):
+        """Create action for project download wizard."""
+        icon_path = resources_path('images', 'icon.png')
+        self.action_options_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'Contact'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_contact_dialog
+        )
+
+    def show_options_dialog(self):
+        """Show the options dialog."""
+        dialog = CadastaDialog(
+            iface=self.iface,
+            subtitle=self.tr(u'Cadasta Options'),
+            widget=OptionsWidget()
         )
 
         dialog.authenticated.connect(self._enable_authenticated_menu)
@@ -243,5 +256,15 @@ class CadastaPlugin:
             iface=self.iface
         )
         self.wizard = dialog
+        dialog.show()
+        dialog.exec_()
+
+    def show_contact_dialog(self):
+        """Show the contact dialog."""
+        dialog = CadastaDialog(
+            iface=self.iface,
+            subtitle='Contact',
+            widget=ContactWidget()
+        )
         dialog.show()
         dialog.exec_()

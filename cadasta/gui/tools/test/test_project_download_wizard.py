@@ -24,9 +24,9 @@ from cadasta.gui.tools.wizard.project_download_wizard import (
 )
 
 if iface:
-    QGIS_APP = iface
+    IFACE = iface
 else:
-    QGIS_APP = get_iface()
+    IFACE = get_iface()
 
 
 class CadastaProjectDownloadWizardTest(unittest.TestCase):
@@ -48,7 +48,7 @@ class CadastaProjectDownloadWizardTest(unittest.TestCase):
     def setUp(self):
         """Runs before each test."""
         self.url = 'https://demo.cadasta.org/'
-        self.dialog = ProjectDownloadWizard()
+        self.dialog = ProjectDownloadWizard(iface=IFACE)
 
     def tearDown(self):
         """Runs after each test."""

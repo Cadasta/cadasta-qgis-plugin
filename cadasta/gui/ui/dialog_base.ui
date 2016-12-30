@@ -97,7 +97,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="1" column="1" alignment="Qt::AlignVCenter">
          <widget class="QLabel" name="label_subtitle">
           <property name="styleSheet">
            <string notr="true">color: #FFF;</string>
@@ -112,7 +112,7 @@
            <number>10</number>
           </property>
           <property name="indent">
-           <number>-1</number>
+           <number>1</number>
           </property>
          </widget>
         </item>
@@ -136,7 +136,7 @@
            <string notr="true">font: 18pt; color: #fff;</string>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt; font-weight:600;&quot;&gt;Cadasta&lt;/span&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt; step by step&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt; font-weight:600;&quot;&gt;Cadasta&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -144,16 +144,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_step">
-        <property name="styleSheet">
-         <string notr="true">color: #FFF</string>
-        </property>
-        <property name="text">
-         <string>[ Step Placeholder ]</string>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>
@@ -168,97 +158,24 @@
        <number>9</number>
       </property>
       <item>
-       <widget class="QFrame" name="frame">
+       <widget class="QFrame" name="socket_frame">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QStackedWidget" name="stackedWidget"/>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="horizontalSpacing">
+          <number>0</number>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <layout class="QVBoxLayout" name="socket_layout"/>
          </item>
         </layout>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QWidget" name="footerSection" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>43</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>43</height>
-      </size>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>9</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>9</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="cancel_button">
-        <property name="text">
-         <string>Cancel</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontal_spacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="back_button">
-        <property name="text">
-         <string>Back</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="next_button">
-        <property name="text">
-         <string>Next</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-        <property name="default">
-         <bool>false</bool>
-        </property>
        </widget>
       </item>
      </layout>

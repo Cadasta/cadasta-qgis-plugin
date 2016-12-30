@@ -77,6 +77,7 @@ target/
 celerybeat-schedule
 cadasta/secret/*
 cadasta/data/*
+cadasta/database/db/*
 
 # dotenv
 .env

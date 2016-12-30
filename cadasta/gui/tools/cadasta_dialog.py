@@ -1,59 +1,81 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 """
-/***************************************************************************
- CadastaDialog
-                                 A QGIS plugin
- This tool helps create, update, upload and download Cadasta projects.
-                             -------------------
-        begin                : 2016-11-25
-        git sha              : $Format:%H$
-        copyright            : (C) 2016 by Kartoza
-        email                : christian@kartoza.com
- ***************************************************************************/
+Cadasta **Cadasta Dialog Base.**
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+.. note:: This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+
+
 """
-__author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
-__revision__ = '$Format:%H$'
-__date__ = '21/12/16'
-__copyright__ = 'Copyright 2016, Cadasta'
 
 import logging
-from qgis.PyQt import QtGui
+from qgis.PyQt.QtGui import (
+    QDialog,
+    QPixmap
+)
+from qgis.PyQt.QtCore import pyqtSignal
+
+from cadasta.utilities.resources import get_ui_class, resources_path
+from cadasta.utilities.i18n import tr
+
+__copyright__ = "Copyright 2016, Cadasta"
+__license__ = "GPL version 3"
+__email__ = "info@kartoza.org"
+__revision__ = '$Format:%H$'
+
+FORM_CLASS = get_ui_class('dialog_base.ui')
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
-class CadastaDialog(QtGui.QDialog):
-    """Parent class for cadasta dialog."""
+class CadastaDialog(QDialog, FORM_CLASS):
+    """Dialog base class for cadasta."""
 
-    def __init__(self, parent=None):
-        """Constructor."""
+    authenticated = pyqtSignal()
+    unauthenticated = pyqtSignal()
 
-        super(CadastaDialog, self).__init__(parent)
+    def __init__(self, parent=None, iface=None,
+                 title='Cadasta', subtitle='', widget=None):
+        """Constructor for the dialog.
+
+        .. note:: In QtDesigner the advanced editor's predefined keywords
+           list should be shown in english always, so when adding entries to
+           cboKeyword, be sure to choose :safe_qgis:`Properties<<` and untick
+           the :safe_qgis:`translatable` property.
+
+        :param parent: Parent widget of this dialog.
+        :type parent: QWidget
+
+        :param iface: QGIS QGisAppInterface instance.
+        :type iface: QGisAppInterface
+
+        :param title: Title of dialog.
+        :type title: str
+
+        :param subtitle: Subtitle of dialog.
+        :type subtitle: str
+
+        :param widget: Widget that will be rendered to dialog
+        :type widget: WidgetBase
+        """
+        QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.message_bar = None
+        self.setWindowTitle(title)
+        self.label_subtitle.setText(
+            tr(subtitle)
+        )
 
-    def enable_button(self, custom_button):
-        """Enable button.
+        self.iface = iface
+        self.set_logo()
+        self.widget = widget
+        if self.widget:
+            self.widget.parent = self
+            self.socket_layout.addWidget(self.widget)
 
-        :param custom_button: button that will be enabled
-        :type custom_button: QWidget
-        """
-
-        custom_button.setEnabled(True)
-
-    def disable_button(self, custom_button):
-        """Disable button.
-
-        :param custom_button: button that will be disabled
-        :type custom_button: QWidget
-        """
-        custom_button.setEnabled(False)
+    def set_logo(self):
+        """Set logo of dialog."""
+        filename = resources_path('images', 'white_icon.png')
+        pixmap = QPixmap(filename)
+        self.label_main_icon.setPixmap(pixmap)
