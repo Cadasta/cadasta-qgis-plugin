@@ -44,8 +44,8 @@ class NetworkMixin(object):
         if self.auth_token:
             # Add authentication token to request
             self.req.setRawHeader(
-                    'Authorization',
-                    'token %s' % self.auth_token
+                'Authorization',
+                'token %s' % self.auth_token
             )
         self.reply = self.manager.get(self.req)
         self.connect_request()
@@ -59,8 +59,8 @@ class NetworkMixin(object):
         if self.auth_token:
             # Add authentication token to request
             self.req.setRawHeader(
-                    'Authorization',
-                    'token %s' % self.auth_token
+                'Authorization',
+                'token %s' % self.auth_token
             )
         self.reply = self.manager.post(self.req, data)
         self.connect_request()
@@ -74,8 +74,8 @@ class NetworkMixin(object):
         if self.auth_token:
             # Add authentication token to request
             self.req.setRawHeader(
-                    'Authorization',
-                    'token %s' % self.auth_token
+                'Authorization',
+                'token %s' % self.auth_token
             )
         self.req.setRawHeader("Content-Type", "application/json")
         self.reply = self.manager.post(self.req, data)
@@ -101,7 +101,7 @@ class NetworkMixin(object):
 
         if error_result == QNetworkReply.UnknownNetworkError:
             msg = 'The network is unreachable.'
-        elif error_result == QNetworkReply.ProtocolUnknownError\
+        elif error_result == QNetworkReply.ProtocolUnknownError \
                 or error_result == QNetworkReply.HostNotFoundError:
             msg = 'Host not found : %s' % self.url.encodedHost()
         else:

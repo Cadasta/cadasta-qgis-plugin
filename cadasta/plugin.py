@@ -24,8 +24,7 @@ import logging
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import (
     QAction,
-    QIcon,
-    QWidget
+    QIcon
 )
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
@@ -143,6 +142,12 @@ class CadastaPlugin:
         if whats_this is not None:
             action.setWhatsThis(whats_this)
 
+        if add_to_menu:
+            pass
+
+        if add_to_toolbar:
+            pass
+
         self.actions.append(action)
 
         return action
@@ -229,7 +234,8 @@ class CadastaPlugin:
         )
 
         dialog.widget.authenticated.connect(self._enable_authenticated_menu)
-        dialog.widget.unauthenticated.connect(self._disable_authenticated_menu)
+        dialog.widget.unauthenticated.connect(
+            self._disable_authenticated_menu)
 
         dialog.show()
         dialog.exec_()

@@ -15,15 +15,15 @@ import os
 import sys
 import logging
 
+from qgis.core import QgsMessageLog
+# pylint: enable=F0401
+from cadasta.utilities.i18n import tr
+
 # This is ugly but we dont have a better solution yet...
 safe_extras_dir = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', '..', 'safe_extras'))
 if safe_extras_dir not in sys.path:
     sys.path.append(safe_extras_dir)
-
-from qgis.core import QgsMessageLog
-# pylint: enable=F0401
-from cadasta.utilities.i18n import tr
 
 __author__ = 'tim@kartoza.com'
 __revision__ = '$Format:%H$'
@@ -49,8 +49,9 @@ class QgsLogHandler(logging.Handler):
             # Check logging.LogRecord properties for lots of other goodies
             # like line number etc. you can get from the log message.
             QgsMessageLog.logMessage(
-                    record.getMessage(),
-                    'CadastaQGISPlugin', 0
+                record.getMessage(),
+                'CadastaQGISPlugin',
+                0
             )
         except MemoryError:
             message = tr(

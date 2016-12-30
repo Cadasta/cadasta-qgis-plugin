@@ -29,6 +29,15 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 class StepProjectDownload01(WizardStep, FORM_CLASS):
     """Step 1 for project download"""
 
+    def __init__(self, parent=None):
+        """Constructor.
+
+        :param parent: parent - widget to use as parent.
+        :type parent: QWidget
+        """
+        super(StepProjectDownload01, self).__init__(parent)
+        self.project_api = None
+
     def set_widgets(self):
         """Set all widgets on the tab."""
         self.get_available_projects_button.clicked.connect(

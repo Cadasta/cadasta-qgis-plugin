@@ -11,8 +11,7 @@ Cadasta project - **Project api.**
 
 from cadasta.mixin.network_mixin import NetworkMixin
 from cadasta.common.setting import (
-    get_url_instance,
-    get_authtoken
+    get_url_instance
 )
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'

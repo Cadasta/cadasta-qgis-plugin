@@ -25,7 +25,6 @@ from cadasta.api.organization import Organization
 from cadasta.common.setting import get_path_data
 from cadasta.model.contact import Contact
 
-
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
 __email__ = "info@kartoza.org"
@@ -48,7 +47,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         super(StepProjectCreation1, self).__init__(parent)
         self.organisation = Organization()
         self.get_organisation_button.clicked.connect(
-                self.get_available_organisations
+            self.get_available_organisations
         )
 
     def set_widgets(self):
@@ -105,7 +104,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         :rtype: dict
         """
         organisation_data = self.organisation_box.itemData(
-                self.organisation_box.currentIndex()
+            self.organisation_box.currentIndex()
         )
         return organisation_data
 
@@ -158,8 +157,8 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
                 )
         else:
             self.message_bar.pushWarning(
-                    self.tr('Error'),
-                    self.tr(results)
+                self.tr('Error'),
+                self.tr(results)
             )
 
     def all_data(self):

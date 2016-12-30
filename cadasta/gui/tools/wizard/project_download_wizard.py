@@ -18,8 +18,12 @@ from qgis.PyQt.QtGui import (
 )
 from qgis.PyQt.QtCore import pyqtSignature
 from qgis.gui import QgsMessageBar
-from step_project_download01 import StepProjectDownload01
-from step_project_download02 import StepProjectDownload02
+from cadasta.gui.tools.wizard.step_project_download01 import (
+    StepProjectDownload01
+)
+from cadasta.gui.tools.wizard.step_project_download02 import (
+    StepProjectDownload02
+)
 
 from cadasta.utilities.resources import get_ui_class, resources_path
 from cadasta.utilities.i18n import tr
