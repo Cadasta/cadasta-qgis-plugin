@@ -287,7 +287,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             )
         else:
             self.set_status(
-                tr('Finished uploading ') + str(party) + tr(' party')
+                tr('Finished uploading {party} party'.format(party=party))
             )
 
         self.set_progress_bar(100)
