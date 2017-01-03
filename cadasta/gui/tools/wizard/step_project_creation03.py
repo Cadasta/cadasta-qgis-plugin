@@ -202,7 +202,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
     def _url_post_parties(self):
         """Get url to create a new party.
 
-        :returns: api url
+        :return: Api url or none if project_upload_result is empty
         :rtype: str, None
         """
         organisation = self.data['organisation']['slug']
