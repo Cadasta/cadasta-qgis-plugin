@@ -101,7 +101,7 @@ class WizardDialog(QDialog, FORM_CLASS):
         current_step = self.stackedWidget.currentIndex()
         total_step = self.stackedWidget.count()
 
-        self.label_step.setText('%d/%d' % (current_step, total_step))
+        self.label_step.setText('%d/%d' % (current_step + 1, total_step))
 
     def set_subtitle(self, subtitle):
         """Set subtitle of dialog.
@@ -130,6 +130,7 @@ class WizardDialog(QDialog, FORM_CLASS):
         :type step: QWidget
         """
         self.stackedWidget.setCurrentWidget(step)
+        self.update_step_label()
 
         # Enable the Back button unless it's not the first step or
         # last step
@@ -198,7 +199,6 @@ class WizardDialog(QDialog, FORM_CLASS):
         if new_step is not None:
             # Prepare the next tab
             self.prepare_the_next_step(new_step)
-            self.update_step_label()
             new_step.set_widgets()
         else:
             # Wizard complete
@@ -218,7 +218,6 @@ class WizardDialog(QDialog, FORM_CLASS):
         """
         previous_step = self.steps.pop()
         self.prepare_the_previous_step(previous_step)
-        self.update_step_label()
         self.go_to_step(previous_step)
 
     # prevents actions being handled twice

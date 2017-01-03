@@ -37,6 +37,9 @@ from cadasta.gui.tools.wizard.project_creation_wizard import (
 from cadasta.gui.tools.wizard.project_download_wizard import (
     ProjectDownloadWizard
 )
+from cadasta.gui.tools.wizard.project_update_wizard import (
+    ProjectUpdateWizard
+)
 from cadasta.common.setting import get_authtoken
 
 # Initialize Qt resources from file resources.py
@@ -61,6 +64,7 @@ class CadastaPlugin:
         self.iface = iface
         self.action_options_wizard = None
         self.project_creation_wizard = None
+        self.project_update_wizard = None
         self.wizard = None
 
         # Declare instance attributes
@@ -157,6 +161,7 @@ class CadastaPlugin:
         self._create_options_dialog()
         self._create_project_download_wizard()
         self._create_project_creation_wizard()
+        self._create_project_update_wizard()
         self._create_contact_dialog()
         for action in self.actions:
             self.iface.addPluginToVectorMenu(
@@ -213,6 +218,18 @@ class CadastaPlugin:
             callback=self.show_project_download_wizard
         )
 
+    def _create_project_update_wizard(self):
+        """Create action for project update wizard."""
+        icon_path = resources_path('images', 'icon.png')
+        self.project_update_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'Update Project'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_project_update_wizard
+        )
+
     def _create_contact_dialog(self):
         """Create action for project download wizard."""
         icon_path = resources_path('images', 'icon.png')
@@ -243,10 +260,12 @@ class CadastaPlugin:
     def _enable_authenticated_menu(self):
         """Enable menu that requires auth token to proceed."""
         self.project_creation_wizard.setEnabled(True)
+        self.project_update_wizard.setEnabled(True)
 
     def _disable_authenticated_menu(self):
         """Disable menu that requires auth token to proceed."""
         self.project_creation_wizard.setEnabled(False)
+        self.project_update_wizard.setEnabled(False)
 
     def show_project_download_wizard(self):
         """Show the project download wizard."""
@@ -271,6 +290,14 @@ class CadastaPlugin:
             iface=self.iface,
             subtitle='Contact',
             widget=ContactWidget()
+        )
+        dialog.show()
+        dialog.exec_()
+
+    def show_project_update_wizard(self):
+        """Show the project update dialog."""
+        dialog = ProjectUpdateWizard(
+            iface=self.iface
         )
         dialog.show()
         dialog.exec_()
