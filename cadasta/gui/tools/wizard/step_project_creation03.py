@@ -145,11 +145,14 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         if not network.error:
             self.project_upload_result = network.get_json_results()
             self.upload_locations()
+            self.upload_parties()
         else:
             self.set_progress_bar(0)
             self.set_status(
                 'Error: %s' % network.results.data()
             )
+
+        self.set_status(tr('Finished'))
 
     def upload_locations(self):
         """Upload project locations to cadasta."""
@@ -195,6 +198,99 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             self.set_status(
                 tr('Finish with %d failed' % failed)
             )
+
+    def _url_post_parties(self):
+        """Get url to create a new party.
+
+        :returns: api url
+        :rtype: str, None
+        """
+        organisation = self.data['organisation']['slug']
+
+        if self.project_upload_result:
+            project = self.project_upload_result['slug']
+            return '/api/v1/organizations/%s/projects/%s/parties/' % (
+                organisation,
+                project
+            )
+        else:
+            return None
+
+    def _connect_post(self, network, post_data):
+        """Call post method.
+
+        :param network: Network connector
+        :type network: NetworkMixin
+
+        :param post_data: data to post
+        :type post_data: QByteArray
+
+        :returns: Tuple of post status and results
+        :rtype: ( bool, str )
+        """
+        network.connect_post(post_data)
+        while not network.reply.isFinished():
+            QCoreApplication.processEvents()
+
+        if not network.error:
+            return True, network.results.data()
+        else:
+            return False, network.results.data()
+
+    def upload_parties(self):
+        """Upload party from this project."""
+        self.set_status(
+            tr('Uploading parties')
+        )
+
+        party = 0
+
+        # reset progress bar
+        current_progress = 0
+        self.set_progress_bar(current_progress)
+        total_layer = len(self.data['locations']['features'])
+        progress_block = 100 / total_layer
+
+        post_url = self._url_post_parties()
+
+        if not post_url:
+            # Project is not uploaded
+            return
+
+        network = NetworkMixin(get_url_instance() + post_url)
+
+        for layer in self.data['locations']['features']:
+            if layer['fields']['party_name'] and layer['fields']['party_type']:
+                post_data = QByteArray()
+                post_data.append('name=%s&' % layer['fields']['party_name'])
+                post_data.append('type=%s&' % layer['fields']['party_type'])
+
+                status, result = self._connect_post(network, post_data)
+
+                if status:
+                    party += 1
+                else:
+                    self.set_progress_bar(0)
+                    self.set_status(
+                        tr('Error: ') + result
+                    )
+            else:
+                self.set_status(
+                    tr('No party attributes found')
+                )
+            current_progress += progress_block
+            self.set_progress_bar(current_progress)
+
+        if party == 0:
+            self.set_status(
+                tr('Not uploading any party')
+            )
+        else:
+            self.set_status(
+                tr('Finished uploading ') + str(party) + tr(' party')
+            )
+
+        self.set_progress_bar(100)
 
     def get_next_step(self):
         """Find the proper step when user clicks the Next button.

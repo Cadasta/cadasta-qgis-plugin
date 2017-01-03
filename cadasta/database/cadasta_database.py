@@ -127,7 +127,8 @@ class CadastaDatabase(object):
         query = QtSql.QSqlQuery(db)
         query.exec_(query_string)
         query.last()
-        db.close()
+        if db:
+            db.close()
         return query
 
     @staticmethod
@@ -149,7 +150,8 @@ class CadastaDatabase(object):
         query_string = query_string % query_data
         query = QtSql.QSqlQuery(db)
         query.exec_(query_string)
-        db.close()
+        if db:
+            db.close()
 
     @staticmethod
     def get_table_model(table):

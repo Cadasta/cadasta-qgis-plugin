@@ -98,7 +98,8 @@ class Contact(object):
                        }
         query = QSqlQuery()
         query.exec_(query_string)
-        db.close()
+        if db:
+            db.close()
 
     @staticmethod
     def get_rows(**kwargs):
