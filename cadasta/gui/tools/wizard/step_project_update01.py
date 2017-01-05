@@ -27,7 +27,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectUpdate01(WizardStep, FORM_CLASS):
-    """Step 1 for project download"""
+    """Step 1 for project download."""
 
     def __init__(self, parent=None):
         """Constructor.

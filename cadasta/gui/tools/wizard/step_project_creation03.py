@@ -31,10 +31,10 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectCreation3(WizardStep, FORM_CLASS):
-    """Step 3 for project creation"""
+    """Step 3 for project creation."""
 
     def __init__(self, parent=None):
-        """Constructor
+        """Constructor.
 
         :param parent: parent - widget to use as parent.
         :type parent: QWidget
@@ -99,7 +99,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                         location['fields']
                     except KeyError:
                         location['fields'] = dict()
-                    location['fields'][cadasta_field] = properties[layer_field]
+                    location['fields'][cadasta_field] = properties[
+                        layer_field]
         self.set_progress_bar(100)
 
         self.set_status(
@@ -170,7 +171,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         for location in self.data['locations']['features']:
             post_data = QByteArray()
-            post_data.append('geometry=%s&' % json.dumps(location['geometry']))
+            post_data.append(
+                'geometry=%s&' % json.dumps(location['geometry']))
             post_data.append('type=%s' % location['fields']['location_type'])
 
             connector = ApiConnect(get_url_instance() + post_url)

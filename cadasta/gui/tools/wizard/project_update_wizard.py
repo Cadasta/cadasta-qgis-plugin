@@ -19,7 +19,6 @@ from cadasta.gui.tools.wizard.step_project_update02 import (
     StepProjectUpdate02
 )
 
-from cadasta.utilities.resources import get_ui_class
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_dialog import WizardDialog
 
@@ -62,7 +61,7 @@ class ProjectUpdateWizard(WizardDialog):
     def first_step(self):
         """Returns the first step of wizard.
 
-        :returns: First step of wizard.
+        :return: First step of wizard.
         :rtype: WizardStep
         """
         return self.step_project_update01
@@ -70,7 +69,7 @@ class ProjectUpdateWizard(WizardDialog):
     def last_step(self):
         """Returns the last step of wizard.
 
-        :returns: Last step of wizard.
+        :return: Last step of wizard.
         :rtype: WizardStep
         """
         return self.step_project_update02

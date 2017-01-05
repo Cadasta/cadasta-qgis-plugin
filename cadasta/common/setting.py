@@ -9,7 +9,9 @@ Cadasta project - **Setting utilities**
 
 """
 import os
+from PyQt4.QtCore import QUrl
 from qgis.PyQt.QtCore import QSettings
+from cadasta.utilities.resources import resources_path
 from cadasta.utilities.resources import get_project_path
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
@@ -174,3 +176,15 @@ def get_path_database(database=None):
             database
         )
     return data_path
+
+
+def logo_element():
+    """Create a sanitised local url to the logo for insertion into html.
+
+    :returns: A sanitised local url to the logo.
+    :rtype: str
+    """
+    path = os.path.join(resources_path(), 'images', 'white_icon.png')
+    url = QUrl(path)
+    path = url.toLocalFile()
+    return path

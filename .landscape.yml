@@ -5,5 +5,7 @@ max-line-length: 80
 autodetect: true
 requirements: REQUIREMENTS.txt
 python-targets: 2
+ignore-paths:
+  - extras
 pep8:
     full: true

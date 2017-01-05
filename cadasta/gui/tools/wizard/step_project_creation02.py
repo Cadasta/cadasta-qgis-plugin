@@ -24,10 +24,10 @@ FORM_CLASS = get_wizard_step_ui_class(__file__)
 
 
 class StepProjectCreation2(WizardStep, FORM_CLASS):
-    """Step 2 for project creation"""
+    """Step 2 for project creation."""
 
     def __init__(self, parent=None):
-        """Constructor
+        """Constructor.
 
         :param parent: parent - widget to use as parent.
         :type parent: QWidget

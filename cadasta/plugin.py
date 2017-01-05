@@ -40,6 +40,9 @@ from cadasta.gui.tools.wizard.project_download_wizard import (
 from cadasta.gui.tools.wizard.project_update_wizard import (
     ProjectUpdateWizard
 )
+from cadasta.gui.tools.helper.helper_dialog import (
+    HelperDialog
+)
 from cadasta.common.setting import get_authtoken
 
 # Initialize Qt resources from file resources.py
@@ -163,6 +166,7 @@ class CadastaPlugin:
         self._create_project_creation_wizard()
         self._create_project_update_wizard()
         self._create_contact_dialog()
+        self._create_help_dialog()
         for action in self.actions:
             self.iface.addPluginToVectorMenu(
                 self.tr(u'&Cadasta'),
@@ -182,6 +186,9 @@ class CadastaPlugin:
                 self.tr(u'&Cadasta'),
                 action)
 
+    # ------------------------------------------------------------------------
+    # initiate option dialog
+    # ------------------------------------------------------------------------
     def _create_options_dialog(self):
         """Create action for options dialog."""
         icon_path = resources_path('images', 'icon.png')
@@ -192,54 +199,6 @@ class CadastaPlugin:
             add_to_toolbar=False,
             enabled_flag=True,
             callback=self.show_options_dialog
-        )
-
-    def _create_project_creation_wizard(self):
-        """Create action for project creation wizard."""
-        icon_path = resources_path('images', 'icon.png')
-        self.project_creation_wizard = self.add_action(
-            icon_path,
-            text=self.tr(u'Create Project'),
-            parent=self.iface.mainWindow(),
-            add_to_toolbar=False,
-            enabled_flag=True,
-            callback=self.show_project_creation_wizard
-        )
-
-    def _create_project_download_wizard(self):
-        """Create action for project download wizard."""
-        icon_path = resources_path('images', 'icon.png')
-        self.action_options_wizard = self.add_action(
-            icon_path,
-            text=self.tr(u'Download Project'),
-            parent=self.iface.mainWindow(),
-            add_to_toolbar=False,
-            enabled_flag=True,
-            callback=self.show_project_download_wizard
-        )
-
-    def _create_project_update_wizard(self):
-        """Create action for project update wizard."""
-        icon_path = resources_path('images', 'icon.png')
-        self.project_update_wizard = self.add_action(
-            icon_path,
-            text=self.tr(u'Update Project'),
-            parent=self.iface.mainWindow(),
-            add_to_toolbar=False,
-            enabled_flag=True,
-            callback=self.show_project_update_wizard
-        )
-
-    def _create_contact_dialog(self):
-        """Create action for project download wizard."""
-        icon_path = resources_path('images', 'icon.png')
-        self.action_options_wizard = self.add_action(
-            icon_path,
-            text=self.tr(u'Contact'),
-            parent=self.iface.mainWindow(),
-            add_to_toolbar=False,
-            enabled_flag=True,
-            callback=self.show_contact_dialog
         )
 
     def show_options_dialog(self):
@@ -260,20 +219,25 @@ class CadastaPlugin:
     def _enable_authenticated_menu(self):
         """Enable menu that requires auth token to proceed."""
         self.project_creation_wizard.setEnabled(True)
-        self.project_update_wizard.setEnabled(True)
 
     def _disable_authenticated_menu(self):
         """Disable menu that requires auth token to proceed."""
         self.project_creation_wizard.setEnabled(False)
-        self.project_update_wizard.setEnabled(False)
 
-    def show_project_download_wizard(self):
-        """Show the project download wizard."""
-        dialog = ProjectDownloadWizard(
-            iface=self.iface
+    # ------------------------------------------------------------------------
+    # initiate project creation dialog
+    # ------------------------------------------------------------------------
+    def _create_project_creation_wizard(self):
+        """Create action for project creation wizard."""
+        icon_path = resources_path('images', 'icon.png')
+        self.project_creation_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'Create Project'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_project_creation_wizard
         )
-        dialog.show()
-        dialog.exec_()
 
     def show_project_creation_wizard(self):
         """Show the project creation wizard."""
@@ -283,6 +247,67 @@ class CadastaPlugin:
         self.wizard = dialog
         dialog.show()
         dialog.exec_()
+
+    # ------------------------------------------------------------------------
+    # initiate project download dialog
+    # ------------------------------------------------------------------------
+    def _create_project_download_wizard(self):
+        """Create action for project download wizard."""
+        icon_path = resources_path('images', 'icon.png')
+        self.action_options_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'Download Project'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_project_download_wizard
+        )
+
+    def show_project_download_wizard(self):
+        """Show the project download wizard."""
+        dialog = ProjectDownloadWizard(
+            iface=self.iface
+        )
+        dialog.show()
+        dialog.exec_()
+
+    # ------------------------------------------------------------------------
+    # initiate update project dialog
+    # ------------------------------------------------------------------------
+    def _create_project_update_wizard(self):
+        """Create action for project update wizard."""
+        icon_path = resources_path('images', 'icon.png')
+        self.project_update_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'Update Project'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_project_update_wizard
+        )
+
+    def show_project_update_wizard(self):
+        """Show the project update dialog."""
+        dialog = ProjectUpdateWizard(
+            iface=self.iface
+        )
+        dialog.show()
+        dialog.exec_()
+
+    # ------------------------------------------------------------------------
+    # initiate contact dialog
+    # ------------------------------------------------------------------------
+    def _create_contact_dialog(self):
+        """Create action for contact."""
+        icon_path = resources_path('images', 'icon.png')
+        self.action_options_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'Contact'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_contact_dialog
+        )
 
     def show_contact_dialog(self):
         """Show the contact dialog."""
@@ -294,10 +319,26 @@ class CadastaPlugin:
         dialog.show()
         dialog.exec_()
 
-    def show_project_update_wizard(self):
-        """Show the project update dialog."""
-        dialog = ProjectUpdateWizard(
+    # ------------------------------------------------------------------------
+    # initiate help dialog
+    # ------------------------------------------------------------------------
+    def _create_help_dialog(self):
+        """Create action for help diaog."""
+        icon_path = resources_path('images', 'icon.png')
+        self.action_options_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'Help'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_help_dialog
+        )
+
+    def show_help_dialog(self):
+        """Show the help dialog."""
+        dialog = HelperDialog(
             iface=self.iface
         )
+
         dialog.show()
         dialog.exec_()

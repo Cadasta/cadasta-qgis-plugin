@@ -16,7 +16,6 @@ Contact : ole.moller.nielsen@gmail.com
 
 """
 
-
 # This import is to enable SIP API V2
 # noinspection PyUnresolvedReferences
 import qgis  # pylint: disable=unused-import
@@ -67,12 +66,12 @@ def tr(text, context='@default'):
             'The translation: "%s".\n'
             'The number of %% character does not match (%s and %s).'
             'Please check the translation in transifex for %s.' % (
-            text,
-            translated_text,
-            text.count('%'),
-            translated_text.count('%s'),
-            locale()
-        ))
+                text,
+                translated_text,
+                text.count('%'),
+                translated_text.count('%s'),
+                locale()
+            ))
         LOGGER.warning(content)
         return text
 
@@ -87,7 +86,8 @@ def locale():
         'locale/overrideFlag', True, type=bool)
 
     if override_flag:
-        locale_name = QSettings().value('locale/userLocale', 'en_US', type=str)
+        locale_name = QSettings().value(
+            'locale/userLocale', 'en_US', type=str)
     else:
         # noinspection PyArgumentList
         locale_name = QLocale.system().name()

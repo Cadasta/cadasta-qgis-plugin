@@ -2,7 +2,7 @@
 """
 Cadasta project download step -**Cadasta Wizard**
 
-This module provides: Project Download Step 2 : Download Layer
+This module provides: Project Download Step 2 : Download Project
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectDownload02(WizardStep, FORM_CLASS):
-    """Step 2 for project download"""
+    """Step 2 for project download."""
 
     def __init__(self, parent=None):
         """Constructor.
@@ -101,7 +101,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         self.warning_label.setText(self.loaded_label_string)
 
     def save_layer(self, geojson, organization_slug, project_slug):
-        """Save geojson to local file
+        """Save geojson to local file.
 
         :param organization_slug: organization slug for data
         :type organization_slug: str

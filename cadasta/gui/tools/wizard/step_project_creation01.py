@@ -36,10 +36,10 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectCreation1(WizardStep, FORM_CLASS):
-    """Step 1 for project creation"""
+    """Step 1 for project creation."""
 
     def __init__(self, parent=None):
-        """Constructor
+        """Constructor.
 
         :param parent: parent - widget to use as parent.
         :type parent: QWidget

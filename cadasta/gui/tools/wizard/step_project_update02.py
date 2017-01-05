@@ -33,7 +33,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectUpdate02(WizardStep, FORM_CLASS):
-    """Step 1 for project update"""
+    """Step 1 for project update."""
 
     def __init__(self, parent=None):
         """Constructor.
@@ -76,7 +76,7 @@ class StepProjectUpdate02(WizardStep, FORM_CLASS):
         )
 
         # From local db
-        for index, contact in enumerate(contacts):
+        for contact in contacts:
             contact_name = contact.name
             contact_email = ' - ' + contact.email if contact.email else ''
             contact_phone = ' - ' + contact.phone if contact.phone else ''
@@ -92,7 +92,6 @@ class StepProjectUpdate02(WizardStep, FORM_CLASS):
 
         # From server
         for index, contact in enumerate(project_contacts):
-
             contact_name = contact['name']
             contact_email = ' - ' + contact['email'] \
                 if contact['email'] else ''

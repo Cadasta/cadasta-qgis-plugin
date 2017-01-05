@@ -2,7 +2,7 @@
 """
 Cadasta project download step -**Cadasta Wizard**
 
-This module provides: Project Download Step 1 : Organisation selection
+This module provides: Project Download Step 1 : Project selection
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectDownload01(WizardStep, FORM_CLASS):
-    """Step 1 for project download"""
+    """Step 1 for project download."""
 
     def __init__(self, parent=None):
         """Constructor.

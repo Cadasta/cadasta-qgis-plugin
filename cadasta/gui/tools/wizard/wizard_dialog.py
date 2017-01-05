@@ -18,6 +18,7 @@ from qgis.PyQt.QtGui import (
 )
 from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import pyqtSignature
+from cadasta.common.setting import logo_element
 from cadasta.utilities.resources import get_ui_class, resources_path
 from cadasta.utilities.i18n import tr
 
@@ -113,7 +114,7 @@ class WizardDialog(QDialog, FORM_CLASS):
 
     def set_logo(self):
         """Set logo of dialog."""
-        filename = resources_path('images', 'white_icon.png')
+        filename = logo_element()
         pixmap = QPixmap(filename)
         self.label_main_icon.setPixmap(pixmap)
 
@@ -135,8 +136,8 @@ class WizardDialog(QDialog, FORM_CLASS):
         # Enable the Back button unless it's not the first step or
         # last step
         self.back_button.setEnabled(
-                step not in [self.first_step()] or
-                self.parent_step is not None)
+            step not in [self.first_step()] or
+            self.parent_step is not None)
 
         # Set Next button label
         if step == self.last_step():
@@ -162,11 +163,8 @@ class WizardDialog(QDialog, FORM_CLASS):
         """
         pass
 
-    def prepare_the_previous_step(self, previous_step):
+    def prepare_the_previous_step(self):
         """Prepare the previous tab.
-
-        :param previous_step: New tab to be prepared.
-        :type previous_step: WizardStep
         """
         self.next_button.setEnabled(True)
 
@@ -185,8 +183,8 @@ class WizardDialog(QDialog, FORM_CLASS):
         if not valid_status:
             self.message_bar = QgsMessageBar()
             self.message_bar.pushWarning(
-                    tr('Error'),
-                    message
+                tr('Error'),
+                message
             )
             LOGGER.info(message)
             return
@@ -217,7 +215,8 @@ class WizardDialog(QDialog, FORM_CLASS):
            executed when the Back button is released.
         """
         previous_step = self.steps.pop()
-        self.prepare_the_previous_step(previous_step)
+        self.prepare_the_previous_step()
+        self.update_step_label()
         self.go_to_step(previous_step)
 
     # prevents actions being handled twice

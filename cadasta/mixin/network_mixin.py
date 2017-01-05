@@ -100,7 +100,7 @@ class NetworkMixin(object):
         p_buffer.setData(json_string)
 
         self.reply = self.manager.sendCustomRequest(
-                self.req, 'PATCH', p_buffer
+            self.req, 'PATCH', p_buffer
         )
         self.connect_request()
 

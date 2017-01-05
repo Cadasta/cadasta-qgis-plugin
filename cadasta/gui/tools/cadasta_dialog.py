@@ -16,7 +16,8 @@ from qgis.PyQt.QtGui import (
     QPixmap
 )
 
-from cadasta.utilities.resources import get_ui_class, resources_path
+from cadasta.common.setting import logo_element
+from cadasta.utilities.resources import get_ui_class
 from cadasta.utilities.i18n import tr
 
 __copyright__ = "Copyright 2016, Cadasta"
@@ -72,6 +73,6 @@ class CadastaDialog(QDialog, FORM_CLASS):
 
     def set_logo(self):
         """Set logo of dialog."""
-        filename = resources_path('images', 'white_icon.png')
+        filename = logo_element()
         pixmap = QPixmap(filename)
         self.label_main_icon.setPixmap(pixmap)
