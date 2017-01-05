@@ -17,8 +17,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QByteArray
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
-from cadasta.mixin.network_mixin import NetworkMixin
 from cadasta.common.setting import get_url_instance
+from cadasta.api.api_connect import ApiConnect
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -132,24 +132,23 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             self.data['organisation']['slug']
         )
 
-        network = NetworkMixin(get_url_instance() + post_url)
-        network.connect_json_post(json.dumps(post_data))
-        while not network.reply.isFinished():
-            QCoreApplication.processEvents()
+        connector = ApiConnect(get_url_instance() + post_url)
+        status, result = self._call_json_post(connector, json.dumps(post_data))
 
         self.set_progress_bar(self.current_progress + 25)
         self.set_status(
             tr('Finished uploading project')
         )
 
-        if not network.error:
-            self.project_upload_result = network.get_json_results()
+        if status:
+            self.project_upload_result = json.loads(result)
             self.upload_locations()
             self.upload_parties()
+            self.upload_relationships()
         else:
             self.set_progress_bar(0)
             self.set_status(
-                'Error: %s' % network.results.data()
+                'Error: %s' % result
             )
 
         self.set_status(tr('Finished'))
@@ -174,17 +173,21 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             post_data.append('geometry=%s&' % json.dumps(location['geometry']))
             post_data.append('type=%s' % location['fields']['location_type'])
 
-            network = NetworkMixin(get_url_instance() + post_url)
-            network.connect_post(post_data)
-            while not network.reply.isFinished():
-                QCoreApplication.processEvents()
+            connector = ApiConnect(get_url_instance() + post_url)
+            status, result = self._call_post(connector, post_data)
 
-            if not network.error:
+            if status:
                 self.set_progress_bar(self.current_progress + progress_left)
+                try:
+                    result_obj = json.loads(result)
+                    if 'properties' in result_obj:
+                        location['spatial_id'] = result_obj['properties']['id']
+                except ValueError as e:
+                    LOGGER.exception('message')
             else:
                 self.set_progress_bar(0)
                 self.set_status(
-                    'Error: %s' % network.results.data()
+                    'Error: %s' % result
                 )
                 failed += 1
 
@@ -216,26 +219,23 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         else:
             return None
 
-    def _connect_post(self, network, post_data):
-        """Call post method.
+    def _url_post_relationships(self):
+        """Get url to create a new relationship.
 
-        :param network: Network connector
-        :type network: NetworkMixin
-
-        :param post_data: data to post
-        :type post_data: QByteArray
-
-        :returns: Tuple of post status and results
-        :rtype: ( bool, str )
+        :return: Api url or none if project_upload_result is empty
+        :rtype: str, None
         """
-        network.connect_post(post_data)
-        while not network.reply.isFinished():
-            QCoreApplication.processEvents()
+        organisation = self.data['organisation']['slug']
+        url = '/api/v1/organizations/%s/projects/%s/relationships/tenure/'
 
-        if not network.error:
-            return True, network.results.data()
+        if self.project_upload_result:
+            project = self.project_upload_result['slug']
+            return url % (
+                organisation,
+                project
+            )
         else:
-            return False, network.results.data()
+            return None
 
     def upload_parties(self):
         """Upload party from this project."""
@@ -257,18 +257,23 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             # Project is not uploaded
             return
 
-        network = NetworkMixin(get_url_instance() + post_url)
-
         for layer in self.data['locations']['features']:
             if layer['fields']['party_name'] and layer['fields']['party_type']:
                 post_data = QByteArray()
                 post_data.append('name=%s&' % layer['fields']['party_name'])
                 post_data.append('type=%s&' % layer['fields']['party_type'])
 
-                status, result = self._connect_post(network, post_data)
+                connector = ApiConnect(get_url_instance() + post_url)
+                status, result = self._call_post(connector, post_data)
 
                 if status:
                     party += 1
+                    try:
+                        result_dict = json.loads(result)
+                        if 'id' in result_dict:
+                            layer['party_id'] = result_dict['id']
+                    except ValueError as e:
+                        LOGGER.exception('message')
                 else:
                     self.set_progress_bar(0)
                     self.set_status(
@@ -292,12 +297,104 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         self.set_progress_bar(100)
 
+    def upload_relationships(self):
+        """Upload relationships attribute to cadasta."""
+        self.set_status(
+            tr('Uploading relationship')
+        )
+
+        # reset progress bar
+        current_progress = 0
+        self.set_progress_bar(current_progress)
+        total_layer = len(self.data['locations']['features'])
+        progress_block = 100 / total_layer
+
+        relationship = 0
+
+        url = self._url_post_relationships()
+
+        for layer in self.data['locations']['features']:
+
+            if layer['fields']['relationship_type'] and \
+                    'spatial_id' in layer and \
+                    'party_id' in layer:
+
+                post_data = QByteArray()
+                post_data.append('tenure_type=%s&' % (
+                    layer['fields']['relationship_type']
+                ))
+                post_data.append('spatial_unit=%s&' % layer['spatial_id'])
+                post_data.append('party=%s&' % layer['party_id'])
+
+                connector = ApiConnect(get_url_instance() + url)
+                status, result = self._call_post(connector, post_data)
+
+                if status:
+                    relationship += 1
+                else:
+                    self.set_progress_bar(0)
+                    self.set_status(
+                        tr('Error: ') + result
+                    )
+            else:
+                self.set_status(
+                    tr('No relationship attributes found')
+                )
+
+            current_progress += progress_block
+            self.set_progress_bar(current_progress)
+
+        if relationship == 0:
+            self.set_status(
+                tr('Not uploading any relationship')
+            )
+        else:
+            self.set_status(
+                tr('Finished uploading {num} relationship'.format(
+                    num=relationship
+                ))
+            )
+
+        self.set_progress_bar(100)
+
     def get_next_step(self):
         """Find the proper step when user clicks the Next button.
 
            This method must be implemented in derived classes.
 
         :returns: The step to be switched to
-        :rtype: WizardStep instance or None
+        :rtype: WizardStep, None
         """
         return None
+
+    def _call_post(self, connector, post_data):
+        """Call post method from connector.
+
+        For testing purpose.
+
+        :param connector: Api connector instance
+        :type connector: ApiConnect
+
+        :param post_data: data to post
+        :type post_data: QByteArray
+
+        :returns: Tuple of post status and results
+        :rtype: ( bool, str )
+        """
+        return connector.post(post_data)
+
+    def _call_json_post(self, connector, post_data):
+        """Call post method with json string from connector.
+
+        For testing purpose.
+
+        :param connector: Api connector instance
+        :type connector: ApiConnect
+
+        :param post_data: data to post
+        :type post_data: str
+
+        :returns: Tuple of post status and results
+        :rtype: ( bool, str )
+        """
+        return connector.post_json(post_data)
