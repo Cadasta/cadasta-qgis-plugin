@@ -43,6 +43,16 @@ class OrganizationTest(unittest.TestCase):
         self.assertTrue(results[0])
         self.assertIsInstance(results[1], list)
 
+    def test_project_filtered_organizations(self):
+        """Test we get organization with project filtered."""
+        organization = Organization()
+        organization._call_api = MagicMock(
+                return_value=(True, [self.test_organization])
+        )
+        results = organization.organizations_project_filtered()
+        self.assertTrue(results[0])
+        self.assertIsInstance(results[1], list)
+
     def test_get_summary_organization(self):
         """Test we get one organization by slug."""
         slug = 'allthethings'

@@ -145,7 +145,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         """
         LOGGER.info('Getting organisations')
         self.get_organisation_button.setEnabled(False)
-        status, results = self.organisation.all_organizations()
+        status, results = self.organisation.organizations_project_filtered()
         self.get_organisation_button.setEnabled(True)
         if status:
             self.organisation_box.clear()
