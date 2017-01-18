@@ -112,7 +112,14 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
                 attributes = feat.attributes()
                 if attributes[loc_id_idx] == loc['properties']['id']:
                     geojson = feat.geometry().exportToGeoJSON()
-                    self.upload_locations(api, geojson, attributes[loc_type_idx])
+                    self.upload_update_locations(api, geojson, attributes[loc_type_idx])
+                if not attributes[loc_id_idx]:
+                    # New location
+                    geojson = feat.geometry().exportToGeoJSON()
+                    project_id = self.add_new_locations(geojson, attributes[loc_type_idx])
+                    self.layer.startEditing()
+                    self.layer.changeAttributeValue(feat.id(), 1, project_id)
+                    self.layer.commitChanges()
 
         self.set_progress_bar(50)
 
@@ -155,8 +162,8 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
             self.tr('Finished update parties')
         )
 
-    def upload_locations(self, api, geometry, location_type):
-        """Upload location data.
+    def upload_update_locations(self, api, geometry, location_type):
+        """Upload update location data.
 
         :param api: Api url to upload location
         :type api: str
@@ -172,8 +179,6 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
             'type': location_type
         }
 
-        LOGGER.debug(post_data)
-
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.patch_json(json.dumps(post_data))
 
@@ -186,6 +191,42 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
             self.set_status(
                 'Error: %s' % result
             )
+
+    def add_new_locations(self, geometry, location_type):
+        """Add new location
+
+        :param geometry: Location geojson geometry
+        :type geometry: str
+
+        :param location_type: Location type
+        :type location_type: str
+        """
+        api = '/api/v1/organizations/{organization_slug}/projects/' \
+              '{project_slug}/spatial/'.format(
+                organization_slug=self.project['organization']['slug'],
+                project_slug=self.project['slug'])
+
+        post_data = {
+            'geometry': geometry
+        }
+
+        if location_type:
+            post_data['type'] = location_type
+
+        connector = ApiConnect(get_url_instance() + api)
+        status, result = connector.post_json(json.dumps(post_data))
+
+        if status:
+            self.set_status(
+                self.tr('Location added.')
+            )
+            return json.loads(result)['properties']['id']
+        else:
+            self.set_progress_bar(0)
+            self.set_status(
+                'Error: %s' % result
+            )
+            return None
 
     def upload_parties(self, api, party_name, party_type):
         """Upload party data.
@@ -203,8 +244,6 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
             'name': party_name,
             'type': party_type
         }
-
-        LOGGER.debug(post_data)
 
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.patch_json(json.dumps(post_data))
