@@ -32,6 +32,39 @@ class ApiConnect(NetworkMixin):
         self.request_url = api_url
         super(ApiConnect, self).__init__()
 
+    def get(self):
+        """Call get method.
+
+        :returns: Tuple of post status and results
+        :rtype: ( bool, str )
+        """
+        self.connect_get()
+        while not self.reply.isFinished():
+            QCoreApplication.processEvents()
+
+        if not self.error:
+            return True, self.get_json_results()
+        else:
+            return False, self.results.data()
+
+    def patch_json(self, post_data):
+        """Call patch method with json data.
+
+        :param post_data: data to post
+        :type post_data: str
+
+        :returns: Tuple of post status and results
+        :rtype: ( bool, str )
+        """
+        self.connect_json_patch(post_data)
+        while not self.reply.isFinished():
+            QCoreApplication.processEvents()
+
+        if not self.error:
+            return True, self.results.data()
+        else:
+            return False, self.results.data()
+
     def post(self, post_data):
         """Call post method.
 

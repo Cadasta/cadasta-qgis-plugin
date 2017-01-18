@@ -128,7 +128,7 @@ class StepProjectUpdate02(WizardStep, FORM_CLASS):
         :returns: The step to be switched to
         :rtype: WizardStep, None
         """
-        return None
+        return self.parent.step_project_update03
 
     def send_update_request(self, post_data):
         """Send update request to server and return the responses
