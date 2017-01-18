@@ -260,7 +260,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             return
 
         for layer in self.data['locations']['features']:
-            if layer['fields']['party_name'] and layer['fields']['party_type']:
+            if 'party_name' in layer['fields'] and \
+               'party_type' in layer['fields']:
                 post_data = QByteArray()
                 post_data.append('name=%s&' % layer['fields']['party_name'])
                 post_data.append('type=%s&' % layer['fields']['party_type'])
@@ -317,7 +318,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         for layer in self.data['locations']['features']:
 
-            if layer['fields']['relationship_type'] and \
+            if 'relationship_type' in layer['fields'] and \
                     'spatial_id' in layer and \
                     'party_id' in layer:
 
