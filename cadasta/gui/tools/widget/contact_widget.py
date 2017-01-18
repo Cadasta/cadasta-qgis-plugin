@@ -67,7 +67,8 @@ class ContactWidget(WidgetBase, FORM_CLASS):
 
     def delete_contact(self):
         """Delete contact."""
-        self.model.removeRows(self.contact_listview.currentIndex().row(), 1)
+        for index in self.contact_listview.selectionModel().selection().indexes():
+            self.model.removeRows(index.row(), 1)
 
     def validate_email(self, email):
         """Delete email.
@@ -85,16 +86,18 @@ class ContactWidget(WidgetBase, FORM_CLASS):
         error = None
         for i in xrange(self.model.rowCount()):
             record = self.model.record(i)
-            if not record.value("email") and not record.value("phone"):
-                error = self.tr(
-                    'One or more contact doesn\'t has email and '
-                    'phone. Either email or phone must be provided.')
-                break
-                # validate email
-            if record.value("email") and not self.validate_email(
-                    record.value("email")):
-                error = self.tr(
-                    'There is one or more wrong email in contact ist.')
+            is_deleted = True if record.value("id") or record.value("name") else False
+            if is_deleted:
+                if not record.value("email") and not record.value("phone"):
+                    error = self.tr(
+                        'One or more contact doesn\'t has email and '
+                        'phone. Either email or phone must be provided.')
+                    break
+                    # validate email
+                if record.value("email") and not self.validate_email(
+                        record.value("email")):
+                    error = self.tr(
+                        'There is one or more wrong email in contact ist.')
 
         if not error:
             self.model.submitAll()
