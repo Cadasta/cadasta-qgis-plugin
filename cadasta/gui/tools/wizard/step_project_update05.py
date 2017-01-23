@@ -14,7 +14,7 @@ import logging
 import json
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
-from qgis.PyQt.QtCore import QCoreApplication, QByteArray
+from qgis.PyQt.QtCore import QCoreApplication
 from cadasta.api.api_connect import ApiConnect
 from cadasta.common.setting import get_url_instance
 
@@ -95,37 +95,39 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
 
         self.set_progress_bar(25)
 
-        for loc in self.parent.locations['features']:
+        for location in self.parent.locations['features']:
             api = update_loc_api.format(
                 organization_slug=self.project['organization']['slug'],
                 project_slug=self.project['slug'],
-                spatial_unit_id=loc['properties']['id']
+                spatial_unit_id=location['properties']['id']
             )
 
-            loc_type_field = fields['location_type']
-            loc_type_idx = self.layer.fieldNameIndex(loc_type_field)
-            loc_id_idx = self.layer.fieldNameIndex('id')
+            location_type_field = fields['location_type']
+            location_type_idx = self.layer.fieldNameIndex(location_type_field)
+            location_id_idx = self.layer.fieldNameIndex('id')
 
             features = self.layer.getFeatures()
 
-            for feat in features:
-                attributes = feat.attributes()
-                if attributes[loc_id_idx] == loc['properties']['id']:
-                    geojson = feat.geometry().exportToGeoJSON()
+            for feature in features:
+                attributes = feature.attributes()
+                if attributes[location_id_idx] == location['properties']['id']:
+                    geojson = feature.geometry().exportToGeoJSON()
                     self.upload_update_locations(
                         api,
                         geojson,
-                        attributes[loc_type_idx]
+                        attributes[location_type_idx]
                     )
-                if not attributes[loc_id_idx]:
+                if not attributes[location_id_idx]:
                     # New location
-                    geojson = feat.geometry().exportToGeoJSON()
+                    geojson = feature.geometry().exportToGeoJSON()
                     project_id = self.add_new_locations(
                         geojson,
-                        attributes[loc_type_idx]
+                        attributes[location_type_idx]
                     )
                     self.layer.startEditing()
-                    self.layer.changeAttributeValue(feat.id(), 1, project_id)
+                    self.layer.changeAttributeValue(
+                        feature.id(), 1, project_id
+                    )
                     self.layer.commitChanges()
 
         self.set_progress_bar(50)
@@ -161,8 +163,8 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
 
             features = self.layer.getFeatures()
 
-            for feat in features:
-                attributes = feat.attributes()
+            for feature in features:
+                attributes = feature.attributes()
                 if attributes[party_id_idx] == party['id']:
                     self.upload_parties(
                         api,

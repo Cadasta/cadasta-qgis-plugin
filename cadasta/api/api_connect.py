@@ -49,6 +49,8 @@ class ApiConnect(NetworkMixin):
 
     def patch_json(self, post_data):
         """Call patch method with json data.
+        Use this method to send PATCH request with
+        json string data.
 
         :param post_data: data to post
         :type post_data: str
