@@ -104,10 +104,11 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
 
-        api = '/api/v1/organizations/{organization_slug}/projects/{project_slug}/parties/'.format(
-            organization_slug=organization_slug,
-            project_slug=project_slug
-        )
+        api = '/api/v1/organizations/{organization_slug}/projects/' \
+              '{project_slug}/parties/'.format(
+                organization_slug=organization_slug,
+                project_slug=project_slug)
+
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.get()
 
@@ -139,9 +140,15 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         features = vector_layer.getFeatures()
         for index, fet in enumerate(features):
             try:
-                vector_layer.changeAttributeValue(fet.id(), 3, result[index]['id'])
-                vector_layer.changeAttributeValue(fet.id(), 4, result[index]['name'])
-                vector_layer.changeAttributeValue(fet.id(), 5, result[index]['type'])
+                vector_layer.changeAttributeValue(
+                    fet.id(), 3, result[index]['id']
+                )
+                vector_layer.changeAttributeValue(
+                    fet.id(), 4, result[index]['name']
+                )
+                vector_layer.changeAttributeValue(
+                    fet.id(), 5, result[index]['type']
+                )
             except (IndexError, KeyError):
                 pass
 

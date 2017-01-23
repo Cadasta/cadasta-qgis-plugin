@@ -2,7 +2,7 @@
 """
 Cadasta project update step -**Cadasta Wizard**
 
-This module provides: Project Update Step 1 : Project basic information
+This module provides: Project Update Step 2 : Project basic information
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by

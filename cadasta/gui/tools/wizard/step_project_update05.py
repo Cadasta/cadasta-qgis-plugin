@@ -90,8 +90,8 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
         )
 
         fields = self.parent.get_mapped_fields()
-        update_loc_api = '/api/v1/organizations/{organization_slug}/projects/{project_slug}/' \
-                         'spatial/{spatial_unit_id}/'
+        update_loc_api = '/api/v1/organizations/{organization_slug}/' \
+                         'projects/{project_slug}/spatial/{spatial_unit_id}/'
 
         self.set_progress_bar(25)
 
@@ -112,11 +112,18 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
                 attributes = feat.attributes()
                 if attributes[loc_id_idx] == loc['properties']['id']:
                     geojson = feat.geometry().exportToGeoJSON()
-                    self.upload_update_locations(api, geojson, attributes[loc_type_idx])
+                    self.upload_update_locations(
+                        api,
+                        geojson,
+                        attributes[loc_type_idx]
+                    )
                 if not attributes[loc_id_idx]:
                     # New location
                     geojson = feat.geometry().exportToGeoJSON()
-                    project_id = self.add_new_locations(geojson, attributes[loc_type_idx])
+                    project_id = self.add_new_locations(
+                        geojson,
+                        attributes[loc_type_idx]
+                    )
                     self.layer.startEditing()
                     self.layer.changeAttributeValue(feat.id(), 1, project_id)
                     self.layer.commitChanges()
@@ -128,13 +135,16 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
         )
 
         # Update parties
+        if not self.parent.parties:
+            self.set_progress_bar(100)
+            return
 
         self.set_status(
             self.tr('Update parties')
         )
 
-        update_api = '/api/v1/organizations/{organization_slug}/projects/{project_slug}/' \
-                     'parties/{party_id}/'
+        update_api = '/api/v1/organizations/{organization_slug}/' \
+                     'projects/{project_slug}/parties/{party_id}/'
 
         for party in self.parent.parties:
             api = update_api.format(
@@ -154,7 +164,11 @@ class StepProjectUpdate05(WizardStep, FORM_CLASS):
             for feat in features:
                 attributes = feat.attributes()
                 if attributes[party_id_idx] == party['id']:
-                    self.upload_parties(api, attributes[party_name_idx], attributes[party_type_idx])
+                    self.upload_parties(
+                        api,
+                        attributes[party_name_idx],
+                        attributes[party_type_idx]
+                    )
 
         self.set_progress_bar(100)
 

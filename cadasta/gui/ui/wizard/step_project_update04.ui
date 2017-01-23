@@ -73,7 +73,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="relationship_type_box"/>
+        <widget class="QgsFieldComboBox" name="relationship_type_box">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_6">
@@ -83,7 +87,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="location_attribute_box"/>
+        <widget class="QgsFieldComboBox" name="location_attribute_box">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="editable">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_7">
@@ -93,7 +104,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="party_attribute_box"/>
+        <widget class="QgsFieldComboBox" name="party_attribute_box">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_8">
@@ -103,7 +118,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="relationship_attribute_box"/>
+        <widget class="QgsFieldComboBox" name="relationship_attribute_box">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <spacer name="verticalSpacer">
