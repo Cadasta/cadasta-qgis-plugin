@@ -136,7 +136,14 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         :returns: The step to be switched to
         :rtype: WizardStep instance or None
         """
-        new_step = self.parent.step_project_creation02
+        # Check if layer has locations
+        features = self.selected_layer().getFeatures()
+        feature = next(features, None)
+        # If no locations found, skip step 2
+        if not feature:
+            new_step = self.parent.step_project_creation03
+        else:
+            new_step = self.parent.step_project_creation02
         return new_step
 
     def get_available_organisations(self):

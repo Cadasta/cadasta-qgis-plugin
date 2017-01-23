@@ -143,9 +143,12 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         if status:
             self.project_upload_result = json.loads(result)
-            self.upload_locations()
-            self.upload_parties()
-            self.upload_relationships()
+            total_locations = len(self.data['locations']['features'])
+            if total_locations > 0:
+                self.upload_locations()
+                self.upload_parties()
+                self.upload_relationships()
+            self.set_progress_bar(100)
         else:
             self.set_progress_bar(0)
             self.set_status(
