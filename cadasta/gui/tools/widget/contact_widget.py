@@ -67,7 +67,8 @@ class ContactWidget(WidgetBase, FORM_CLASS):
 
     def delete_contact(self):
         """Delete contact."""
-        for index in self.contact_listview.selectionModel().selection().indexes():
+        indexes = self.contact_listview.selectionModel().selection().indexes()
+        for index in indexes:
             self.model.removeRows(index.row(), 1)
 
     def validate_email(self, email):
@@ -86,7 +87,10 @@ class ContactWidget(WidgetBase, FORM_CLASS):
         error = None
         for i in xrange(self.model.rowCount()):
             record = self.model.record(i)
-            is_deleted = True if record.value("id") or record.value("name") else False
+            if record.value("id") or record.value("name"):
+                is_deleted = True
+            else:
+                is_deleted = False
             if is_deleted:
                 if not record.value("email") and not record.value("phone"):
                     error = self.tr(
