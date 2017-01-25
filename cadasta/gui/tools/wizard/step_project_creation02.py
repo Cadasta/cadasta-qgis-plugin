@@ -87,7 +87,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
                 (dict(zip(field_names, elem.attributes())))
             )
 
-        field_names.append('No field')
+        field_names.append(tr('No field'))
         self.set_items_combo_box(self.location_type_box, field_names)
         self.set_items_combo_box(self.location_attribute_box, field_names)
         self.set_items_combo_box(self.party_name_box, field_names)
