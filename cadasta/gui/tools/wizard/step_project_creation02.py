@@ -43,14 +43,14 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         :rtype: dict
         """
         cadasta_fields = {
-            'location_attribute': self.location_attribute_box.currentField(),
-            'location_type': self.location_type_box.currentField(),
-            'party_name': self.party_name_box.currentField(),
-            'party_type': self.party_type_box.currentField(),
-            'party_attribute': self.party_attribute_box.currentField(),
-            'relationship_type': self.relationship_type_box.currentField(),
+            'location_attribute': self.location_attribute_box.currentText(),
+            'location_type': self.location_type_box.currentText(),
+            'party_name': self.party_name_box.currentText(),
+            'party_type': self.party_type_box.currentText(),
+            'party_attribute': self.party_attribute_box.currentText(),
+            'relationship_type': self.relationship_type_box.currentText(),
             'relationship_attribute': (
-                self.relationship_attribute_box.currentField()
+                self.relationship_attribute_box.currentText()
             )
         }
 
@@ -61,6 +61,20 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         if not self.layer or self.layer != self.parent.layer:
             self.layer = self.parent.layer
             self.set_attributes_box()
+
+    def set_items_combo_box(self, combo_box, field_names):
+        """Set items for combo box.
+
+        :param combo_box: combo box that will be filled.
+        :type combo_box: QComboBox
+
+        :param field_names: fields that will be filled to commbo box.
+        :type field_names: [str]
+
+        """
+        field_names.sort()
+        combo_box.clear()
+        combo_box.addItems(field_names)
 
     def set_attributes_box(self):
         """Set all attribute box widgets."""
@@ -73,26 +87,14 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
                 (dict(zip(field_names, elem.attributes())))
             )
 
-        self.location_attribute_box.clear()
-        self.location_attribute_box.setLayer(self.layer)
-
-        self.location_type_box.clear()
-        self.location_type_box.setLayer(self.layer)
-
-        self.party_name_box.clear()
-        self.party_name_box.setLayer(self.layer)
-
-        self.relationship_type_box.clear()
-        self.relationship_type_box.setLayer(self.layer)
-
-        self.party_type_box.clear()
-        self.party_type_box.setLayer(self.layer)
-
-        self.party_attribute_box.clear()
-        self.party_attribute_box.setLayer(self.layer)
-
-        self.relationship_attribute_box.clear()
-        self.relationship_attribute_box.setLayer(self.layer)
+        field_names.append('No field')
+        self.set_items_combo_box(self.location_type_box, field_names)
+        self.set_items_combo_box(self.location_attribute_box, field_names)
+        self.set_items_combo_box(self.party_name_box, field_names)
+        self.set_items_combo_box(self.relationship_type_box, field_names)
+        self.set_items_combo_box(self.party_type_box, field_names)
+        self.set_items_combo_box(self.party_attribute_box, field_names)
+        self.set_items_combo_box(self.relationship_attribute_box, field_names)
 
     def validate_step(self):
         """Check if the step is valid.
@@ -101,7 +103,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         :rtype: ( bool, str )
         """
         error_message = ''
-        if not self.location_type_box.currentField():
+        if not self.location_type_box.currentText():
             error_message = tr(
                 'Empty location type. '
             )

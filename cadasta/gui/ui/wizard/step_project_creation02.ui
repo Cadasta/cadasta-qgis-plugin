@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>630</width>
-        <height>643</height>
+        <width>636</width>
+        <height>649</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -43,7 +43,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="location_type_box"/>
+        <widget class="QComboBox" name="location_type_box"/>
        </item>
        <item>
         <widget class="QLabel" name="label_2">
@@ -53,7 +53,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="party_type_box"/>
+        <widget class="QComboBox" name="party_type_box"/>
        </item>
        <item>
         <widget class="QLabel" name="label_4">
@@ -63,7 +63,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="party_name_box"/>
+        <widget class="QComboBox" name="party_name_box"/>
        </item>
        <item>
         <widget class="QLabel" name="label_5">
@@ -73,7 +73,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="relationship_type_box"/>
+        <widget class="QComboBox" name="relationship_type_box"/>
        </item>
        <item>
         <widget class="QLabel" name="label_6">
@@ -83,7 +83,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="location_attribute_box"/>
+        <widget class="QComboBox" name="location_attribute_box"/>
        </item>
        <item>
         <widget class="QLabel" name="label_7">
@@ -93,7 +93,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="party_attribute_box"/>
+        <widget class="QComboBox" name="party_attribute_box"/>
        </item>
        <item>
         <widget class="QLabel" name="label_8">
@@ -103,7 +103,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsFieldComboBox" name="relationship_attribute_box"/>
+        <widget class="QComboBox" name="relationship_attribute_box"/>
        </item>
        <item>
         <spacer name="verticalSpacer">
@@ -138,13 +138,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">qgis.gui</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
