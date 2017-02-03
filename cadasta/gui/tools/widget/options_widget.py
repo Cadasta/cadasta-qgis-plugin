@@ -11,7 +11,7 @@ This module provides: Login : Login for cadasta and save authnetication
 
 """
 import logging
-from qgis.PyQt.QtCore import pyqtSignal
+from PyQt4.QtCore import pyqtSignal
 
 from qgis.gui import QgsMessageBar
 from cadasta.api.login import Login

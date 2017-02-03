@@ -12,7 +12,7 @@ Cadasta **Cadasta Database.**
 
 import logging
 from qgis.PyQt import QtSql
-from qgis.PyQt.QtSql import QSqlTableModel
+from PyQt4.QtSql import QSqlTableModel
 from cadasta.common.setting import get_path_database
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'

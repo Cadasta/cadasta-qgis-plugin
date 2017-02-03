@@ -9,7 +9,7 @@ Cadasta project - **Contact Model.**
 
 """
 
-from qgis.PyQt.QtSql import QSqlQuery
+from PyQt4.QtSql import QSqlQuery
 from cadasta.database.cadasta_database import CadastaDatabase
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'

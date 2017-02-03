@@ -15,7 +15,7 @@ import re
 import os
 import logging
 # noinspection PyPackageRequirements
-from qgis.PyQt.QtGui import QWidget
+from PyQt4.QtGui import QWidget
 
 from cadasta.utilities.resources import get_ui_class
 

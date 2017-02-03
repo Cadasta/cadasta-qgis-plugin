@@ -15,7 +15,7 @@ __copyright__ = 'Copyright 2016, Kartoza'
 import unittest
 from mock import MagicMock
 from qgis.testing.mocked import get_iface
-from qgis.PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from cadasta.gui.tools.wizard.project_update_wizard import (

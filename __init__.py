@@ -24,7 +24,7 @@ __revision__ = '$Format:%H$'
 
 sys.path.append(os.path.dirname(__file__))
 
-from qgis.PyQt.QtCore import (
+from PyQt4.QtCore import (
     QLocale,
     QTranslator,
     QCoreApplication,

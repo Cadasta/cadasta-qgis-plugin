@@ -10,7 +10,7 @@ Cadasta project - **Setting utilities**
 """
 import os
 from PyQt4.QtCore import QUrl
-from qgis.PyQt.QtCore import QSettings
+from PyQt4.QtCore import QSettings
 from cadasta.utilities.resources import resources_path
 from cadasta.utilities.resources import get_project_path
 

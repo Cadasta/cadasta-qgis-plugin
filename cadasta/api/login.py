@@ -8,7 +8,7 @@ Cadasta project - **Login api.**
      (at your option) any later version.
 
 """
-from qgis.PyQt.QtCore import QByteArray
+from PyQt4.QtCore import QByteArray
 from cadasta.mixin.network_mixin import NetworkMixin
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'

@@ -12,7 +12,7 @@ This module provides: Project Update Step 3 : Download project spatial data
 """
 import logging
 import json
-from qgis.PyQt.QtCore import QVariant
+from PyQt4.QtCore import QVariant
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsField
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class

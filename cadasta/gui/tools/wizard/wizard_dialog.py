@@ -12,12 +12,12 @@ Cadasta **Cadasta Wizard Dialog.**
 
 import logging
 
-from qgis.PyQt.QtGui import (
+from PyQt4.QtGui import (
     QDialog,
     QPixmap
 )
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import pyqtSignature
+from PyQt4.QtCore import pyqtSignature
 from cadasta.common.setting import logo_element
 from cadasta.utilities.resources import get_ui_class, resources_path
 from cadasta.utilities.i18n import tr

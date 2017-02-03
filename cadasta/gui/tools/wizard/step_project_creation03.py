@@ -13,7 +13,7 @@ This module provides: Project Creation Step 3 : Upload to cadasta
 
 import json
 import logging
-from qgis.PyQt.QtCore import QCoreApplication, QByteArray
+from PyQt4.QtCore import QCoreApplication, QByteArray
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class

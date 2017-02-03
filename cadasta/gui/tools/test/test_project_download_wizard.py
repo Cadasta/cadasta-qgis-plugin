@@ -16,7 +16,7 @@ import os
 import unittest
 
 from mock.mock import MagicMock
-from qgis.PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 from qgis.testing.mocked import get_iface
 from qgis.utils import iface
 from cadasta.gui.tools.wizard.project_download_wizard import (

@@ -13,8 +13,8 @@ This module provides: Project Creation Step 1 : Define basic project properties
 import logging
 import os
 import json
-from qgis.PyQt.QtGui import QAbstractItemView, QListWidgetItem
-from qgis.PyQt.QtCore import Qt
+from PyQt4.QtGui import QAbstractItemView, QListWidgetItem
+from PyQt4.QtCore import Qt
 from qgis.core import QgsVectorFileWriter
 from qgis.core import QgsGeometry
 from cadasta.utilities.resources import is_valid_url

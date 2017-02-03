@@ -8,7 +8,7 @@ __date__ = '14/12/16'
 
 import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 from mock.mock import MagicMock
 from mock import patch
 from cadasta.api.login import Login

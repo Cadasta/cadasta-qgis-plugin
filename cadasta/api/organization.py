@@ -9,7 +9,7 @@ Cadasta project - **Organization api.**
 
 """
 
-from qgis.PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 from cadasta.mixin.network_mixin import NetworkMixin
 from cadasta.common.setting import get_url_instance
 

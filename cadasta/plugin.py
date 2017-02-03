@@ -21,8 +21,8 @@
  ***************************************************************************/
 """
 import logging
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import (
+from PyQt4.QtCore import QCoreApplication
+from PyQt4.QtGui import (
     QAction,
     QIcon
 )

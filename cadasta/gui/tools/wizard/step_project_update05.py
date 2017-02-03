@@ -14,7 +14,7 @@ import logging
 import json
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
-from qgis.PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 from cadasta.api.api_connect import ApiConnect
 from cadasta.common.setting import get_url_instance
 

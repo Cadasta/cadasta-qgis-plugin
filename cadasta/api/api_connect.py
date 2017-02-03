@@ -9,7 +9,7 @@ Cadasta project - **Api connector.**
 
 """
 import logging
-from qgis.PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 from cadasta.mixin.network_mixin import NetworkMixin
 
 __author__ = 'Dimas Ciputra <dimas@kartoza.com>'

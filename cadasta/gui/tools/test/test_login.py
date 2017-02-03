@@ -15,7 +15,7 @@ __copyright__ = 'Copyright 2016, Cadasta'
 import unittest
 
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication
 from qgis.testing.mocked import get_iface
 from qgis.utils import iface
 

@@ -14,7 +14,7 @@ __copyright__ = 'Copyright 2016, Cadasta'
 
 import unittest
 import os
-from qgis.PyQt.QtCore import (
+from PyQt4.QtCore import (
     QTranslator,
     QCoreApplication
 )

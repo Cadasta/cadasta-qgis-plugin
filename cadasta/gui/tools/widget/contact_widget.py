@@ -14,7 +14,7 @@ import logging
 import re
 
 from qgis.gui import QgsMessageBar
-from qgis.PyQt.QtGui import (
+from PyQt4.QtGui import (
     QHeaderView,
     QAbstractItemView
 )

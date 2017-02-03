@@ -11,7 +11,7 @@ Cadasta **Cadasta Dialog Base.**
 """
 
 import logging
-from qgis.PyQt.QtGui import (
+from PyQt4.QtGui import (
     QDialog,
     QPixmap
 )

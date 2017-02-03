@@ -11,7 +11,7 @@ Cadasta **Cadasta Help Dialog.**
 """
 
 import logging
-from qgis.PyQt.QtGui import QDialog
+from PyQt4.QtGui import QDialog
 
 from cadasta.gui.tools.helper.content.cadasta_help import cadasta_help
 from cadasta.gui.tools.helper.content.options_help import options_help

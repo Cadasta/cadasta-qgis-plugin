@@ -10,7 +10,7 @@ __date__ = '16/12/2016'
 import unittest
 import qgis
 import logging
-from qgis.PyQt.QtCore import QCoreApplication, QByteArray
+from PyQt4.QtCore import QCoreApplication, QByteArray
 from cadasta.mixin.network_mixin import NetworkMixin
 
 
