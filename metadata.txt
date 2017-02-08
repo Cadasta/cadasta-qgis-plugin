@@ -8,7 +8,7 @@
 
 [general]
 name=Cadasta
-qgisMinimumVersion=2.0
+qgisMinimumVersion=2.14
 description=This tool helps create, update, upload and download Cadasta projects.
 version=1.0.0
 status=alpha
