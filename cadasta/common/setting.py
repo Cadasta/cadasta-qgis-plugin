@@ -118,6 +118,29 @@ def get_authtoken():
 def delete_authtoken():
     """ Delete authtoken from QSettings."""
     delete_setting("user/authtoken")
+    delete_setting("user/organizations")
+
+
+def save_user_organizations(organizations):
+    """ Save user organizations to QSettings.
+
+    :param organizations: organizations of user
+    :type organizations: list
+
+    """
+    set_setting("user/organizations", ';'.join(organizations))
+
+
+def get_user_organizations():
+    """ Get user organizations from QSettings.
+
+    :return: organizations of user
+    :rtype: list
+    """
+    if get_setting("user/organizations"):
+        return get_setting("user/organizations").split(';')
+    else:
+        return []
 
 
 def get_path_data(organization_slug=None, project_slug=None):

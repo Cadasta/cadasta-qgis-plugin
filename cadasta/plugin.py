@@ -43,11 +43,12 @@ from cadasta.gui.tools.wizard.project_update_wizard import (
 from cadasta.gui.tools.helper.helper_dialog import (
     HelperDialog
 )
-from cadasta.common.setting import get_authtoken
+from cadasta.common.setting import get_authtoken, get_user_organizations
 
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
 from cadasta.utilities.resources import resources_path
+from cadasta.utilities.utilities import Utilities
 
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
@@ -69,9 +70,28 @@ class CadastaPlugin:
         self.project_creation_wizard = None
         self.project_update_wizard = None
         self.wizard = None
+        self.iface.currentLayerChanged.connect(self.layer_changed)
 
         # Declare instance attributes
         self.actions = []
+
+    def layer_changed(self, layer):
+        """Function that triggered when layer changed.
+
+        :param layer: New layer that selected.
+        :type layer: QgsVectorLayer
+        """
+        if get_authtoken() and layer:
+            information = Utilities.get_basic_information_by_vector(layer)
+            if information:
+                try:
+                    organization_slug = information['organization']['slug']
+                    if organization_slug in get_user_organizations():
+                        self.project_update_wizard.setEnabled(True)
+                        return
+                except TypeError:
+                    pass
+        self.project_update_wizard.setEnabled(False)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -172,6 +192,7 @@ class CadastaPlugin:
                 self.tr(u'&Cadasta'),
                 action)
 
+        self.project_update_wizard.setEnabled(False)
         if get_authtoken():
             self._enable_authenticated_menu()
         else:
@@ -219,10 +240,16 @@ class CadastaPlugin:
     def _enable_authenticated_menu(self):
         """Enable menu that requires auth token to proceed."""
         self.project_creation_wizard.setEnabled(True)
+        if len(self.iface.legendInterface().selectedLayers()) > 0:
+            self.layer_changed(
+                self.iface.legendInterface().selectedLayers()[0])
+        else:
+            self.layer_changed(None)
 
     def _disable_authenticated_menu(self):
         """Disable menu that requires auth token to proceed."""
         self.project_creation_wizard.setEnabled(False)
+        self.project_update_wizard.setEnabled(False)
 
     # ------------------------------------------------------------------------
     # initiate project creation dialog

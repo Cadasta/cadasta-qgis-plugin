@@ -20,6 +20,7 @@ from cadasta.utilities.geojson_parser import GeojsonParser
 from cadasta.api.organization_project import (
     OrganizationProjectSpatial
 )
+from cadasta.utilities.utilities import Utilities
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -121,3 +122,5 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         vlayer = QgsVectorLayer(
             filename, "%s/%s" % (organization_slug, project_slug), "ogr")
         QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+        # save basic information
+        Utilities.save_project_basic_information(self.project)

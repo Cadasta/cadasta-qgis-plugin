@@ -15,6 +15,7 @@ from PyQt4.QtCore import pyqtSignal
 
 from qgis.gui import QgsMessageBar
 from cadasta.api.login import Login
+from cadasta.api.organization import Organization
 from cadasta.gui.tools.widget.widget_base import (
     get_widget_step_ui_class,
     WidgetBase
@@ -27,7 +28,8 @@ from cadasta.common.setting import (
     get_setting,
     delete_authtoken,
     delete_setting,
-    get_authtoken
+    get_authtoken,
+    save_user_organizations
 )
 from cadasta.utilities.i18n import tr
 
@@ -58,6 +60,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
         self.url = None
         self.auth_token = None
         self.login_api = None
+        self.organisation_api = Organization()
         self.set_widgets()
 
     def set_widgets(self):
@@ -144,7 +147,6 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
             self.save_button.setEnabled(True)
             self.ok_label.setText(self.tr('Success'))
             self.ok_label.setStyleSheet('color:green')
-            self.authenticated.emit()
         else:
             self.save_button.setEnabled(False)
             self.ok_label.setText(self.tr('Failed'))
@@ -161,7 +163,32 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
 
         if self.auth_token:
             set_setting('username', self.username_input.displayText())
-            self.clear_button.setEnabled(True)
             save_authtoken(self.auth_token)
             save_url_instance(self.url)
+            self.save_button.setEnabled(False)
+            self.save_organizations()
+
+    def save_organizations(self):
+        """Save organizations of user.
+
+        Organization is saved to setting.
+        If it is success, close dialog after
+        that.
+        """
+        status, results = self.organisation_api. \
+            organizations_project_filtered()
+        self.clear_button.setEnabled(True)
+        self.save_button.setEnabled(False)
+        if status:
+            organization = []
+            for result in results:
+                organization.append(result['slug'])
+            save_user_organizations(organization)
             self.parent.close()
+        else:
+            self.message_bar = QgsMessageBar()
+            self.message_bar.pushWarning(
+                self.tr('Error'),
+                self.tr('Error when getting user permission.')
+            )
+        self.authenticated.emit()
