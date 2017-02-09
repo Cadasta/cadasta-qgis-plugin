@@ -13,6 +13,7 @@ This module provides: Project Download Step 2 : Download Project
 import json
 import logging
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+from qgis.gui import QgsMessageBar
 from cadasta.common.setting import get_path_data
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
@@ -20,6 +21,10 @@ from cadasta.utilities.geojson_parser import GeojsonParser
 from cadasta.api.organization_project import (
     OrganizationProjectSpatial
 )
+from cadasta.common.setting import (
+    save_user_organizations
+)
+from cadasta.api.organization import Organization
 from cadasta.utilities.utilities import Utilities
 
 __copyright__ = "Copyright 2016, Cadasta"
@@ -45,6 +50,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         self.loading_label_string = None
         self.loaded_label_string = None
         self.spatial_api = None
+        self.organisation_api = Organization()
 
     def set_widgets(self):
         """Set all widgets on the tab."""
@@ -91,6 +97,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         :param result: result of request
         :type result: (bool, list/dict/str)
         """
+        self.save_organizations()
         if result[0]:
             # save result to local file
             organization_slug = result[2]
@@ -124,3 +131,25 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         QgsMapLayerRegistry.instance().addMapLayer(vlayer)
         # save basic information
         Utilities.save_project_basic_information(self.project)
+
+    def save_organizations(self):
+        """Save organizations of user.
+
+        Organization is saved to setting.
+        If it is success, close dialog after
+        that.
+        """
+        status, results = self.organisation_api. \
+            organizations_project_filtered()
+        if status:
+            organization = []
+            for result in results:
+                organization.append(result['slug'])
+            save_user_organizations(organization)
+        else:
+            self.message_bar = QgsMessageBar()
+            self.message_bar.pushWarning(
+                self.tr('Error'),
+                self.tr('Error when getting user permission.')
+            )
+        self.parent.downloaded.emit()

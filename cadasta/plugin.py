@@ -237,14 +237,17 @@ class CadastaPlugin:
         dialog.show()
         dialog.exec_()
 
+    def get_curent_layer(self):
+        """Get current layer of qgis."""
+        if len(self.iface.legendInterface().selectedLayers()) > 0:
+            return self.iface.legendInterface().selectedLayers()[0]
+        else:
+            return None
+
     def _enable_authenticated_menu(self):
         """Enable menu that requires auth token to proceed."""
         self.project_creation_wizard.setEnabled(True)
-        if len(self.iface.legendInterface().selectedLayers()) > 0:
-            self.layer_changed(
-                self.iface.legendInterface().selectedLayers()[0])
-        else:
-            self.layer_changed(None)
+        self.layer_changed(self.get_curent_layer())
 
     def _disable_authenticated_menu(self):
         """Disable menu that requires auth token to proceed."""
@@ -278,6 +281,10 @@ class CadastaPlugin:
     # ------------------------------------------------------------------------
     # initiate project download dialog
     # ------------------------------------------------------------------------
+    def call_layer_changed(self):
+        """call layer changed."""
+        self.layer_changed(self.get_curent_layer())
+
     def _create_project_download_wizard(self):
         """Create action for project download wizard."""
         icon_path = resources_path('images', 'icon.png')
@@ -295,6 +302,7 @@ class CadastaPlugin:
         dialog = ProjectDownloadWizard(
             iface=self.iface
         )
+        dialog.downloaded.connect(self.call_layer_changed)
         dialog.show()
         dialog.exec_()
 

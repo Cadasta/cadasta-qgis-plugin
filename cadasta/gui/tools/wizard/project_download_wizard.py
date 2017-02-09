@@ -11,6 +11,7 @@ Cadasta **Cadasta Project Download Dialog.**
 """
 
 import logging
+from PyQt4.QtCore import pyqtSignal
 
 from cadasta.gui.tools.wizard.step_project_download01 import (
     StepProjectDownload01
@@ -39,6 +40,7 @@ class ProjectDownloadWizard(WizardDialog):
 
     step_project_download01 = None
     step_project_download02 = None
+    downloaded = pyqtSignal()
 
     def __init__(self, parent=None, iface=None):
         """Constructor for the dialog.
