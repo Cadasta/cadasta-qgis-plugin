@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>636</width>
-        <height>649</height>
+        <width>630</width>
+        <height>643</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -74,36 +74,6 @@
        </item>
        <item>
         <widget class="QComboBox" name="relationship_type_box"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>Location Attribute </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="location_attribute_box"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Party Attribute</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="party_attribute_box"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>Relationship Attribute</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="relationship_attribute_box"/>
        </item>
        <item>
         <spacer name="verticalSpacer">

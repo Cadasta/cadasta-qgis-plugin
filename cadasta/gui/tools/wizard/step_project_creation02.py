@@ -43,15 +43,10 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         :rtype: dict
         """
         cadasta_fields = {
-            'location_attribute': self.location_attribute_box.currentText(),
             'location_type': self.location_type_box.currentText(),
             'party_name': self.party_name_box.currentText(),
             'party_type': self.party_type_box.currentText(),
-            'party_attribute': self.party_attribute_box.currentText(),
             'relationship_type': self.relationship_type_box.currentText(),
-            'relationship_attribute': (
-                self.relationship_attribute_box.currentText()
-            )
         }
 
         return cadasta_fields
@@ -89,12 +84,9 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
 
         field_names.append(tr('No field'))
         self.set_items_combo_box(self.location_type_box, field_names)
-        self.set_items_combo_box(self.location_attribute_box, field_names)
         self.set_items_combo_box(self.party_name_box, field_names)
         self.set_items_combo_box(self.relationship_type_box, field_names)
         self.set_items_combo_box(self.party_type_box, field_names)
-        self.set_items_combo_box(self.party_attribute_box, field_names)
-        self.set_items_combo_box(self.relationship_attribute_box, field_names)
 
     def validate_step(self):
         """Check if the step is valid.
@@ -103,7 +95,8 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         :rtype: ( bool, str )
         """
         error_message = ''
-        if not self.location_type_box.currentText():
+        if not self.location_type_box.currentText() or \
+                self.location_type_box.currentText() == tr('No field'):
             error_message = tr(
                 'Empty location type. '
             )
