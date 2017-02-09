@@ -13,7 +13,9 @@ This module provides: Login : Login for cadasta and save authnetication
 import json
 import logging
 import os
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from cadasta.common.setting import get_path_data
+from cadasta.utilities.geojson_parser import GeojsonParser
 from cadasta.utilities.resources import get_project_path
 
 __copyright__ = "Copyright 2016, Cadasta"
@@ -114,3 +116,25 @@ class Utilities(object):
                 information = Utilities.get_basic_information(
                     organization_slug, project_slug)
                 return information
+
+    @staticmethod
+    def save_layer(geojson, organization_slug, project_slug):
+        """Save geojson to local file.
+
+        :param organization_slug: organization slug for data
+        :type organization_slug: str
+
+        :param project_slug: project_slug for getting spatial
+        :type project_slug: str
+
+        :param geojson: geojson that will be saved
+        :type geojson: JSON object
+        """
+        geojson = GeojsonParser(geojson)
+        filename = get_path_data(organization_slug, project_slug)
+        file_ = open(filename, 'w')
+        file_.write(geojson.geojson_string())
+        file_.close()
+        vlayer = QgsVectorLayer(
+            filename, "%s/%s" % (organization_slug, project_slug), "ogr")
+        QgsMapLayerRegistry.instance().addMapLayer(vlayer)

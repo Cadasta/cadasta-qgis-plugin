@@ -13,12 +13,17 @@ This module provides: Project Creation Step 3 : Upload to cadasta
 
 import json
 import logging
+from qgis.core import QgsMapLayerRegistry
 from PyQt4.QtCore import QCoreApplication, QByteArray
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.utilities.i18n import tr
+from cadasta.utilities.utilities import Utilities
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.common.setting import get_url_instance
 from cadasta.api.api_connect import ApiConnect
+from cadasta.api.organization_project import (
+    OrganizationProjectSpatial
+)
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -164,6 +169,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         if status:
             self.project_upload_result = json.loads(result)
+            self.rerender_saved_layer()
             total_locations = len(self.data['locations']['features'])
             if total_locations > 0:
                 self.upload_locations()
@@ -177,6 +183,32 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             )
 
         self.set_status(tr('Finished'))
+
+    def rerender_saved_layer(self):
+        """Rerender saved layer on cadasta."""
+        # rerender current project to cadasta data
+        layer = self.parent.layer
+        QgsMapLayerRegistry.instance().removeMapLayer(layer.id())
+        self.spatial_api = OrganizationProjectSpatial(
+            self.data['organisation']['slug'],
+            self.project_upload_result['slug'],
+            on_finished=self.organization_projects_spatial_call_finished)
+
+    def organization_projects_spatial_call_finished(self, result):
+        """Function when Organization Project Spatial Api finished.
+
+        :param result: result of request
+        :type result: (bool, list/dict/str)
+        """
+        if result[0]:
+            # save result to local file
+            organization_slug = result[2]
+            project_slug = result[3]
+            Utilities.save_layer(result[1], organization_slug, project_slug)
+            Utilities.save_project_basic_information(self.project_upload_result)
+            self.parent.downloaded.emit()
+        else:
+            pass
 
     def upload_locations(self):
         """Upload project locations to cadasta."""

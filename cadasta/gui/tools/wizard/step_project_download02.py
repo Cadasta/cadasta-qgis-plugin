@@ -10,14 +10,10 @@ This module provides: Project Download Step 2 : Download Project
      (at your option) any later version.
 
 """
-import json
 import logging
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from qgis.gui import QgsMessageBar
-from cadasta.common.setting import get_path_data
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
-from cadasta.utilities.geojson_parser import GeojsonParser
 from cadasta.api.organization_project import (
     OrganizationProjectSpatial
 )
@@ -102,35 +98,13 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             # save result to local file
             organization_slug = result[2]
             project_slug = result[3]
-            self.save_layer(result[1], organization_slug, project_slug)
+            Utilities.save_layer(result[1], organization_slug, project_slug)
+            Utilities.save_project_basic_information(self.project)
         else:
             pass
         self.progress_bar.setValue(self.progress_bar.maximum())
         self.parent.next_button.setEnabled(True)
         self.warning_label.setText(self.loaded_label_string)
-
-    def save_layer(self, geojson, organization_slug, project_slug):
-        """Save geojson to local file.
-
-        :param organization_slug: organization slug for data
-        :type organization_slug: str
-
-        :param project_slug: project_slug for getting spatial
-        :type project_slug: str
-
-        :param geojson: geojson that will be saved
-        :type geojson: JSON object
-        """
-        geojson = GeojsonParser(geojson)
-        filename = get_path_data(organization_slug, project_slug)
-        file_ = open(filename, 'w')
-        file_.write(geojson.geojson_string())
-        file_.close()
-        vlayer = QgsVectorLayer(
-            filename, "%s/%s" % (organization_slug, project_slug), "ogr")
-        QgsMapLayerRegistry.instance().addMapLayer(vlayer)
-        # save basic information
-        Utilities.save_project_basic_information(self.project)
 
     def save_organizations(self):
         """Save organizations of user.
