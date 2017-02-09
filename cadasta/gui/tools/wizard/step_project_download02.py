@@ -16,6 +16,7 @@ from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from cadasta.common.setting import get_path_data
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
+from cadasta.utilities.geojson_parser import GeojsonParser
 from cadasta.api.organization_project import (
     OrganizationProjectSpatial
 )
@@ -112,9 +113,10 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         :param geojson: geojson that will be saved
         :type geojson: JSON object
         """
+        geojson = GeojsonParser(geojson)
         filename = get_path_data(organization_slug, project_slug)
         file_ = open(filename, 'w')
-        file_.write(json.dumps(geojson, sort_keys=True))
+        file_.write(geojson.geojson_string())
         file_.close()
         vlayer = QgsVectorLayer(
             filename, "%s/%s" % (organization_slug, project_slug), "ogr")
