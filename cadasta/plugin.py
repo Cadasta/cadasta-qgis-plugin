@@ -44,6 +44,9 @@ from cadasta.gui.tools.wizard.project_update_wizard import (
 from cadasta.gui.tools.helper.helper_dialog import (
     HelperDialog
 )
+from cadasta.gui.tools.about.about_dialog import (
+    AboutDialog
+)
 from cadasta.common.setting import get_authtoken, get_user_organizations
 
 # Initialize Qt resources from file resources.py
@@ -233,6 +236,7 @@ class CadastaPlugin:
         self._create_project_update_wizard()
         self._create_contact_dialog()
         self._create_help_dialog()
+        self._create_about_dialog()
         for action in self.actions:
             self.iface.addPluginToVectorMenu(
                 self.tr(u'&Cadasta'),
@@ -413,5 +417,28 @@ class CadastaPlugin:
             iface=self.iface
         )
 
+        dialog.show()
+        dialog.exec_()
+
+    # ------------------------------------------------------------------------
+    # initiate about dialog
+    # ------------------------------------------------------------------------
+    def _create_about_dialog(self):
+        """Create action for help diaog."""
+        icon_path = resources_path('images', 'icon.png')
+        self.action_options_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'About'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_about_dialog
+        )
+
+    def show_about_dialog(self):
+        """Show the help dialog."""
+        dialog = AboutDialog(
+            iface=self.iface
+        )
         dialog.show()
         dialog.exec_()
