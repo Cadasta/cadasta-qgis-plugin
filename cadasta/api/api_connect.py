@@ -63,7 +63,7 @@ class ApiConnect(NetworkMixin):
             QCoreApplication.processEvents()
 
         if not self.error:
-            return True, self.results.data()
+            return True, self.get_json_results()
         else:
             return False, self.results.data()
 
@@ -81,7 +81,7 @@ class ApiConnect(NetworkMixin):
             QCoreApplication.processEvents()
 
         if not self.error:
-            return True, self.results.data()
+            return True, self.get_json_results()
         else:
             return False, self.results.data()
 
@@ -99,6 +99,6 @@ class ApiConnect(NetworkMixin):
             QCoreApplication.processEvents()
 
         if not self.error:
-            return True, self.results.data()
+            return True, self.get_json_results()
         else:
             return False, self.results.data()

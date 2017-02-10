@@ -178,6 +178,42 @@ def get_path_data(organization_slug=None, project_slug=None):
     return data_path
 
 
+def get_csv_path(organization_slug=None, project_slug=None, attribute=None):
+    """ Path for csv file
+
+    :param organization_slug: organization slug for the data location
+    :type organization_slug: str
+
+    :param project_slug: project slug for filename
+    :type project_slug: str
+
+    :param attribute: additional csv name
+    :type attribute: str
+
+    :return: Absoulte data path
+    :rtype: str
+    """
+    data_path = get_project_path()
+    data_path = os.path.join(
+        data_path,
+        'data'
+    )
+    if organization_slug:
+        data_path = os.path.join(
+            data_path,
+            organization_slug
+        )
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+
+    if project_slug:
+        data_path = os.path.join(
+            data_path,
+            '%s_%s.csv' % (project_slug, attribute)
+        )
+    return data_path
+
+
 def get_path_database(database=None):
     """Path databased based on database.
 

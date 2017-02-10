@@ -50,29 +50,30 @@ class CadastaProjectCreationTest(unittest.TestCase):
         'slug': "san-jose-open-data-portal-affordable-housing"
     }
 
+    test_organization = [{
+        'id': 'yzqz5vup4cvz3ukfsyvstdfb',
+        'slug': 'allthethings',
+        'name': 'AllTheThings',
+        'description': '',
+        'archived': 'false',
+        'urls': [],
+        'contacts': []
+    }]
+
     def setUp(self):
         """Runs before each test."""
         self.wizard = ProjectUpdateWizard(iface=IFACE)
+        self.step1 = self.wizard.step_project_update01
+        self.step1.organization._call_api = MagicMock(
+            return_value=(True, self.test_organization)
+        )
+        self.step1.get_downloaded_project = MagicMock(
+            return_value=[self.test_project]
+        )
 
     def test_step_01(self):
         """Test step 01"""
         current_step = self.wizard.get_current_step()
         button = current_step.get_available_projects_button
         button.click()
-
-        while not current_step.project_api.reply.isFinished():
-            QCoreApplication.processEvents()
         self.assertIsNotNone(current_step.selected_project())
-
-    def test_step_02(self):
-        """Test step 02"""
-        current_step = self.wizard.step_project_update02
-        current_step.parent.project = self.test_project
-        current_step.send_update_request = MagicMock(
-                return_value=(True, '')
-        )
-        current_step.update_button.click()
-        self.assertEqual(
-                current_step.update_status_label.text(),
-                'Update success'
-        )

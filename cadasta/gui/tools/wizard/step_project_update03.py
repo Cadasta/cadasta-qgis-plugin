@@ -2,7 +2,7 @@
 """
 Cadasta project update step -**Cadasta Wizard**
 
-This module provides: Project Update Step 3 : Download project spatial data
+This module provides: Project Update Step 5 : Upload update data
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -12,17 +12,14 @@ This module provides: Project Update Step 3 : Download project spatial data
 """
 import logging
 import json
-from PyQt4.QtCore import QVariant
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsField
+from PyQt4.QtCore import Qt
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
-from cadasta.common.setting import get_url_instance
-from cadasta.common.setting import get_path_data
-from cadasta.api.organization_project import (
-    OrganizationProjectSpatial
-)
-from cadasta.api.api_connect import ApiConnect
+from PyQt4.QtCore import QCoreApplication
 from cadasta.utilities.utilities import Utilities
+from cadasta.api.api_connect import ApiConnect
+from cadasta.common.setting import get_url_instance
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -35,6 +32,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectUpdate03(WizardStep, FORM_CLASS):
+
     def __init__(self, parent=None):
         """Constructor.
 
@@ -42,33 +40,30 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         :type parent: QWidget
         """
         super(StepProjectUpdate03, self).__init__(parent)
-        self.parent = parent
+        self.submit_button.clicked.connect(self.upload_update)
+        self.project_upload_result = None
+        self.current_progress = 0
+        self.data = None
         self.project = None
-        self.loading_label_string = None
-        self.loaded_label_string = None
-        self.spatial_api = None
+        self.layer = None
 
     def set_widgets(self):
         """Set all widgets on the tab."""
-        self.project = self.parent.project
-        self.loading_label_string = self.tr('Your data is being downloaded')
-        self.loaded_label_string = self.tr('Your data has been downloaded')
+        self.project = self.parent.project['information']
+        self.layer = self.parent.project['vector_layer']
+        self.lbl_status.setText(
+            self.tr('Upload the data?')
+        )
+        self.set_progress_bar(0)
 
-        self.warning_label.setText(self.loading_label_string)
-        self.get_project_spatial(
-            self.project['organization']['slug'], self.project['slug'])
-        self.parent.next_button.setEnabled(False)
+    def set_status(self, status):
+        """Show status in label and text edit.
 
-    def get_project_spatial(self, organization_slug, project_slug):
-        """Call Organization Project Spatial api.
-
-        :param project_slug: project_slug for getting spatial
-        :type project_slug: str
+        :param status: Given status
+        :type status: str
         """
-        self.spatial_api = OrganizationProjectSpatial(
-            organization_slug,
-            project_slug,
-            on_finished=self.organization_projects_spatial_call_finished)
+        self.lbl_status.setText(status)
+        self.text_edit.append(status + '\n')
 
     def get_next_step(self):
         """Find the proper step when user clicks the Next button.
@@ -76,81 +71,344 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         :returns: The step to be switched to
         :rtype: WizardStep, None
         """
-        return self.parent.step_project_update04
+        return None
 
-    def organization_projects_spatial_call_finished(self, result):
-        """Function when Organization Project Spatial Api finished.
+    def set_progress_bar(self, value):
+        """Set progress bar value.
 
-        :param result: result of request
-        :type result: (bool, list/dict/str)
+        :param value: integer value for progress bar
+        :type value: int
         """
-        if result[0]:
-            # save result to local file
-            organization_slug = result[2]
-            project_slug = result[3]
-            Utilities.save_layer(result[1], organization_slug, project_slug)
+        self.progress_bar.setValue(value)
+        QCoreApplication.processEvents()
+
+    def update_project(self):
+        """Update a basic project information in an organization."""
+        step2 = self.parent.step_project_update02
+
+        contact_item_list = step2.project_contact_list.selectedItems()
+        contacts = []
+        for contact_item in contact_item_list:
+            contact = contact_item.data(Qt.UserRole)
+            contacts.append({
+                'name': contact.name,
+                'tel': contact.phone,
+                'email': contact.email
+            })
+
+        access = 'private' if step2.access_checkbox.isChecked() else 'public'
+        post_data = {
+            'name': step2.project_name_text.displayText(),
+            'description': step2.project_desc_text.toPlainText(),
+            'urls': [
+                step2.project_url_text.displayText()
+            ],
+            'access': access,
+            'contacts': contacts
+        }
+
+        status, response = step2.send_update_request(post_data)
+        if status:
+            Utilities.save_project_basic_information(response)
+            self.set_status(
+                self.tr('Update success')
+            )
         else:
-            pass
-        self.progress_bar.setValue(self.progress_bar.maximum())
-        self.parent.next_button.setEnabled(True)
-        self.warning_label.setText(self.loaded_label_string)
+            self.set_status(
+                'Error: %s' % response
+            )
 
-    def get_relationship_attribute(self, vector_layer):
-        """Get parties listed as part of a project and put it to attribute table.
+    def update_spatial_location(self):
+        """Update spatial information."""
+        update_loc_api = '/api/v1/organizations/{organization_slug}/' \
+                         'projects/{project_slug}/spatial/{spatial_unit_id}/'
 
-        :param vector_layer: QGS vector layer in memory
-        :type vector_layer: QgsVectorLayer
-        """
-        organization_slug = self.project['organization']['slug']
-        project_slug = self.project['slug']
+        location_type_idx = self.layer.fieldNameIndex('type')
+        location_id_idx = self.layer.fieldNameIndex('id')
 
-        api = '/api/v1/organizations/{organization_slug}/projects/' \
-              '{project_slug}/parties/'.format(
-            organization_slug=organization_slug,
-            project_slug=project_slug)
+        features = self.layer.getFeatures()
 
-        connector = ApiConnect(get_url_instance() + api)
-        status, result = connector.get()
+        for feature in features:
+            attributes = feature.attributes()
+            api = update_loc_api.format(
+                organization_slug=self.project['organization']['slug'],
+                project_slug=self.project['slug'],
+                spatial_unit_id=attributes[location_id_idx]
+            )
 
-        if not status or len(result) == 0:
+            if attributes[location_id_idx]:
+                geojson = feature.geometry().exportToGeoJSON()
+                self.upload_update_locations(
+                        api,
+                        geojson,
+                        attributes[location_type_idx]
+                )
+            if not attributes[location_id_idx]:
+                # New location
+                geojson = feature.geometry().exportToGeoJSON()
+                project_id = self.add_new_locations(
+                        geojson,
+                        attributes[location_type_idx]
+                )
+                self.layer.startEditing()
+                self.layer.changeAttributeValue(
+                        feature.id(), 1, project_id
+                )
+                self.layer.commitChanges()
+
+    def update_relationship_attributes(self):
+        """Update relationship attribute for location"""
+
+        # Get relationship csv
+        features = self.layer.getFeatures()
+        if not features:
             return
 
-        self.parent.parties = result
+        relationship_id_idx = self.layer.fieldNameIndex(
+                'relationship_layer_id'
+        )
+        if not relationship_id_idx:
+            return
 
-        # Add party attribute to location
-        data_provider = vector_layer.dataProvider()
+        relationship_id = None
+        for feature in features:
+            attributes = feature.attributes()
+            if attributes[relationship_id_idx]:
+                relationship_id = attributes[relationship_id_idx]
+            break
+        if not relationship_id:
+            return
 
-        # Enter editing mode
-        vector_layer.startEditing()
+        relationship_layer = QgsMapLayerRegistry.instance().mapLayer(
+                relationship_id
+        )
+        if not relationship_layer:
+            return
 
-        # Add fields
-        data_provider.addAttributes([
-            QgsField('party_id', QVariant.String),
-            QgsField('party_name', QVariant.String),
-            QgsField('party_type', QVariant.String),
-        ])
+        relationship_feats = relationship_layer.getFeatures()
+        spatial_id_idx = 0
+        relationship_id_idx = 1
+        relationship_type_idx = 2
 
-        # Save the new fields
-        vector_layer.commitChanges()
+        update_api = '/api/v1/organizations/{organization_slug}/projects/' \
+                     '{project_slug}/relationships/tenure/{relationship_id}/'
 
-        # Edit the attribute value
-        vector_layer.startEditing()
+        for feature in relationship_feats:
+            attributes = feature.attributes()
+            api = update_api.format(
+                organization_slug=self.project['organization']['slug'],
+                project_slug=self.project['slug'],
+                relationship_id=attributes[relationship_id_idx]
+            )
+            self.upload_relationship(
+                api,
+                attributes[relationship_type_idx],
+            )
 
-        # Features
-        features = vector_layer.getFeatures()
-        for index, fet in enumerate(features):
-            try:
-                vector_layer.changeAttributeValue(
-                    fet.id(), 3, result[index]['id']
-                )
-                vector_layer.changeAttributeValue(
-                    fet.id(), 4, result[index]['name']
-                )
-                vector_layer.changeAttributeValue(
-                    fet.id(), 5, result[index]['type']
-                )
-            except (IndexError, KeyError):
-                pass
+    def update_party_attributes(self):
+        """Update party attribute for this project."""
 
-        # Commit changes
-        vector_layer.commitChanges()
+        # Get relationship csv
+        features = self.layer.getFeatures()
+        if not features:
+            return
+
+        party_id_idx = self.layer.fieldNameIndex('party_layer_id')
+        if not party_id_idx:
+            return
+
+        party_id = None
+        for feature in features:
+            attributes = feature.attributes()
+            if attributes[party_id_idx]:
+                party_id = attributes[party_id_idx]
+                break
+        if not party_id:
+            return
+
+        party_layer = QgsMapLayerRegistry.instance().mapLayer(party_id)
+        if not party_layer:
+            return
+
+        party_feats = party_layer.getFeatures()
+        id_idx = 0
+        name_idx = 1
+        type_idx = 2
+
+        update_api = '/api/v1/organizations/{organization_slug}/projects/' \
+                     '{project_slug}/parties/{party_id}/'
+
+        for feature in party_feats:
+            attributes = feature.attributes()
+            api = update_api.format(
+                organization_slug=self.project['organization']['slug'],
+                project_slug=self.project['slug'],
+                party_id=attributes[id_idx]
+            )
+            self.upload_parties(
+                api,
+                attributes[name_idx],
+                attributes[type_idx]
+            )
+
+    def upload_update(self):
+        """Upload the updates"""
+        self.progress_bar.setVisible(True)
+        self.submit_button.setVisible(False)
+        self.parent.back_button.setEnabled(False)
+
+        self.set_status(
+            self.tr('Update project information')
+        )
+        self.update_project()
+        self.set_progress_bar(25)
+        self.set_status(
+            self.tr('Finished update project information')
+        )
+
+        self.set_status(
+            self.tr('Update spatial information')
+        )
+        self.set_progress_bar(50)
+        self.update_spatial_location()
+        self.set_status(
+            self.tr('Finished update locations')
+        )
+
+        self.set_status(
+            self.tr('Update relationship')
+        )
+        self.set_progress_bar(60)
+        self.update_relationship_attributes()
+        self.set_status(
+            self.tr('Finished update relationship')
+        )
+
+        self.set_status(
+            self.tr('Update parties')
+        )
+        self.set_progress_bar(80)
+        self.update_party_attributes()
+        self.set_status(
+            self.tr('Finished update party')
+        )
+
+        self.set_progress_bar(100)
+
+    def upload_update_locations(self, api, geometry, location_type):
+        """Upload update location data.
+
+        :param api: Api url to upload location
+        :type api: str
+
+        :param geometry: Location geojson geometry
+        :type geometry: str
+
+        :param location_type: Location type
+        :type location_type: str
+        """
+        post_data = {
+            'geometry': geometry,
+            'type': location_type
+        }
+
+        connector = ApiConnect(get_url_instance() + api)
+        status, result = connector.patch_json(json.dumps(post_data))
+
+        if status:
+            self.set_status(
+                self.tr('Location updated.')
+            )
+        else:
+            self.set_status(
+                'Error: %s' % result
+            )
+
+    def add_new_locations(self, geometry, location_type):
+        """Add new location
+
+        :param geometry: Location geojson geometry
+        :type geometry: str
+
+        :param location_type: Location type
+        :type location_type: str
+        """
+        api = '/api/v1/organizations/{organization_slug}/projects/' \
+              '{project_slug}/spatial/'.format(
+                organization_slug=self.project['organization']['slug'],
+                project_slug=self.project['slug'])
+
+        post_data = {
+            'geometry': geometry
+        }
+
+        if location_type:
+            post_data['type'] = location_type
+
+        connector = ApiConnect(get_url_instance() + api)
+        status, result = connector.post_json(json.dumps(post_data))
+
+        if status:
+            self.set_status(
+                self.tr('Location added.')
+            )
+            return json.loads(result)['properties']['id']
+        else:
+            self.set_status(
+                'Error: %s' % result
+            )
+            return None
+
+    def upload_parties(self, api, party_name, party_type):
+        """Upload party data.
+
+        :param api: Api url to upload party
+        :type api: str
+
+        :param party_name: Party name
+        :type party_name: str
+
+        :param party_type: Party type
+        :type party_type: str
+        """
+        post_data = {
+            'name': party_name,
+            'type': party_type
+        }
+
+        connector = ApiConnect(get_url_instance() + api)
+        status, result = connector.patch_json(json.dumps(post_data))
+
+        if status:
+            self.set_status(
+                self.tr('Party updated.')
+            )
+        else:
+            self.set_status(
+                'Error: %s' % result
+            )
+
+    def upload_relationship(self, api, relationship_type):
+        """Upload relationship data.
+
+        :param api: Api url to upload party
+        :type api: str
+
+        :param relationship_type: Relationship type
+        :type relationship_type: str
+        """
+        post_data = {
+            'tenure_type': relationship_type,
+        }
+
+        connector = ApiConnect(get_url_instance() + api)
+        status, result = connector.patch_json(json.dumps(post_data))
+
+        if status:
+            self.set_status(
+                self.tr('Relationship updated.')
+            )
+        else:
+            self.set_status(
+                'Error: %s' % result
+            )

@@ -10,12 +10,17 @@ This module provides: Login : Login for cadasta and save authnetication
      (at your option) any later version.
 
 """
+import csv
 import json
 import logging
 import os
 import shutil
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-from cadasta.common.setting import get_path_data
+from qgis.core import (
+    QgsVectorLayer,
+    QgsMapLayerRegistry,
+    QgsVectorFileWriter,
+    QgsFeature)
+from cadasta.common.setting import get_path_data, get_csv_path
 from cadasta.utilities.geojson_parser import GeojsonParser
 from cadasta.utilities.resources import get_project_path
 
@@ -184,6 +189,9 @@ class Utilities(object):
 
         :param geojson: geojson that will be saved
         :type geojson: JSON object
+
+        :return: layers
+        :rtype: [QgsVectorLayer]
         """
         geojson = GeojsonParser(geojson)
         filename = get_path_data(
@@ -194,6 +202,7 @@ class Utilities(object):
             os.makedirs(filename)
 
         layers = geojson.get_geojson_for_qgis()
+        vlayers = []
         for key, value in layers.iteritems():
             geojson_name = os.path.join(
                 filename,
@@ -209,3 +218,118 @@ class Utilities(object):
                 "ogr"
             )
             QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+            vlayers.append(vlayer)
+        return vlayers
+
+    @staticmethod
+    def get_downloaded_projects(organization):
+        """Get all downloaded projects.
+
+        :return: downloaded projects
+        :rtype: list of dict
+        """
+        file_path = get_path_data(organization)
+
+        list_files = []
+
+        for dirpath, _, filenames in os.walk(file_path):
+            for f in filenames:
+                if 'geojson' in f:
+                    abs_path = os.path.abspath(os.path.join(dirpath, f)).split('.')[1].split('/')
+                    LOGGER.debug(abs_path)
+                    names = []
+                    names.append(abs_path[-3])
+                    names.append(abs_path[-2])
+                    names.append(abs_path[-1])
+                    list_files.append(
+                        '/'.join(names)
+                    )
+
+        LOGGER.debug(list_files)
+        projects = []
+
+        for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+            if layer.name() in list_files:
+                information = \
+                    Utilities.get_basic_information_by_vector(layer)
+
+                projects.append({
+                    'id': layer.id(),
+                    'name': layer.name(),
+                    'information': information,
+                    'vector_layer': layer
+                })
+
+        return projects
+
+    @staticmethod
+    def add_tabular_layer(
+            tabular_layer,
+            organization_slug,
+            project_slug,
+            attribute):
+        """Add a tabular layer to the folder.
+
+        :param tabular_layer: The layer to add.
+        :type tabular_layer: QgsVectorLayer
+
+        :param organization_slug: organization slug for data
+        :type organization_slug: str
+
+        :param project_slug: project_slug for getting spatial
+        :type project_slug: str
+
+        :param attribute: additional csv name
+        :type attribute: str
+
+        :returns: A two-tuple. The first element will be True if we could add
+            the layer to the datastore. The second element will be the layer
+            name which has been used or the error message.
+        :rtype: (bool, str)
+        """
+        file_path = get_csv_path(organization_slug, project_slug, attribute)
+
+        QgsVectorFileWriter.writeAsVectorFormat(
+            tabular_layer,
+            file_path,
+            'utf-8',
+            None,
+            'CSV')
+
+        return True, file_path
+
+    @staticmethod
+    def load_csv_file_to_layer(
+            layer,
+            organization_slug,
+            project_slug,
+            attribute):
+        """Check if csv file is exist for layer,
+        then add attribute from csv file to layer
+
+        :param layer: layer to be added
+        :type layer: QgsVectorLayer
+
+        :param organization_slug: organization slug name
+        :type organization_slug: str
+
+        :param project_slug: project slug name
+        :type project_slug: str
+
+        :param attribute: additional csv attribute name
+        :type attribute: str
+
+        :return:
+        """
+        file_path = get_csv_path(organization_slug, project_slug, attribute)
+
+        if os.path.isfile(file_path):
+            with open(file_path, 'rb') as csv_file:
+                reader = csv.reader(csv_file, delimiter=',', quotechar='|')
+                next(reader, None)
+                layer.startEditing()
+                for row in reader:
+                    feature = QgsFeature()
+                    feature.setAttributes(row)
+                    layer.addFeature(feature, True)
+                layer.commitChanges()

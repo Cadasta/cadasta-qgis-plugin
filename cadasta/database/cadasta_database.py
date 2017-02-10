@@ -43,7 +43,6 @@ class CadastaDatabase(object):
         if db:
             db.setDatabaseName(database_name)
             if db.open():
-                LOGGER.debug("not opened")
                 return db
         return None
 
@@ -154,7 +153,7 @@ class CadastaDatabase(object):
             db.close()
 
     @staticmethod
-    def get_table_model(table):
+    def get_table_model(table, table_filters=None):
         """Get table model of table.
 
         :param table: Table target be inserted
@@ -167,5 +166,8 @@ class CadastaDatabase(object):
         table_model = QSqlTableModel()
         table_model.setTable(table)
         table_model.setEditStrategy(QSqlTableModel.OnManualSubmit)
+        if table_filters:
+            for table_filter in table_filters:
+                table_model.setFilter(table_filter)
         table_model.select()
         return table_model
