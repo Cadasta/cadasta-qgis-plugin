@@ -9,7 +9,7 @@ Cadasta project - **Organization Project api.**
 
 """
 import logging
-from cadasta.mixin.network_mixin import NetworkMixin
+from cadasta.api.base_api import BaseApi
 from cadasta.common.setting import get_url_instance
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
@@ -20,7 +20,7 @@ __copyright__ = 'Copyright 2016, Cadasta'
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
-class OrganizationProject(NetworkMixin):
+class OrganizationProject(BaseApi):
     """Class to fetch available organization project data."""
 
     api_url = 'api/v1/organizations/%s/projects/'
@@ -38,8 +38,8 @@ class OrganizationProject(NetworkMixin):
             self.api_url % organization_slug)
 
         super(OrganizationProject, self).__init__()
-        self.connect_get()
         self.on_finished = on_finished
+        self.connect_get()
 
     def connection_finished(self):
         """On finished function when tools request is finished."""
@@ -52,7 +52,7 @@ class OrganizationProject(NetworkMixin):
                 self.on_finished((True, result))
 
 
-class OrganizationProjectSpatial(NetworkMixin):
+class OrganizationProjectSpatial(BaseApi):
     """Class to fetch available organization project spatial data."""
 
     api_url = 'api/v1/organizations/%s/projects/%s/spatial/'
@@ -76,8 +76,8 @@ class OrganizationProjectSpatial(NetworkMixin):
         self.project_slug = project_slug
 
         super(OrganizationProjectSpatial, self).__init__()
-        self.connect_get()
         self.on_finished = on_finished
+        self.connect_get()
 
     def connection_finished(self):
         """On finished function when tools request is finished.

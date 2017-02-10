@@ -1,8 +1,8 @@
 # coding=utf-8
 """
-Cadasta project download step -**Cadasta Wizard**
+Cadasta project update step -**Cadasta Wizard**
 
-This module provides: Project Download Step 1 : Available project selection
+This module provides: Project Update Step 1 : Organisation selection
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectUpdate01(WizardStep, FORM_CLASS):
-    """Step 1 for project download."""
+    """Step 1 for project update."""
 
     def __init__(self, parent=None):
         """Constructor.

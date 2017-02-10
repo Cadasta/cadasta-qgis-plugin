@@ -10,8 +10,8 @@
 name=Cadasta
 qgisMinimumVersion=2.14
 description=This tool helps create, update, upload and download Cadasta projects.
-version=1.0.0
-status=alpha
+version=1.0.1
+status=beta
 author=Kartoza
 email=christian@kartoza.com
 

@@ -67,6 +67,26 @@ class ApiConnect(NetworkMixin):
         else:
             return False, self.results.data()
 
+    def put_json(self, post_data):
+        """Call put method with json data.
+        Use this method to send PUT request with
+        json string data.
+
+        :param post_data: data to post
+        :type post_data: str
+
+        :returns: Tuple of post status and results
+        :rtype: ( bool, str )
+        """
+        self.connect_json_put(post_data)
+        while not self.reply.isFinished():
+            QCoreApplication.processEvents()
+
+        if not self.error:
+            return True, self.results.data()
+        else:
+            return False, self.results.data()
+
     def post(self, post_data):
         """Call post method.
 

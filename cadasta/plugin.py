@@ -71,8 +71,10 @@ class CadastaPlugin:
         # Save reference to the QGIS interface
         self.iface = iface
         self.action_options_wizard = None
+        self.project_download_wizard = None
         self.project_creation_wizard = None
         self.project_update_wizard = None
+        self.questionnaire_update_wizard = None
         self.wizard = None
         self.iface.currentLayerChanged.connect(self.layer_changed)
 
@@ -96,10 +98,10 @@ class CadastaPlugin:
                 project_slug, attribute = layer_names[1].split('_')
                 organization_slug = layer_names[0]
                 Utilities.add_tabular_layer(
-                        layer,
-                        organization_slug,
-                        project_slug,
-                        attribute)
+                    layer,
+                    organization_slug,
+                    project_slug,
+                    attribute)
             except ValueError:
                 return
 
@@ -117,10 +119,10 @@ class CadastaPlugin:
                 project_slug, attribute = layer_names[1].split('_')
                 organization_slug = layer_names[0]
                 Utilities.load_csv_file_to_layer(
-                        layer,
-                        organization_slug,
-                        project_slug,
-                        attribute)
+                    layer,
+                    organization_slug,
+                    project_slug,
+                    attribute)
             except ValueError:
                 return
 
@@ -130,7 +132,12 @@ class CadastaPlugin:
         :param layer: New layer that selected.
         :type layer: QgsVectorLayer
         """
+
         if get_authtoken() and layer:
+            # TODO Handle it later
+            if 'parties' in layer.name() or 'relationships' in layer.name():
+                self.project_update_wizard.setEnabled(True)
+                return
             information = Utilities.get_basic_information_by_vector(layer)
             if information:
                 try:

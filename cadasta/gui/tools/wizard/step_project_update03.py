@@ -32,7 +32,6 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectUpdate03(WizardStep, FORM_CLASS):
-
     def __init__(self, parent=None):
         """Constructor.
 
@@ -139,20 +138,20 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             if attributes[location_id_idx]:
                 geojson = feature.geometry().exportToGeoJSON()
                 self.upload_update_locations(
-                        api,
-                        geojson,
-                        attributes[location_type_idx]
+                    api,
+                    geojson,
+                    attributes[location_type_idx]
                 )
             if not attributes[location_id_idx]:
                 # New location
                 geojson = feature.geometry().exportToGeoJSON()
                 project_id = self.add_new_locations(
-                        geojson,
-                        attributes[location_type_idx]
+                    geojson,
+                    attributes[location_type_idx]
                 )
                 self.layer.startEditing()
                 self.layer.changeAttributeValue(
-                        feature.id(), 1, project_id
+                    feature.id(), 1, project_id
                 )
                 self.layer.commitChanges()
 
@@ -165,7 +164,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             return
 
         relationship_id_idx = self.layer.fieldNameIndex(
-                'relationship_layer_id'
+            'relationship_layer_id'
         )
         if not relationship_id_idx:
             return
@@ -180,7 +179,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             return
 
         relationship_layer = QgsMapLayerRegistry.instance().mapLayer(
-                relationship_id
+            relationship_id
         )
         if not relationship_layer:
             return
@@ -335,8 +334,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         """
         api = '/api/v1/organizations/{organization_slug}/projects/' \
               '{project_slug}/spatial/'.format(
-                organization_slug=self.project['organization']['slug'],
-                project_slug=self.project['slug'])
+            organization_slug=self.project['organization']['slug'],
+            project_slug=self.project['slug'])
 
         post_data = {
             'geometry': geometry

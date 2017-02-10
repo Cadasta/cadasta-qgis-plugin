@@ -8,8 +8,8 @@ Cadasta project - **Login api.**
      (at your option) any later version.
 
 """
+from cadasta.api.base_api import BaseApi
 from PyQt4.QtCore import QByteArray
-from cadasta.mixin.network_mixin import NetworkMixin
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
 __revision__ = '$Format:%H$'
@@ -17,7 +17,7 @@ __date__ = '16/12/16'
 __copyright__ = 'Copyright 2016, Cadasta'
 
 
-class Login(NetworkMixin):
+class Login(BaseApi):
     def __init__(self, domain, username, password, on_finished=None):
         """Constructor.
 
@@ -40,8 +40,8 @@ class Login(NetworkMixin):
         post_data.append("username=%s&" % username)
         post_data.append("password=%s" % password)
 
-        self.connect_post(post_data)
         self.on_finished = on_finished
+        self.connect_post(post_data)
 
     def connection_finished(self):
         """Function finished handler.
