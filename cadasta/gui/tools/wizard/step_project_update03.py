@@ -22,6 +22,7 @@ from cadasta.api.organization_project import (
     OrganizationProjectSpatial
 )
 from cadasta.api.api_connect import ApiConnect
+from cadasta.utilities.utilities import Utilities
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -34,7 +35,6 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectUpdate03(WizardStep, FORM_CLASS):
-
     def __init__(self, parent=None):
         """Constructor.
 
@@ -56,7 +56,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
         self.warning_label.setText(self.loading_label_string)
         self.get_project_spatial(
-                self.project['organization']['slug'], self.project['slug'])
+            self.project['organization']['slug'], self.project['slug'])
         self.parent.next_button.setEnabled(False)
 
     def get_project_spatial(self, organization_slug, project_slug):
@@ -88,7 +88,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             # save result to local file
             organization_slug = result[2]
             project_slug = result[3]
-            self.save_layer(result[1], organization_slug, project_slug)
+            Utilities.save_layer(result[1], organization_slug, project_slug)
         else:
             pass
         self.progress_bar.setValue(self.progress_bar.maximum())
@@ -106,8 +106,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
         api = '/api/v1/organizations/{organization_slug}/projects/' \
               '{project_slug}/parties/'.format(
-                organization_slug=organization_slug,
-                project_slug=project_slug)
+            organization_slug=organization_slug,
+            project_slug=project_slug)
 
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.get()
@@ -154,26 +154,3 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
         # Commit changes
         vector_layer.commitChanges()
-
-    def save_layer(self, geojson, organization_slug, project_slug):
-        """Save geojson to local file.
-
-        :param organization_slug: organization slug for data
-        :type organization_slug: str
-
-        :param project_slug: project_slug for getting spatial
-        :type project_slug: str
-
-        :param geojson: geojson that will be saved
-        :type geojson: JSON object
-        """
-        filename = get_path_data(organization_slug, project_slug)
-        file_ = open(filename, 'w')
-        file_.write(json.dumps(geojson, sort_keys=True))
-        file_.close()
-        vlayer = QgsVectorLayer(
-            filename, "%s/%s" % (organization_slug, project_slug), "ogr")
-        self.get_relationship_attribute(vlayer)
-        QgsMapLayerRegistry.instance().addMapLayer(vlayer)
-        self.parent.layer = vlayer
-        self.parent.locations = geojson

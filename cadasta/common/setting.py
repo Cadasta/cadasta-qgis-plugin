@@ -171,8 +171,10 @@ def get_path_data(organization_slug=None, project_slug=None):
     if project_slug:
         data_path = os.path.join(
             data_path,
-            '%s.geojson' % project_slug
+            '%s' % project_slug
         )
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
     return data_path
 
 

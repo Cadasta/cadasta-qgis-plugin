@@ -98,8 +98,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             # save result to local file
             organization_slug = result[2]
             project_slug = result[3]
-            Utilities.save_layer(result[1], organization_slug, project_slug)
             Utilities.save_project_basic_information(self.project)
+            Utilities.save_layer(result[1], organization_slug, project_slug)
         else:
             pass
         self.progress_bar.setValue(self.progress_bar.maximum())

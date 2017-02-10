@@ -52,6 +52,32 @@ class GeojsonParser(object):
                         new_properties[property_key] = property_value
                 feature['properties'] = new_properties
 
+    def get_geojson_for_qgis(self):
+        """Parsing geojson, especially for not formatted geojson.
+        """
+        json = {}
+        if self.original_geojson:
+            geojson = copy.deepcopy(self.original_geojson)
+            if len(geojson['features']) == 0:
+                json['point'] = {u'type': u'FeatureCollection', u'features': []}
+            else:
+                for feature in geojson['features']:
+                    new_properties = {}
+                    properties = feature['properties']
+                    for property_key, property_value in properties.iteritems():
+                        if isinstance(property_value, dict):
+                            for key, value in property_value.iteritems():
+                                new_properties[key] = value
+                        else:
+                            new_properties[property_key] = property_value
+                    feature['properties'] = new_properties
+                    # assign to json by type
+                    type = feature['geometry']['type']
+                    if type not in json:
+                        json[type] = {u'type': u'FeatureCollection', u'features': []}
+                    json[type]['features'].append(feature)
+        return json
+
     def get_geojson(self):
         """Returning geojson in dict format.
 

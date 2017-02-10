@@ -206,6 +206,10 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
 
         # Save layer to geojson format
         output_file = get_path_data(project_slug='temp_project')
+        output_file = os.path.join(
+            output_file,
+            '%s.geojson' % 'temp_project'
+        )
 
         result = QgsVectorFileWriter.writeAsVectorFormat(
             layer,
@@ -218,6 +222,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         if result == QgsVectorFileWriter.NoError:
             LOGGER.debug('Wrote layer to geojson: %s' % output_file)
             with open(output_file) as json_data:
+                LOGGER.debug(json_data)
                 layer_data = json.load(json_data)
                 data['locations'] = layer_data
             os.remove(output_file)

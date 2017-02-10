@@ -26,6 +26,7 @@ from PyQt4.QtGui import (
     QAction,
     QIcon
 )
+from qgis.core import QgsMapLayerRegistry
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
 from cadasta.gui.tools.cadasta_dialog import CadastaDialog
@@ -71,6 +72,7 @@ class CadastaPlugin:
         self.project_update_wizard = None
         self.wizard = None
         self.iface.currentLayerChanged.connect(self.layer_changed)
+
 
         # Declare instance attributes
         self.actions = []
