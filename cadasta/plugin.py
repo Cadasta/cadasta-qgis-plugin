@@ -26,6 +26,7 @@ from PyQt4.QtGui import (
     QAction,
     QIcon
 )
+from qgis.core import QgsMapLayerRegistry
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
 from cadasta.gui.tools.cadasta_dialog import CadastaDialog
@@ -72,8 +73,53 @@ class CadastaPlugin:
         self.wizard = None
         self.iface.currentLayerChanged.connect(self.layer_changed)
 
+        registry = QgsMapLayerRegistry.instance()
+        registry.layerWillBeRemoved.connect(self.layer_removed)
+        registry.layerWasAdded.connect(self.layer_added)
+
         # Declare instance attributes
         self.actions = []
+
+    def layer_removed(self, layer_id):
+        """Function that triggered when layer removed.
+
+        :param layer_id: Removed layer id.
+        :type layer_id: QString
+        """
+        layer = QgsMapLayerRegistry.instance().mapLayer(layer_id)
+        layer_names = layer.name().split('/')
+        if len(layer_names) > 1:
+            try:
+                project_slug, attribute = layer_names[1].split('_')
+                organization_slug = layer_names[0]
+                Utilities.add_tabular_layer(
+                        layer,
+                        organization_slug,
+                        project_slug,
+                        attribute)
+            except ValueError:
+                return
+
+    def layer_added(self, layer):
+        """Function that triggered when layer was added.
+
+        :param layer: Added layer.
+        :type layer: QgsVectorLayer
+        """
+
+        # Load csv file
+        layer_names = layer.name().split('/')
+        if len(layer_names) > 1:
+            try:
+                project_slug, attribute = layer_names[1].split('_')
+                organization_slug = layer_names[0]
+                Utilities.load_csv_file_to_layer(
+                        layer,
+                        organization_slug,
+                        project_slug,
+                        attribute)
+            except ValueError:
+                return
 
     def layer_changed(self, layer):
         """Function that triggered when layer changed.

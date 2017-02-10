@@ -44,11 +44,10 @@ class StepProjectUpdate02(WizardStep, FORM_CLASS):
         super(StepProjectUpdate02, self).__init__(parent)
         self.parent = parent
         self.project = None
-        self.update_button.clicked.connect(self.update_project)
 
     def set_widgets(self):
         """Set all widgets on the tab."""
-        self.project = self.parent.project
+        self.project = self.parent.project['information']
 
         self.update_status_label.setText('')
 
@@ -149,50 +148,6 @@ class StepProjectUpdate02(WizardStep, FORM_CLASS):
             QCoreApplication.processEvents()
 
         if not network.error:
-            return True, ''
+            return True, network.get_json_results()
         else:
             return False, network.results.data()
-
-    def update_project(self):
-        """Update a basic project information in an organization."""
-        self.update_button.setText(
-            tr('Updating')
-        )
-        self.update_button.setEnabled(False)
-
-        contact_item_list = self.project_contact_list.selectedItems()
-        contacts = []
-        for contact_item in contact_item_list:
-            contact = contact_item.data(Qt.UserRole)
-            contacts.append({
-                'name': contact.name,
-                'tel': contact.phone,
-                'email': contact.email
-            })
-
-        access = 'private' if self.access_checkbox.isChecked() else 'public'
-        post_data = {
-            'name': self.project_name_text.displayText(),
-            'description': self.project_desc_text.toPlainText(),
-            'urls': [
-                self.project_url_text.displayText()
-            ],
-            'access': access,
-            'contacts': contacts
-        }
-
-        status, message = self.send_update_request(post_data)
-
-        self.update_button.setText(
-            tr('Update')
-        )
-        self.update_button.setEnabled(True)
-
-        if status:
-            self.update_status_label.setText(
-                tr('Update success')
-            )
-        else:
-            self.update_status_label.setText(
-                'Error: %s' % message
-            )
