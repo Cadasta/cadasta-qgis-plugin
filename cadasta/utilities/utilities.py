@@ -203,5 +203,9 @@ class Utilities(object):
             file_.write(json.dumps(value, sort_keys=True))
             file_.close()
             vlayer = QgsVectorLayer(
-                geojson_name, "%s/%s/%s" % (organization_slug, project_slug, key), "ogr")
+                geojson_name, "%s/%s/%s" % (
+                    organization_slug, project_slug, key
+                ),
+                "ogr"
+            )
             QgsMapLayerRegistry.instance().addMapLayer(vlayer)

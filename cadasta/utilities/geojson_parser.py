@@ -59,7 +59,9 @@ class GeojsonParser(object):
         if self.original_geojson:
             geojson = copy.deepcopy(self.original_geojson)
             if len(geojson['features']) == 0:
-                json['point'] = {u'type': u'FeatureCollection', u'features': []}
+                json['point'] = {
+                    u'type': u'FeatureCollection', u'features': []
+                }
             else:
                 for feature in geojson['features']:
                     new_properties = {}
@@ -74,7 +76,9 @@ class GeojsonParser(object):
                     # assign to json by type
                     type = feature['geometry']['type']
                     if type not in json:
-                        json[type] = {u'type': u'FeatureCollection', u'features': []}
+                        json[type] = {
+                            u'type': u'FeatureCollection', u'features': []
+                        }
                     json[type]['features'].append(feature)
         return json
 

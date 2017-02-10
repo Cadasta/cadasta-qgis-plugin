@@ -204,7 +204,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             # save result to local file
             organization_slug = result[2]
             project_slug = result[3]
-            Utilities.save_project_basic_information(self.project_upload_result)
+            Utilities.save_project_basic_information(
+                self.project_upload_result)
             Utilities.save_layer(result[1], organization_slug, project_slug)
             self.parent.downloaded.emit()
         else:
