@@ -26,11 +26,11 @@ __revision__ = '$Format:%H$'
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 mapping_type = {
-    'String': 'TX',
-    'Integer': 'IN',
-    'Double': 'DE',
-    'Date': 'DA',
-    'DateTime': 'DT'
+    'string': 'TX',
+    'integer': 'IN',
+    'double': 'DE',
+    'date': 'DA',
+    'dateTime': 'DT'
 }
 
 
@@ -119,7 +119,7 @@ class QuestionnaireUtility(object):
                     {
                         "name": field.name(),
                         "label": field.name(),
-                        "type": mapping_type[field.typeName()],
+                        "type": mapping_type[field.typeName().lower()],
                         "required": False,
                         "constraint": 'null',
                         "default": 'null',
