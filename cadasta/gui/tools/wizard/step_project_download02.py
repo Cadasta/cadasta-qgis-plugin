@@ -120,6 +120,9 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
 
         :param vector_layer: QGS vector layer in memory
         :type vector_layer: QgsVectorLayer
+
+        :return: Party layer
+        :rtype: QgsVectorLayer
         """
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
@@ -197,11 +200,16 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             attribute
         )
 
+        return party_layer
+
     def relationships_layer(self, vector_layer):
         """Create relationship layer.
 
         :param vector_layer: QGS vector layer in memory
         :type vector_layer: QgsVectorLayer
+
+        :return: Relationship layer
+        :rtype: QgsVectorLayer
         """
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
@@ -292,6 +300,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             # Commit changes
             vector_layer.commitChanges()
 
+        return relationship_layer
+
     def save_layer(self, geojson, organization_slug, project_slug):
         """Save geojson to local file.
 
@@ -312,7 +322,11 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         vlayer = QgsVectorLayer(
             filename, "%s/%s" % (organization_slug, project_slug), "ogr")
         QgsMapLayerRegistry.instance().addMapLayer(vlayer)
-        self.relationships_layer(vlayer)
-        self.parties_layer(vlayer)
+        relationship_layer = self.relationships_layer(vlayer)
+        party_layer = self.parties_layer(vlayer)
         # save basic information
-        Utilities.save_project_basic_information(self.project)
+        Utilities.save_project_basic_information(
+            self.project,
+            relationship_layer.id(),
+            party_layer.id()
+        )

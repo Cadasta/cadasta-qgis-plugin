@@ -76,7 +76,6 @@ class CadastaPlugin:
         self.project_update_wizard = None
         self.questionnaire_update_wizard = None
         self.wizard = None
-        self.iface.currentLayerChanged.connect(self.layer_changed)
 
         registry = QgsMapLayerRegistry.instance()
         registry.layerWillBeRemoved.connect(self.layer_removed)
@@ -93,7 +92,8 @@ class CadastaPlugin:
         """
         layer = QgsMapLayerRegistry.instance().mapLayer(layer_id)
         layer_names = layer.name().split('/')
-        if len(layer_names) > 1:
+        if len(layer_names) > 1 and \
+                ('relationships' in layer.name() or 'parties' in layer.name()):
             try:
                 project_slug, attribute = layer_names[1].split('_')
                 organization_slug = layer_names[0]
@@ -102,6 +102,7 @@ class CadastaPlugin:
                     organization_slug,
                     project_slug,
                     attribute)
+                self.project_update_wizard.setEnabled(False)
             except ValueError:
                 return
 
@@ -114,7 +115,8 @@ class CadastaPlugin:
 
         # Load csv file
         layer_names = layer.name().split('/')
-        if len(layer_names) > 1:
+        if len(layer_names) > 1 and \
+                ('relationships' in layer.name() or 'parties' in layer.name()):
             try:
                 project_slug, attribute = layer_names[1].split('_')
                 organization_slug = layer_names[0]
@@ -123,6 +125,7 @@ class CadastaPlugin:
                     organization_slug,
                     project_slug,
                     attribute)
+                self.layer_changed(layer)
             except ValueError:
                 return
 
@@ -132,13 +135,21 @@ class CadastaPlugin:
         :param layer: New layer that selected.
         :type layer: QgsVectorLayer
         """
-
         if get_authtoken() and layer:
-            # TODO Handle it later
             if 'parties' in layer.name() or 'relationships' in layer.name():
-                self.project_update_wizard.setEnabled(True)
-                return
-            information = Utilities.get_basic_information_by_vector(layer)
+                layer_names = layer.name().split('/')
+                organization_slug = layer_names[0]
+                project_slug = layer_names[1].split('_')[0]
+                if organization_slug and project_slug:
+                    information = Utilities.get_basic_information(
+                        organization_slug=organization_slug,
+                        project_slug=project_slug
+                    )
+                else:
+                    self.project_update_wizard.setEnabled(False)
+                    return
+            else:
+                information = Utilities.get_basic_information_by_vector(layer)
             if information:
                 try:
                     organization_slug = information['organization']['slug']
