@@ -193,23 +193,15 @@ def get_csv_path(organization_slug=None, project_slug=None, attribute=None):
     :return: Absoulte data path
     :rtype: str
     """
-    data_path = get_project_path()
-    data_path = os.path.join(
-        data_path,
-        'data'
+    data_path = get_path_data(
+        organization_slug=organization_slug,
+        project_slug=project_slug
     )
-    if organization_slug:
-        data_path = os.path.join(
-            data_path,
-            organization_slug
-        )
-    if not os.path.exists(data_path):
-        os.makedirs(data_path)
 
-    if project_slug:
+    if data_path:
         data_path = os.path.join(
             data_path,
-            '%s_%s.csv' % (project_slug, attribute)
+            '%s.csv' % attribute
         )
     return data_path
 

@@ -112,13 +112,18 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             # save result to local file
             organization_slug = result[2]
             project_slug = result[3]
-            Utilities.save_project_basic_information(self.project)
             vlayers = Utilities.save_layer(
                     result[1],
                     organization_slug,
                     project_slug)
-            # self.relationships_layer(vlayers[0])
-            # self.parties_layer(vlayers[0])
+            relationship_layer = self.relationships_layer(vlayers)
+            party_layer = self.parties_layer()
+            QCoreApplication.processEvents()
+            Utilities.save_project_basic_information(
+                self.project,
+                relationship_layer.id(),
+                party_layer.id()
+            )
         else:
             pass
         self.progress_bar.setValue(self.progress_bar.maximum())
@@ -147,14 +152,11 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             )
         self.parent.downloaded.emit()
 
-    def parties_layer(self, vector_layer):
+    def parties_layer(self):
         """Create parties layer.
 
         :param vector_layer: QGS vector layer in memory
         :type vector_layer: QgsVectorLayer
-
-        :return: Party layer
-        :rtype: QgsVectorLayer
         """
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
@@ -167,8 +169,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
 
         api = '/api/v1/organizations/{organization_slug}/projects/' \
               '{project_slug}/parties/'.format(
-            organization_slug=organization_slug,
-            project_slug=project_slug)
+                organization_slug=organization_slug,
+                project_slug=project_slug)
 
         connector = ApiConnect(get_url_instance() + api)
         status, results = connector.get()
@@ -177,7 +179,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             return
 
         party_layer = tools.create_memory_layer(
-            layer_name='%s/%s_%s' % (
+            layer_name='%s/%s/%s' % (
                 organization_slug,
                 project_slug,
                 attribute),
@@ -217,11 +219,11 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
 
         return party_layer
 
-    def relationships_layer(self, vector_layer):
+    def relationships_layer(self, vector_layers):
         """Create relationship layer.
 
-        :param vector_layer: QGS vector layer in memory
-        :type vector_layer: QgsVectorLayer
+        :param vector_layers: List of QGS vector layer in memory
+        :type vector_layers: list of QgsVectorLayer
 
         :return: Relationship layer
         :rtype: QgsVectorLayer
@@ -242,7 +244,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             os.remove(csv_path)
 
         relationship_layer = tools.create_memory_layer(
-            layer_name='%s/%s_%s' % (
+            layer_name='%s/%s/%s' % (
                 organization_slug,
                 project_slug,
                 attribute),
@@ -258,40 +260,41 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
 
         QgsMapLayerRegistry.instance().addMapLayer(relationship_layer)
 
-        # Add relationship layer id to spatial attribute table
-        spatial_id_index = vector_layer.fieldNameIndex('id')
+        for vector_layer in vector_layers:
+            # Add relationship layer id to spatial attribute table
+            spatial_id_index = vector_layer.fieldNameIndex('id')
 
-        for index, feature in enumerate(vector_layer.getFeatures()):
-            attributes = feature.attributes()
-            spatial_api = api.format(
-                organization_slug=organization_slug,
-                project_slug=project_slug,
-                spatial_unit_id=attributes[spatial_id_index]
-            )
-            connector = ApiConnect(get_url_instance() + spatial_api)
-            status, results = connector.get()
+            for index, feature in enumerate(vector_layer.getFeatures()):
+                attributes = feature.attributes()
+                spatial_api = api.format(
+                    organization_slug=organization_slug,
+                    project_slug=project_slug,
+                    spatial_unit_id=attributes[spatial_id_index]
+                )
+                connector = ApiConnect(get_url_instance() + spatial_api)
+                status, results = connector.get()
 
-            if not status or len(results) == 0:
-                continue
+                if not status or len(results) == 0:
+                    continue
 
-            try:
-                for result in results:
-                    relationship_layer.startEditing()
-                    fet = QgsFeature()
-                    questionnaire_attr = result['attributes']
-                    if not questionnaire_attr:
-                        questionnaire_attr = '-'
-                    fet.setAttributes([
-                        attributes[spatial_id_index],
-                        result['id'],
-                        result['tenure_type'],
-                        result['party']['id'],
-                        questionnaire_attr,
-                        ])
-                    relationship_layer.addFeature(fet, True)
-                    relationship_layer.commitChanges()
-            except (IndexError, KeyError):
-                continue
+                try:
+                    for result in results:
+                        relationship_layer.startEditing()
+                        fet = QgsFeature()
+                        questionnaire_attr = result['attributes']
+                        if not questionnaire_attr:
+                            questionnaire_attr = '-'
+                        fet.setAttributes([
+                            attributes[spatial_id_index],
+                            result['id'],
+                            result['tenure_type'],
+                            result['party']['id'],
+                            questionnaire_attr,
+                            ])
+                        relationship_layer.addFeature(fet, True)
+                        relationship_layer.commitChanges()
+                except (IndexError, KeyError):
+                    continue
 
         Utilities.add_tabular_layer(
             relationship_layer,
@@ -301,33 +304,3 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         )
 
         return relationship_layer
-
-    def save_layer(self, geojson, organization_slug, project_slug):
-        """Save geojson to local file.
-
-        :param organization_slug: organization slug for data
-        :type organization_slug: str
-
-        :param project_slug: project_slug for getting spatial
-        :type project_slug: str
-
-        :param geojson: geojson that will be saved
-        :type geojson: JSON object
-        """
-        geojson = GeojsonParser(geojson)
-        filename = get_path_data(organization_slug, project_slug)
-        file_ = open(filename, 'w')
-        file_.write(geojson.geojson_string())
-        file_.close()
-        vlayer = QgsVectorLayer(
-            filename, "%s/%s" % (organization_slug, project_slug), "ogr")
-        QgsMapLayerRegistry.instance().addMapLayer(vlayer)
-        relationship_layer = self.relationships_layer(vlayer)
-        party_layer = self.parties_layer(vlayer)
-        QCoreApplication.processEvents()
-        # save basic information
-        Utilities.save_project_basic_information(
-            self.project,
-            relationship_layer.id(),
-            party_layer.id()
-        )

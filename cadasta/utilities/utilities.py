@@ -338,6 +338,7 @@ class Utilities(object):
         :rtype: (bool, str)
         """
         file_path = get_csv_path(organization_slug, project_slug, attribute)
+        LOGGER.debug(file_path)
 
         QgsVectorFileWriter.writeAsVectorFormat(
             tabular_layer,
