@@ -87,10 +87,14 @@ class Utilities(object):
         """
         organization_slug = information['organization']['slug']
         project_slug = information['slug']
-        old_information = Utilities.get_basic_information(organization_slug, project_slug)
+        old_information = Utilities.get_basic_information(
+                organization_slug,
+                project_slug)
 
-        information['relationship_layer_id'] = old_information['relationship_layer_id']
-        information['party_layer_id'] = old_information['party_layer_id']
+        information['relationship_layer_id'] = \
+            old_information['relationship_layer_id']
+        information['party_layer_id'] = \
+            old_information['party_layer_id']
 
         Utilities.save_project_basic_information(
             information,
