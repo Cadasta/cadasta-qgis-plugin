@@ -70,6 +70,35 @@ class Utilities(object):
         file_.close()
 
     @staticmethod
+    def update_project_basic_information(
+            information,
+            relationship_layer_id=None,
+            party_layer_id=None):
+        """Update project basic information.
+
+        :param information: basic information that will be saved
+        :type information: dict
+
+        :param relationship_layer_id: Id for relationship layer
+        :type relationship_layer_id: str
+
+        :param party_layer_id: Id for party layer
+        :type party_layer_id: str
+        """
+        organization_slug = information['organization']['slug']
+        project_slug = information['slug']
+        old_information = Utilities.get_basic_information(organization_slug, project_slug)
+
+        information['relationship_layer_id'] = old_information['relationship_layer_id']
+        information['party_layer_id'] = old_information['party_layer_id']
+
+        Utilities.save_project_basic_information(
+            information,
+            relationship_layer_id,
+            party_layer_id
+        )
+
+    @staticmethod
     def get_basic_information(organization_slug, project_slug):
         """Get basic information that already saved.
 

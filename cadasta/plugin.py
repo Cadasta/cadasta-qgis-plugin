@@ -137,19 +137,9 @@ class CadastaPlugin:
         """
         if get_authtoken() and layer:
             if 'parties' in layer.name() or 'relationships' in layer.name():
-                layer_names = layer.name().split('/')
-                organization_slug = layer_names[0]
-                project_slug = layer_names[1].split('_')[0]
-                if organization_slug and project_slug:
-                    information = Utilities.get_basic_information(
-                        organization_slug=organization_slug,
-                        project_slug=project_slug
-                    )
-                else:
-                    self.project_update_wizard.setEnabled(False)
-                    return
-            else:
-                information = Utilities.get_basic_information_by_vector(layer)
+                self.project_update_wizard.setEnabled(True)
+                return
+            information = Utilities.get_basic_information_by_vector(layer)
             if information:
                 try:
                     organization_slug = information['organization']['slug']

@@ -171,28 +171,6 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             party_layer.commitChanges()
             QCoreApplication.processEvents()
 
-        LOGGER.debug(party_layer)
-
-        # Save relationship id to spatial layer
-        vector_layer.startEditing()
-        vector_layer.dataProvider().addAttributes([
-            QgsField('party_layer_id', QVariant.String),
-        ])
-        vector_layer.commitChanges()
-
-        for index, feat in enumerate(vector_layer.getFeatures()):
-            # Edit the attribute value
-            vector_layer.startEditing()
-            try:
-                vector_layer.changeAttributeValue(
-                    feat.id(), 3, party_layer.id()
-                )
-            except (IndexError, KeyError) as e:
-                continue
-
-            # Commit changes
-            vector_layer.commitChanges()
-
         Utilities.add_tabular_layer(
             party_layer,
             organization_slug,
@@ -280,26 +258,6 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             attribute
         )
 
-        # Save relationship id to spatial layer
-        vector_layer.startEditing()
-        vector_layer.dataProvider().addAttributes([
-            QgsField('relationship_layer_id', QVariant.String),
-        ])
-        vector_layer.commitChanges()
-
-        for index, feat in enumerate(vector_layer.getFeatures()):
-            # Edit the attribute value
-            vector_layer.startEditing()
-            try:
-                vector_layer.changeAttributeValue(
-                    feat.id(), 2, relationship_layer.id()
-                )
-            except (IndexError, KeyError) as e:
-                continue
-
-            # Commit changes
-            vector_layer.commitChanges()
-
         return relationship_layer
 
     def save_layer(self, geojson, organization_slug, project_slug):
@@ -324,6 +282,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         QgsMapLayerRegistry.instance().addMapLayer(vlayer)
         relationship_layer = self.relationships_layer(vlayer)
         party_layer = self.parties_layer(vlayer)
+        QCoreApplication.processEvents()
         # save basic information
         Utilities.save_project_basic_information(
             self.project,

@@ -108,7 +108,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
         status, response = step2.send_update_request(post_data)
         if status:
-            Utilities.save_project_basic_information(response)
+            Utilities.update_project_basic_information(response)
             self.set_status(
                 self.tr('Update success')
             )
@@ -158,23 +158,16 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
     def update_relationship_attributes(self):
         """Update relationship attribute for location"""
 
-        # Get relationship csv
-        features = self.layer.getFeatures()
-        if not features:
+        information = Utilities.get_basic_information_by_vector(self.layer)
+
+        if not information:
             return
 
-        relationship_id_idx = self.layer.fieldNameIndex(
-            'relationship_layer_id'
-        )
-        if not relationship_id_idx:
+        if 'relationship_layer_id' not in information:
             return
 
-        relationship_id = None
-        for feature in features:
-            attributes = feature.attributes()
-            if attributes[relationship_id_idx]:
-                relationship_id = attributes[relationship_id_idx]
-            break
+        relationship_id = information['relationship_layer_id']
+
         if not relationship_id:
             return
 
@@ -206,24 +199,15 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
     def update_party_attributes(self):
         """Update party attribute for this project."""
+        information = Utilities.get_basic_information_by_vector(self.layer)
 
-        # Get relationship csv
-        features = self.layer.getFeatures()
-        if not features:
+        if not information:
             return
 
-        party_id_idx = self.layer.fieldNameIndex('party_layer_id')
-        if not party_id_idx:
+        if 'party_layer_id' not in information:
             return
 
-        party_id = None
-        for feature in features:
-            attributes = feature.attributes()
-            if attributes[party_id_idx]:
-                party_id = attributes[party_id_idx]
-                break
-        if not party_id:
-            return
+        party_id = information['party_layer_id']
 
         party_layer = QgsMapLayerRegistry.instance().mapLayer(party_id)
         if not party_layer:
