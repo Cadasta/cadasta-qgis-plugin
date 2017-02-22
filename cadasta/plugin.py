@@ -47,7 +47,12 @@ from cadasta.gui.tools.helper.helper_dialog import (
 from cadasta.gui.tools.about.about_dialog import (
     AboutDialog
 )
-from cadasta.common.setting import get_authtoken, get_user_organizations
+from cadasta.common.setting import (
+    get_authtoken,
+    get_user_organizations,
+    set_setting,
+    get_setting
+)
 
 # Initialize Qt resources from file resources.py
 # Import the code for the dialog
@@ -78,14 +83,13 @@ class CadastaPlugin:
         self.wizard = None
 
         registry = QgsMapLayerRegistry.instance()
-        registry.layerWillBeRemoved.connect(self.layer_removed)
+        registry.layerWillBeRemoved.connect(self.layer_will_be_removed)
         registry.layerWasAdded.connect(self.layer_added)
-
         # Declare instance attributes
         self.actions = []
 
-    def layer_removed(self, layer_id):
-        """Function that triggered when layer removed.
+    def layer_will_be_removed(self, layer_id):
+        """Function that triggered when layer will be removed.
 
         :param layer_id: Removed layer id.
         :type layer_id: QString
@@ -95,14 +99,32 @@ class CadastaPlugin:
         if len(layer_names) > 1 and \
                 ('relationships' in layer.name() or 'parties' in layer.name()):
             try:
-                project_slug, attribute = layer_names[1].split('_')
-                organization_slug = layer_names[0]
+                organization_slug, project_slug, attribute = layer_names
                 Utilities.add_tabular_layer(
                     layer,
                     organization_slug,
                     project_slug,
-                    attribute)
-                self.project_update_wizard.setEnabled(False)
+                    attribute
+                )
+
+                setting_value = '%s/%s' % (
+                    organization_slug,
+                    project_slug
+                )
+
+                setting_file = get_setting('layers_added')
+
+                if setting_file:
+                    setting_files = setting_file.split(',')
+                    setting_files.remove(setting_value)
+                    setting_file = ','.join(setting_files)
+                    set_setting('layers_added', setting_file)
+                else:
+                    self.project_update_wizard.setEnabled(False)
+
+                if not get_setting('layers_added'):
+                    self.project_update_wizard.setEnabled(False)
+
             except ValueError:
                 return
 
@@ -115,17 +137,29 @@ class CadastaPlugin:
 
         # Load csv file
         layer_names = layer.name().split('/')
-        if len(layer_names) > 1 and \
+        if len(layer_names) > 2 and \
                 ('relationships' in layer.name() or 'parties' in layer.name()):
             try:
-                project_slug, attribute = layer_names[1].split('_')
-                organization_slug = layer_names[0]
+                organization_slug, project_slug, attribute = layer_names
                 Utilities.load_csv_file_to_layer(
                     layer,
                     organization_slug,
                     project_slug,
                     attribute)
-                self.layer_changed(layer)
+                self.project_update_wizard.setEnabled(True)
+
+                setting_value = '%s/%s' % (
+                    organization_slug,
+                    project_slug
+                )
+
+                setting_file = get_setting('layers_added')
+
+                if not setting_file:
+                    set_setting('layers_added', setting_value)
+                else:
+                    if setting_value not in setting_file:
+                        set_setting('layers_added', setting_file + ',' + setting_value)
             except ValueError:
                 return
 
@@ -136,11 +170,8 @@ class CadastaPlugin:
         :type layer: QgsVectorLayer
         """
         if get_authtoken() and layer:
-            if 'parties' in layer.name() or 'relationships' in layer.name():
-                self.project_update_wizard.setEnabled(True)
-                return
             information = Utilities.get_basic_information_by_vector(layer)
-            if information:
+            if information and 'organization' in information:
                 try:
                     organization_slug = information['organization']['slug']
                     if organization_slug in get_user_organizations():
@@ -295,14 +326,17 @@ class CadastaPlugin:
         dialog.show()
         dialog.exec_()
 
+    def get_curent_layer(self):
+        """Get current layer of qgis."""
+        if len(self.iface.legendInterface().selectedLayers()) > 0:
+            return self.iface.legendInterface().selectedLayers()[0]
+        else:
+            return None
+
     def _enable_authenticated_menu(self):
         """Enable menu that requires auth token to proceed."""
         self.project_creation_wizard.setEnabled(True)
-        if len(self.iface.legendInterface().selectedLayers()) > 0:
-            self.layer_changed(
-                self.iface.legendInterface().selectedLayers()[0])
-        else:
-            self.layer_changed(None)
+        self.layer_changed(self.get_curent_layer())
 
     def _disable_authenticated_menu(self):
         """Disable menu that requires auth token to proceed."""
@@ -336,6 +370,10 @@ class CadastaPlugin:
     # ------------------------------------------------------------------------
     # initiate project download dialog
     # ------------------------------------------------------------------------
+    def call_layer_changed(self):
+        """call layer changed."""
+        self.layer_changed(self.get_curent_layer())
+
     def _create_project_download_wizard(self):
         """Create action for project download wizard."""
         icon_path = resources_path('images', 'cadasta-download-64.png')
@@ -353,6 +391,7 @@ class CadastaPlugin:
         dialog = ProjectDownloadWizard(
             iface=self.iface
         )
+        dialog.downloaded.connect(self.call_layer_changed)
         dialog.show()
         dialog.exec_()
 

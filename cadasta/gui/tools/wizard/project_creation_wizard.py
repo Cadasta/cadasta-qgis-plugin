@@ -11,6 +11,7 @@ Cadasta **Cadasta project creation Dialog.**
 """
 
 import logging
+from PyQt4.QtCore import pyqtSignal
 
 from cadasta.gui.tools.wizard.step_project_creation01 import (
     StepProjectCreation1
@@ -39,6 +40,7 @@ class ProjectCreationWizard(WizardDialog):
     step_project_creation01 = None
     step_project_creation02 = None
     step_project_creation03 = None
+    downloaded = pyqtSignal()
 
     def __init__(self, parent=None, iface=None):
         """Constructor for the dialog.

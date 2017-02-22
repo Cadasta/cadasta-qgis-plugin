@@ -45,10 +45,16 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         self.data = None
         self.project = None
         self.layer = None
+        self.vlayers = []
 
     def set_widgets(self):
         """Set all widgets on the tab."""
         self.project = self.parent.project['information']
+        for project_layer in self.project['layers']:
+            layer = QgsMapLayerRegistry.instance().mapLayer(project_layer['id'])
+            if layer:
+                self.vlayers.append(layer)
+
         self.layer = self.parent.project['vector_layer']
         self.lbl_status.setText(
             self.tr('Upload the data?')
@@ -108,7 +114,10 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
         status, response = step2.send_update_request(post_data)
         if status:
-            Utilities.update_project_basic_information(response)
+            Utilities.update_project_basic_information(
+                information=response,
+                vlayers=self.vlayers
+            )
             self.set_status(
                 self.tr('Update success')
             )
@@ -125,48 +134,43 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         location_type_idx = self.layer.fieldNameIndex('type')
         location_id_idx = self.layer.fieldNameIndex('id')
 
-        features = self.layer.getFeatures()
+        for layer in self.vlayers:
+            features = layer.getFeatures()
 
-        for feature in features:
-            attributes = feature.attributes()
-            api = update_loc_api.format(
-                organization_slug=self.project['organization']['slug'],
-                project_slug=self.project['slug'],
-                spatial_unit_id=attributes[location_id_idx]
-            )
+            for feature in features:
+                attributes = feature.attributes()
+                api = update_loc_api.format(
+                    organization_slug=self.project['organization']['slug'],
+                    project_slug=self.project['slug'],
+                    spatial_unit_id=attributes[location_id_idx]
+                )
 
-            if attributes[location_id_idx]:
-                geojson = feature.geometry().exportToGeoJSON()
-                self.upload_update_locations(
-                    api,
-                    geojson,
-                    attributes[location_type_idx]
-                )
-            if not attributes[location_id_idx]:
-                # New location
-                geojson = feature.geometry().exportToGeoJSON()
-                project_id = self.add_new_locations(
-                    geojson,
-                    attributes[location_type_idx]
-                )
-                self.layer.startEditing()
-                self.layer.changeAttributeValue(
-                    feature.id(), 1, project_id
-                )
-                self.layer.commitChanges()
+                if attributes[location_id_idx]:
+                    geojson = feature.geometry().exportToGeoJSON()
+                    self.upload_update_locations(
+                        api,
+                        geojson,
+                        attributes[location_type_idx]
+                    )
+                if not attributes[location_id_idx]:
+                    # New location
+                    geojson = feature.geometry().exportToGeoJSON()
+                    project_id = self.add_new_locations(
+                        geojson,
+                        attributes[location_type_idx]
+                    )
+                    layer.startEditing()
+                    layer.changeAttributeValue(
+                        feature.id(), 1, project_id
+                    )
+                    layer.commitChanges()
 
     def update_relationship_attributes(self):
         """Update relationship attribute for location"""
-
-        information = Utilities.get_basic_information_by_vector(self.layer)
-
-        if not information:
+        if 'relationship_layer_id' not in self.project:
             return
 
-        if 'relationship_layer_id' not in information:
-            return
-
-        relationship_id = information['relationship_layer_id']
+        relationship_id = self.project['relationship_layer_id']
 
         if not relationship_id:
             return
@@ -178,7 +182,6 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             return
 
         relationship_feats = relationship_layer.getFeatures()
-        spatial_id_idx = 0
         relationship_id_idx = 1
         relationship_type_idx = 2
         attributes_idx = 4

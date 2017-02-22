@@ -10,16 +10,19 @@ This module provides: Login : Login for cadasta and save authnetication
      (at your option) any later version.
 
 """
+import csv
 import json
 import logging
 import os
-import csv
+import shutil
 from qgis.core import (
     QgsVectorLayer,
     QgsMapLayerRegistry,
     QgsVectorFileWriter,
-    QgsFeature)
+    QgsFeature,
+    QGis)
 from cadasta.common.setting import get_path_data, get_csv_path
+from cadasta.utilities.geojson_parser import GeojsonParser
 from cadasta.utilities.resources import get_project_path
 
 __copyright__ = "Copyright 2016, Cadasta"
@@ -34,14 +37,50 @@ class Utilities(object):
     """Class contains helpful methods for cadasta process."""
 
     @staticmethod
+    def delete_geojson_and_information(layers):
+        """Save project basic information.
+
+        :param layers: vector layer that will be checked
+        :type layers: [QgsVectorLayer]
+        """
+        for layer in layers:
+            qgis_layer = QgsMapLayerRegistry.instance().mapLayer(layer)
+            organization_slug, project_slug, type = \
+                Utilities.get_organization_project_slug(qgis_layer)
+            project_folder = get_path_data(
+                organization_slug=organization_slug,
+                project_slug=project_slug)
+            project_path = os.path.join(
+                project_folder,
+                '%s.geojson' % type
+            )
+            os.remove(project_path)
+
+            # check geojson is not present
+            geojson_present = False
+            for fname in os.listdir(project_folder):
+                if fname.endswith('.geojson'):
+                    geojson_present = True
+                    break
+            if not geojson_present:
+                try:
+                    shutil.rmtree(project_folder)
+                except OSError:
+                    pass
+
+    @staticmethod
     def save_project_basic_information(
             information,
+            vlayers=None,
             relationship_layer_id=None,
             party_layer_id=None):
         """Save project basic information.
 
         :param information: basic information that will be saved
         :type information: dict
+
+        :param vlayers: list of Spatial vector layers
+        :type vlayers: list of QgsVectorLayer
 
         :param relationship_layer_id: Id for relationship layer
         :type relationship_layer_id: str
@@ -52,11 +91,12 @@ class Utilities(object):
         organization_slug = information['organization']['slug']
         project_slug = information['slug']
         filename = get_path_data(
-            organization_slug=organization_slug)
+            organization_slug=organization_slug,
+            project_slug=project_slug)
 
         filename = os.path.join(
             filename,
-            '%s.json' % project_slug
+            'information.json'
         )
 
         if relationship_layer_id:
@@ -65,6 +105,23 @@ class Utilities(object):
         if party_layer_id:
             information['party_layer_id'] = party_layer_id
 
+        if vlayers:
+            information['layers'] = []
+            for layer in vlayers:
+                layer_type = ''
+                if layer.geometryType() == QGis.Point:
+                    layer_type = 'Point'
+                elif layer.geometryType() == QGis.Polygon:
+                    layer_type = 'Polygon'
+                elif layer.geometryType() == QGis.Line:
+                    layer_type = 'Line'
+                information['layers'].append(
+                    {
+                        'id': layer.id(),
+                        'type': layer_type
+                    }
+                )
+
         file_ = open(filename, 'w')
         file_.write(json.dumps(information, sort_keys=True))
         file_.close()
@@ -72,12 +129,16 @@ class Utilities(object):
     @staticmethod
     def update_project_basic_information(
             information,
+            vlayers=None,
             relationship_layer_id=None,
             party_layer_id=None):
         """Update project basic information.
 
         :param information: basic information that will be saved
         :type information: dict
+
+        :param vlayers: list of Spatial vector layers
+        :type vlayers: list of QgsVectorLayer
 
         :param relationship_layer_id: Id for relationship layer
         :type relationship_layer_id: str
@@ -98,6 +159,7 @@ class Utilities(object):
 
         Utilities.save_project_basic_information(
             information,
+            vlayers,
             relationship_layer_id,
             party_layer_id
         )
@@ -115,10 +177,12 @@ class Utilities(object):
         :return: information
         :rtype: dict
         """
-        filename = get_path_data(organization_slug)
+        filename = get_path_data(
+            organization_slug=organization_slug,
+            project_slug=project_slug)
         filename = os.path.join(
             filename,
-            '%s.json' % project_slug
+            'information.json'
         )
         if not os.path.isfile(filename):
             return {}
@@ -132,41 +196,45 @@ class Utilities(object):
             return {}
 
     @staticmethod
-    def get_downloaded_projects(organization):
-        """Get all downloaded projects.
+    def get_organization_project_slug(layer):
+        """Get organization and project slug.
 
-        :return: downloaded projects
-        :rtype: list of dict
+        :param layer: vector layer that will be checked
+        :type layer: QgsVectorLayer
+
+        :return: organization and project slug
+        :rtype: tuple
         """
-        file_path = get_path_data(organization)
 
-        list_files = []
+        data_path = get_project_path()
+        data_path = os.path.join(
+            data_path,
+            'data'
+        )
+        # checking by source
+        metadatas = layer.metadata().split('<p')
+        for metadata in metadatas:
+            if data_path in metadata:
+                source = metadata.split('.geojson')
+                source = source[0].split('/')
+                if len(source) >= 3:
+                    # -1 is type layer
+                    type = source[-1]
+                    project_slug = source[-2]
+                    organization_slug = source[-3]
+                    return organization_slug, project_slug, type
 
-        for filename in os.listdir(file_path):
-            if not os.path.isfile(os.path.join(file_path, filename)):
-                continue
-            if '.json' not in filename:
-                continue
-            project_name, file_extension = os.path.splitext(filename)
-            list_files.append(organization + '/' + project_name)
+        names = layer.name().split('/')
+        if len(names) == 3:
+            try:
+                organization_slug = names[0]
+                project_slug = names[1]
+                type = names[3]
+                return organization_slug, project_slug, type
+            except IndexError:
+                pass
 
-        projects = []
-
-        for layer in QgsMapLayerRegistry.instance().mapLayers().values():
-            if layer.name() in list_files:
-                project_slug = layer.name().split('/')[1]
-                information = Utilities.get_basic_information(
-                        organization,
-                        project_slug)
-
-                projects.append({
-                    'id': layer.id(),
-                    'name': layer.name(),
-                    'information': information,
-                    'vector_layer': layer
-                })
-
-        return projects
+        return None, None, None
 
     @staticmethod
     def get_basic_information_by_vector(layer):
@@ -178,33 +246,96 @@ class Utilities(object):
         :return: information
         :rtype: dict
         """
-        # checking by names
-        names = layer.name().split('/')
-        if len(names) == 2:
-            organization_slug = names[0]
-            project_slug = names[1]
-            information = Utilities.get_basic_information(
-                organization_slug, project_slug)
-            if information:
-                return information
+        organization_slug, project_slug, type = \
+            Utilities.get_organization_project_slug(layer)
+        information = Utilities.get_basic_information(
+            organization_slug, project_slug)
+        information['layer_type'] = type
+        return information
 
-        data_path = get_project_path()
-        data_path = os.path.join(
-            data_path,
-            'data'
-        )
+    @staticmethod
+    def save_layer(geojson, organization_slug, project_slug):
+        """Save geojson to local file.
 
-        # checking by source
-        metadatas = layer.metadata().split('<p')
-        for metadata in metadatas:
-            if data_path in metadata:
-                source = metadata.split('.geojson')
-                source = source[0].split('/')
-                project_slug = names[-1]
-                organization_slug = source[-2]
-                information = Utilities.get_basic_information(
-                    organization_slug, project_slug)
-                return information
+        :param organization_slug: organization slug for data
+        :type organization_slug: str
+
+        :param project_slug: project_slug for getting spatial
+        :type project_slug: str
+
+        :param geojson: geojson that will be saved
+        :type geojson: JSON object
+
+        :return: layers
+        :rtype: [QgsVectorLayer]
+        """
+        geojson = GeojsonParser(geojson)
+        filename = get_path_data(
+            organization_slug=organization_slug,
+            project_slug=project_slug)
+
+        if not os.path.exists(filename):
+            os.makedirs(filename)
+
+        layers = geojson.get_geojson_for_qgis()
+        vlayers = []
+        for key, value in layers.iteritems():
+            geojson_name = os.path.join(
+                filename,
+                '%s.geojson' % key
+            )
+            file_ = open(geojson_name, 'w')
+            file_.write(json.dumps(value, sort_keys=True))
+            file_.close()
+            vlayer = QgsVectorLayer(
+                geojson_name, "%s/%s/%s" % (
+                    organization_slug, project_slug, key
+                ),
+                "ogr"
+            )
+            QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+            vlayers.append(vlayer)
+        return vlayers
+
+    @staticmethod
+    def get_downloaded_projects(organization):
+        """Get all downloaded projects.
+
+        :return: downloaded projects
+        :rtype: list of dict
+        """
+        file_path = get_path_data(organization)
+
+        list_files = []
+
+        for dirpath, _, filenames in os.walk(file_path):
+            for f in filenames:
+                if 'geojson' in f:
+                    abs_path = os.path.abspath(
+                            os.path.join(dirpath, f)).split('.')[1].split('/')
+                    names = []
+                    names.append(abs_path[-3])
+                    names.append(abs_path[-2])
+                    names.append(abs_path[-1])
+                    list_files.append(
+                        '/'.join(names)
+                    )
+
+        projects = []
+
+        for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+            if layer.name() in list_files:
+                information = \
+                    Utilities.get_basic_information_by_vector(layer)
+
+                projects.append({
+                    'id': layer.id(),
+                    'name': layer.name(),
+                    'information': information,
+                    'vector_layer': layer
+                })
+
+        return projects
 
     @staticmethod
     def add_tabular_layer(
