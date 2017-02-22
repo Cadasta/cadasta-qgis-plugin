@@ -101,9 +101,18 @@ class StepProjectUpdate01(WizardStep, FORM_CLASS):
             return
 
         projects = sorted(projects, key=lambda k: k['name'])
+
+        unique_projects = []
         for project in projects:
-            self.project_combo_box.addItem(
-                project['name'], project)
+            project_descriptions = project['name'].split('/')
+            organization = project_descriptions[0]
+            name = project_descriptions[1]
+            layer_name = '%s/%s' % (organization, name)
+            if layer_name not in unique_projects:
+                unique_projects.append(layer_name)
+                self.project_combo_box.addItem(
+                    layer_name, project
+                )
 
     def project_combo_box_changed(self):
         """Update description when combo box changed."""
@@ -116,7 +125,7 @@ class StepProjectUpdate01(WizardStep, FORM_CLASS):
                     self.tr(project['information']['description']))
             else:
                 self.project_description_label.setText(
-                    self.tr(project['name']))
+                    self.tr('No description'))
         except (TypeError, KeyError):
             return
 

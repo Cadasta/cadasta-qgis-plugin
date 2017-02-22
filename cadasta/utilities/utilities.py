@@ -19,7 +19,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsMapLayerRegistry,
     QgsVectorFileWriter,
-    QgsFeature)
+    QgsFeature,
+    QGis)
 from cadasta.common.setting import get_path_data, get_csv_path
 from cadasta.utilities.geojson_parser import GeojsonParser
 from cadasta.utilities.resources import get_project_path
@@ -43,9 +44,7 @@ class Utilities(object):
         :type layers: [QgsVectorLayer]
         """
         for layer in layers:
-            LOGGER.debug(layer)
             qgis_layer = QgsMapLayerRegistry.instance().mapLayer(layer)
-            LOGGER.debug(qgis_layer)
             organization_slug, project_slug, type = \
                 Utilities.get_organization_project_slug(qgis_layer)
             project_folder = get_path_data(
@@ -60,7 +59,6 @@ class Utilities(object):
             # check geojson is not present
             geojson_present = False
             for fname in os.listdir(project_folder):
-                LOGGER.debug(fname)
                 if fname.endswith('.geojson'):
                     geojson_present = True
                     break
@@ -73,12 +71,16 @@ class Utilities(object):
     @staticmethod
     def save_project_basic_information(
             information,
+            vlayers=None,
             relationship_layer_id=None,
             party_layer_id=None):
         """Save project basic information.
 
         :param information: basic information that will be saved
         :type information: dict
+
+        :param vlayers: list of Spatial vector layers
+        :type vlayers: list of QgsVectorLayer
 
         :param relationship_layer_id: Id for relationship layer
         :type relationship_layer_id: str
@@ -103,6 +105,23 @@ class Utilities(object):
         if party_layer_id:
             information['party_layer_id'] = party_layer_id
 
+        if vlayers:
+            information['layers'] = []
+            for layer in vlayers:
+                layer_type = ''
+                if layer.geometryType() == QGis.Point:
+                    layer_type = 'Point'
+                elif layer.geometryType() == QGis.Polygon:
+                    layer_type = 'Polygon'
+                elif layer.geometryType() == QGis.Line:
+                    layer_type = 'Line'
+                information['layers'].append(
+                    {
+                        'id': layer.id(),
+                        'type': layer_type
+                    }
+                )
+
         file_ = open(filename, 'w')
         file_.write(json.dumps(information, sort_keys=True))
         file_.close()
@@ -110,12 +129,16 @@ class Utilities(object):
     @staticmethod
     def update_project_basic_information(
             information,
+            vlayers=None,
             relationship_layer_id=None,
             party_layer_id=None):
         """Update project basic information.
 
         :param information: basic information that will be saved
         :type information: dict
+
+        :param vlayers: list of Spatial vector layers
+        :type vlayers: list of QgsVectorLayer
 
         :param relationship_layer_id: Id for relationship layer
         :type relationship_layer_id: str
@@ -136,6 +159,7 @@ class Utilities(object):
 
         Utilities.save_project_basic_information(
             information,
+            vlayers,
             relationship_layer_id,
             party_layer_id
         )
@@ -286,7 +310,6 @@ class Utilities(object):
                 if 'geojson' in f:
                     abs_path = os.path.abspath(
                             os.path.join(dirpath, f)).split('.')[1].split('/')
-                    LOGGER.debug(abs_path)
                     names = []
                     names.append(abs_path[-3])
                     names.append(abs_path[-2])
@@ -295,7 +318,6 @@ class Utilities(object):
                         '/'.join(names)
                     )
 
-        LOGGER.debug(list_files)
         projects = []
 
         for layer in QgsMapLayerRegistry.instance().mapLayers().values():
@@ -338,7 +360,6 @@ class Utilities(object):
         :rtype: (bool, str)
         """
         file_path = get_csv_path(organization_slug, project_slug, attribute)
-        LOGGER.debug(file_path)
 
         QgsVectorFileWriter.writeAsVectorFormat(
             tabular_layer,

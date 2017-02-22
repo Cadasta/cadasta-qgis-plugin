@@ -121,6 +121,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             QCoreApplication.processEvents()
             Utilities.save_project_basic_information(
                 self.project,
+                vlayers,
                 relationship_layer.id(),
                 party_layer.id()
             )
