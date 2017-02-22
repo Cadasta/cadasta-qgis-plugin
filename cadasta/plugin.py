@@ -364,7 +364,6 @@ class CadastaPlugin:
             iface=self.iface
         )
         self.wizard = dialog
-        dialog.downloaded.connect(self.call_layer_changed)
         dialog.show()
         dialog.exec_()
 

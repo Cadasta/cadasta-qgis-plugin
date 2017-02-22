@@ -11,10 +11,18 @@ This module provides: Project Creation Step 3 : Upload to cadasta
 
 """
 
+import os
 import json
 import logging
-from qgis.core import QgsMapLayerRegistry
-from PyQt4.QtCore import QCoreApplication, QByteArray
+from qgis.core import (
+    QgsVectorLayer,
+    QgsMapLayerRegistry,
+    QgsField,
+    QGis,
+    QgsFeature,
+    QCoreApplication
+)
+from PyQt4.QtCore import QByteArray, QVariant
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.utilities.i18n import tr
 from cadasta.utilities.utilities import Utilities
@@ -24,6 +32,8 @@ from cadasta.api.api_connect import ApiConnect
 from cadasta.api.organization_project import (
     OrganizationProjectSpatial
 )
+from cadasta.common.setting import get_csv_path
+from cadasta.vector import tools
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -51,6 +61,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         self.project_upload_result = None
         self.current_progress = 0
         self.data = None
+        self.spatial_api = None
 
     def set_widgets(self):
         """Set all widgets on the tab."""
@@ -164,7 +175,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         connector = ApiConnect(get_url_instance() + post_url)
         status, result = self._call_json_post(
             connector,
-            json.dumps(post_data))
+            post_data)
 
         self.set_progress_bar(self.current_progress + self.upload_increment)
         self.set_status(
@@ -194,7 +205,6 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         """Rerender saved layer on cadasta."""
         # rerender current project to cadasta data
         layer = self.parent.layer
-        QgsMapLayerRegistry.instance().removeMapLayer(layer.id())
         self.spatial_api = OrganizationProjectSpatial(
             self.data['organisation']['slug'],
             self.project_upload_result['slug'],
@@ -210,10 +220,22 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             # save result to local file
             organization_slug = result[2]
             project_slug = result[3]
+            vlayers = Utilities.save_layer(result[1], organization_slug, project_slug)
+            relationship_layer = self.relationships_layer(
+                vlayers,
+                organization_slug,
+                project_slug)
+            party_layer = self.parties_layer(
+                organization_slug,
+                project_slug
+            )
+            QCoreApplication.processEvents()
             Utilities.save_project_basic_information(
-                self.project_upload_result)
-            Utilities.save_layer(result[1], organization_slug, project_slug)
-            self.parent.downloaded.emit()
+                information=self.project_upload_result,
+                vlayers=vlayers,
+                relationship_layer_id=relationship_layer.id(),
+                party_layer_id=party_layer.id()
+            )
         else:
             pass
 
@@ -512,3 +534,164 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         :rtype: ( bool, str )
         """
         return connector.put_json(post_data)
+
+    def relationships_layer(self, vector_layers, organization_slug, project_slug):
+        """Create relationship layer.
+
+        :param vector_layers: List of QGS vector layer in memory
+        :type vector_layers: list of QgsVectorLayer
+
+        :param organization_slug: Organization slug
+        :type organization_slug: str
+
+        :param project_slug: Project slug
+        :type project_slug: str
+
+        :return: Relationship layer
+        :rtype: QgsVectorLayer
+        """
+        attribute = 'relationships'
+
+        api = '/api/v1/organizations/{organization_slug}/projects/' \
+              '{project_slug}/spatial/{spatial_unit_id}/relationships/'
+
+        csv_path = get_csv_path(
+            organization_slug,
+            project_slug,
+            attribute)
+
+        if os.path.isfile(csv_path):
+            os.remove(csv_path)
+
+        relationship_layer = tools.create_memory_layer(
+            layer_name='%s/%s/%s' % (
+                organization_slug,
+                project_slug,
+                attribute),
+            geometry=QGis.NoGeometry,
+            fields=[
+                QgsField('spatial_id', QVariant.String, "string"),
+                QgsField('rel_id', QVariant.String, "string"),
+                QgsField('rel_name', QVariant.String, "string"),
+                QgsField('party_id', QVariant.String, "string"),
+                QgsField('attributes', QVariant.String, "string"),
+            ]
+        )
+
+        QgsMapLayerRegistry.instance().addMapLayer(relationship_layer)
+
+        for vector_layer in vector_layers:
+            # Add relationship layer id to spatial attribute table
+            spatial_id_index = vector_layer.fieldNameIndex('id')
+
+            for index, feature in enumerate(vector_layer.getFeatures()):
+                attributes = feature.attributes()
+                spatial_api = api.format(
+                    organization_slug=organization_slug,
+                    project_slug=project_slug,
+                    spatial_unit_id=attributes[spatial_id_index]
+                )
+                connector = ApiConnect(get_url_instance() + spatial_api)
+                status, results = connector.get()
+
+                if not status or len(results) == 0:
+                    continue
+
+                try:
+                    for result in results:
+                        relationship_layer.startEditing()
+                        fet = QgsFeature()
+                        questionnaire_attr = result['attributes']
+                        if not questionnaire_attr:
+                            questionnaire_attr = '-'
+                        fet.setAttributes([
+                            attributes[spatial_id_index],
+                            result['id'],
+                            result['tenure_type'],
+                            result['party']['id'],
+                            questionnaire_attr,
+                            ])
+                        relationship_layer.addFeature(fet, True)
+                        relationship_layer.commitChanges()
+                except (IndexError, KeyError):
+                    continue
+
+        Utilities.add_tabular_layer(
+            relationship_layer,
+            organization_slug,
+            project_slug,
+            attribute
+        )
+
+        return relationship_layer
+
+    def parties_layer(self, organization_slug, project_slug):
+        """Create parties layer.
+
+        :param organization_slug: Organization slug
+        :type organization_slug: str
+
+        :param project_slug: Project slug
+        :type project_slug: str
+
+        :param vector_layer: QGS vector layer in memory
+        :type vector_layer: QgsVectorLayer
+        """
+        attribute = 'parties'
+
+        csv_path = get_csv_path(organization_slug, project_slug, attribute)
+
+        if os.path.isfile(csv_path):
+            os.remove(csv_path)
+
+        api = '/api/v1/organizations/{organization_slug}/projects/' \
+              '{project_slug}/parties/'.format(
+                organization_slug=organization_slug,
+                project_slug=project_slug)
+
+        connector = ApiConnect(get_url_instance() + api)
+        status, results = connector.get()
+
+        if not status:
+            return
+
+        party_layer = tools.create_memory_layer(
+            layer_name='%s/%s/%s' % (
+                organization_slug,
+                project_slug,
+                attribute),
+            geometry=QGis.NoGeometry,
+            fields=[
+                QgsField('id', QVariant.String, "string"),
+                QgsField('name', QVariant.String, "string"),
+                QgsField('type', QVariant.String, "string"),
+                QgsField('attributes', QVariant.String, "string"),
+            ]
+        )
+
+        QgsMapLayerRegistry.instance().addMapLayer(party_layer)
+
+        for party in results:
+            party_layer.startEditing()
+            feature = QgsFeature()
+            questionnaire_attr = party['attributes']
+            if not questionnaire_attr:
+                questionnaire_attr = '-'
+            feature.setAttributes([
+                party['id'],
+                party['name'],
+                party['type'],
+                questionnaire_attr
+            ])
+            party_layer.addFeature(feature, True)
+            party_layer.commitChanges()
+            QCoreApplication.processEvents()
+
+        Utilities.add_tabular_layer(
+            party_layer,
+            organization_slug,
+            project_slug,
+            attribute
+        )
+
+        return party_layer

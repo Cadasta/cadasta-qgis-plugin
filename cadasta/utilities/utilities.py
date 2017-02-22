@@ -226,10 +226,13 @@ class Utilities(object):
 
         names = layer.name().split('/')
         if len(names) == 3:
-            organization_slug = names[0]
-            project_slug = names[1]
-            type = names[3]
-            return organization_slug, project_slug, type
+            try:
+                organization_slug = names[0]
+                project_slug = names[1]
+                type = names[3]
+                return organization_slug, project_slug, type
+            except IndexError:
+                pass
 
         return None, None, None
 
