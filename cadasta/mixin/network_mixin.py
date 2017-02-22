@@ -81,6 +81,29 @@ class NetworkMixin(object):
         self.reply = self.manager.post(self.req, data)
         self.connect_request()
 
+    def connect_json_put(self, data):
+        """Send put request with json string.
+
+        :param data: Json string data
+        :type data: str
+        """
+        if self.auth_token:
+            # Add authentication token to request
+            self.req.setRawHeader(
+                'Authorization',
+                'token %s' % self.auth_token
+            )
+
+        self.req.setRawHeader("Content-Type", "application/json")
+        json_string = QByteArray(data)
+        p_buffer = QBuffer(self.manager)
+        p_buffer.setData(json_string)
+
+        self.reply = self.manager.sendCustomRequest(
+            self.req, 'PUT', p_buffer
+        )
+        self.connect_request()
+
     def connect_json_patch(self, data):
         """Send patch request with json string.
 

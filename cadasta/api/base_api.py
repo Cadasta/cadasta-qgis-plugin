@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Cadasta project - **Project api.**
+Cadasta project - **Base Api.**
 
 .. note:: This program is free software; you can redistribute it and/or modify
      it under the terms of the GNU General Public License as published by
@@ -9,21 +9,16 @@ Cadasta project - **Project api.**
 
 """
 
-from cadasta.api.base_api import BaseApi
-from cadasta.common.setting import (
-    get_url_instance
-)
+from cadasta.mixin.network_mixin import NetworkMixin
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
 __revision__ = '$Format:%H$'
-__date__ = '20/12/16'
+__date__ = '18/01/17'
 __copyright__ = 'Copyright 2016, Cadasta'
 
 
-class Project(BaseApi):
-    """Class to fetch available project data."""
-
-    api_url = 'api/v1/projects/'
+class BaseApi(NetworkMixin):
+    """Base API using NetworkMixin."""
 
     def __init__(self, on_finished=None):
         """Constructor.
@@ -31,10 +26,8 @@ class Project(BaseApi):
         :param on_finished: (optional) function that catch result request
         :type on_finished: Function
         """
-        self.request_url = get_url_instance() + self.api_url
-        super(Project, self).__init__()
         self.on_finished = on_finished
-        self.connect_get()
+        super(BaseApi, self).__init__()
 
     def connection_finished(self):
         """On finished function when tools request is finished."""

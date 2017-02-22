@@ -32,7 +32,6 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectUpdate03(WizardStep, FORM_CLASS):
-
     def __init__(self, parent=None):
         """Constructor.
 
@@ -109,7 +108,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
         status, response = step2.send_update_request(post_data)
         if status:
-            Utilities.save_project_basic_information(response)
+            Utilities.update_project_basic_information(response)
             self.set_status(
                 self.tr('Update success')
             )
@@ -139,48 +138,41 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             if attributes[location_id_idx]:
                 geojson = feature.geometry().exportToGeoJSON()
                 self.upload_update_locations(
-                        api,
-                        geojson,
-                        attributes[location_type_idx]
+                    api,
+                    geojson,
+                    attributes[location_type_idx]
                 )
             if not attributes[location_id_idx]:
                 # New location
                 geojson = feature.geometry().exportToGeoJSON()
                 project_id = self.add_new_locations(
-                        geojson,
-                        attributes[location_type_idx]
+                    geojson,
+                    attributes[location_type_idx]
                 )
                 self.layer.startEditing()
                 self.layer.changeAttributeValue(
-                        feature.id(), 1, project_id
+                    feature.id(), 1, project_id
                 )
                 self.layer.commitChanges()
 
     def update_relationship_attributes(self):
         """Update relationship attribute for location"""
 
-        # Get relationship csv
-        features = self.layer.getFeatures()
-        if not features:
+        information = Utilities.get_basic_information_by_vector(self.layer)
+
+        if not information:
             return
 
-        relationship_id_idx = self.layer.fieldNameIndex(
-                'relationship_layer_id'
-        )
-        if not relationship_id_idx:
+        if 'relationship_layer_id' not in information:
             return
 
-        relationship_id = None
-        for feature in features:
-            attributes = feature.attributes()
-            if attributes[relationship_id_idx]:
-                relationship_id = attributes[relationship_id_idx]
-            break
+        relationship_id = information['relationship_layer_id']
+
         if not relationship_id:
             return
 
         relationship_layer = QgsMapLayerRegistry.instance().mapLayer(
-                relationship_id
+            relationship_id
         )
         if not relationship_layer:
             return
@@ -189,6 +181,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         spatial_id_idx = 0
         relationship_id_idx = 1
         relationship_type_idx = 2
+        attributes_idx = 4
 
         update_api = '/api/v1/organizations/{organization_slug}/projects/' \
                      '{project_slug}/relationships/tenure/{relationship_id}/'
@@ -203,28 +196,20 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             self.upload_relationship(
                 api,
                 attributes[relationship_type_idx],
+                attributes[attributes_idx]
             )
 
     def update_party_attributes(self):
         """Update party attribute for this project."""
+        information = Utilities.get_basic_information_by_vector(self.layer)
 
-        # Get relationship csv
-        features = self.layer.getFeatures()
-        if not features:
+        if not information:
             return
 
-        party_id_idx = self.layer.fieldNameIndex('party_layer_id')
-        if not party_id_idx:
+        if 'party_layer_id' not in information:
             return
 
-        party_id = None
-        for feature in features:
-            attributes = feature.attributes()
-            if attributes[party_id_idx]:
-                party_id = attributes[party_id_idx]
-                break
-        if not party_id:
-            return
+        party_id = information['party_layer_id']
 
         party_layer = QgsMapLayerRegistry.instance().mapLayer(party_id)
         if not party_layer:
@@ -234,6 +219,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         id_idx = 0
         name_idx = 1
         type_idx = 2
+        attributes_idx = 3
 
         update_api = '/api/v1/organizations/{organization_slug}/projects/' \
                      '{project_slug}/parties/{party_id}/'
@@ -248,7 +234,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             self.upload_parties(
                 api,
                 attributes[name_idx],
-                attributes[type_idx]
+                attributes[type_idx],
+                attributes[attributes_idx]
             )
 
     def upload_update(self):
@@ -320,8 +307,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
                 self.tr('Location updated.')
             )
         else:
-            self.set_status(
-                'Error: %s' % result
+            self.text_edit.append(
+                'Error: %s' % result + '\n'
             )
 
     def add_new_locations(self, geometry, location_type):
@@ -354,12 +341,12 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             )
             return json.loads(result)['properties']['id']
         else:
-            self.set_status(
-                'Error: %s' % result
+            self.text_edit.append(
+                'Error: %s' % result + '\n'
             )
             return None
 
-    def upload_parties(self, api, party_name, party_type):
+    def upload_parties(self, api, party_name, party_type, attributes=None):
         """Upload party data.
 
         :param api: Api url to upload party
@@ -370,11 +357,18 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
         :param party_type: Party type
         :type party_type: str
+
+        :param attributes: Project-specific attributes that are defined
+                           through the project's questionnaire
+        :type attributes: str
         """
         post_data = {
             'name': party_name,
             'type': party_type
         }
+
+        if attributes and attributes != '-':
+            post_data['attributes'] = attributes
 
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.patch_json(json.dumps(post_data))
@@ -384,11 +378,11 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
                 self.tr('Party updated.')
             )
         else:
-            self.set_status(
-                'Error: %s' % result
+            self.text_edit.append(
+                'Error: %s' % result + '\n'
             )
 
-    def upload_relationship(self, api, relationship_type):
+    def upload_relationship(self, api, relationship_type, attributes=None):
         """Upload relationship data.
 
         :param api: Api url to upload party
@@ -396,10 +390,17 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
         :param relationship_type: Relationship type
         :type relationship_type: str
+
+        :param attributes: Project-specific attributes that are defined
+                           through the project's questionnaire
+        :type attributes: str
         """
         post_data = {
             'tenure_type': relationship_type,
         }
+
+        if attributes and attributes != '-':
+            post_data['attributes'] = attributes
 
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.patch_json(json.dumps(post_data))
@@ -409,6 +410,6 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
                 self.tr('Relationship updated.')
             )
         else:
-            self.set_status(
-                'Error: %s' % result
+            self.text_edit.append(
+                'Error: %s' % result + '\n'
             )

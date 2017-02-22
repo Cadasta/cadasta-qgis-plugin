@@ -1,0 +1,587 @@
+{
+  "filename": "",
+  "title": "",
+  "id_string": "",
+  "questions": [
+    {
+      "name": "start",
+      "label": "Label",
+      "type": "ST",
+      "required": false,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "end",
+      "label": "Label",
+      "type": "EN",
+      "required": false,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "today",
+      "label": "Label",
+      "type": "TD",
+      "required": false,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "deviceid",
+      "label": "Label",
+      "type": "DI",
+      "required": false,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "title",
+      "label": "Cadasta Platform - UAT Survey",
+      "type": "NO",
+      "required": false,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "party_type",
+      "label": "Party Classification",
+      "type": "S1",
+      "required": true,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null,
+      "options": [
+        {
+          "name": "GR",
+          "label": "Group",
+          "index": 1
+        },
+        {
+          "name": "IN",
+          "label": "Individual",
+          "index": 2
+        },
+        {
+          "name": "CO",
+          "label": "Corporation",
+          "index": 3
+        }
+      ]
+    },
+    {
+      "name": "party_name",
+      "label": "Party Name",
+      "type": "TX",
+      "required": true,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "location_geometry",
+      "label": "Location of Parcel",
+      "type": "GT",
+      "required": false,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "location_type",
+      "label": "What is the land feature?",
+      "type": "S1",
+      "required": true,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null,
+      "options": [
+        {
+          "name": "PA",
+          "label": "Parcel",
+          "index": 1
+        },
+        {
+          "name": "CB",
+          "label": "Community Boundary",
+          "index": 2
+        },
+        {
+          "name": "BU",
+          "label": "Building",
+          "index": 3
+        },
+        {
+          "name": "AP",
+          "label": "Apartment",
+          "index": 4
+        },
+        {
+          "name": "PX",
+          "label": "Project Extent",
+          "index": 5
+        },
+        {
+          "name": "RW",
+          "label": "Right-of-way",
+          "index": 6
+        },
+        {
+          "name": "NP",
+          "label": "National Park Boundary",
+          "index": 7
+        },
+        {
+          "name": "MI",
+          "label": "Miscellaneous",
+          "index": 8
+        }
+      ]
+    },
+    {
+      "name": "location_photo",
+      "label": "Photo of Parcel?",
+      "type": "PH",
+      "required": false,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "party_photo",
+      "label": "Photo of Party?",
+      "type": "PH",
+      "required": false,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "tenure_resource_photo",
+      "label": "Photo of Tenure?",
+      "type": "PH",
+      "required": false,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null
+    },
+    {
+      "name": "tenure_type",
+      "label": "What is the social tenure type?",
+      "type": "S1",
+      "required": true,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null,
+      "options": [
+        {
+          "name": "AL",
+          "label": "All Types",
+          "index": 1
+        },
+        {
+          "name": "CR",
+          "label": "Carbon Rights",
+          "index": 2
+        },
+        {
+          "name": "CO",
+          "label": "Concessionary Rights",
+          "index": 3
+        },
+        {
+          "name": "CU",
+          "label": "Customary Rights",
+          "index": 4
+        },
+        {
+          "name": "EA",
+          "label": "Easement",
+          "index": 5
+        },
+        {
+          "name": "ES",
+          "label": "Equitable Servitude",
+          "index": 6
+        },
+        {
+          "name": "FH",
+          "label": "Freehold",
+          "index": 7
+        },
+        {
+          "name": "GR",
+          "label": "Grazing Rights",
+          "index": 8
+        },
+        {
+          "name": "HR",
+          "label": "Hunting/Fishing/Harvest Rights",
+          "index": 9
+        },
+        {
+          "name": "IN",
+          "label": "Indigenous Land Rights",
+          "index": 10
+        },
+        {
+          "name": "JT",
+          "label": "Joint Tenancy",
+          "index": 11
+        },
+        {
+          "name": "LH",
+          "label": "Leasehold",
+          "index": 12
+        },
+        {
+          "name": "LL",
+          "label": "Longterm leasehold",
+          "index": 13
+        },
+        {
+          "name": "MR",
+          "label": "Mineral Rights",
+          "index": 14
+        },
+        {
+          "name": "OC",
+          "label": "Occupancy (No Documented Rights)",
+          "index": 15
+        },
+        {
+          "name": "TN",
+          "label": "Tenancy (Documented Sub-lease)",
+          "index": 16
+        },
+        {
+          "name": "TC",
+          "label": "Tenancy in Common",
+          "index": 17
+        },
+        {
+          "name": "UC",
+          "label": "Undivided Co-ownership",
+          "index": 18
+        },
+        {
+          "name": "WR",
+          "label": "Water Rights",
+          "index": 19
+        }
+      ]
+    }
+  ],
+  "question_groups": [
+    {
+      "name": "meta",
+      "label": "Label",
+      "type": "group",
+      "questions": [
+        {
+          "name": "instanceID",
+          "label": "Label",
+          "type": "CA",
+          "required": false,
+          "constraint": null,
+          "default": null,
+          "hint": null,
+          "relevant": null
+        }
+      ]
+    },
+    {
+      "name": "tenure_relationship_attributes",
+      "label": "Tenure relationship attributes",
+      "type": "group",
+      "questions": [
+        {
+          "name": "notes",
+          "label": "Notes",
+          "type": "TX",
+          "required": false,
+          "constraint": null,
+          "default": null,
+          "hint": null,
+          "relevant": null
+        }
+      ]
+    },
+    {
+      "name": "party_relationship_attributes",
+      "label": "Party relationship attributes",
+      "type": "group",
+      "questions": [
+        {
+          "name": "notes",
+          "label": "Notes",
+          "type": "TX",
+          "required": false,
+          "constraint": null,
+          "default": null,
+          "hint": null,
+          "relevant": null
+        }
+      ]
+    },
+    {
+      "name": "party_attributes_group",
+      "label": "Group Party Attributes",
+      "type": "group",
+      "questions": [
+        {
+          "name": "number_of_members",
+          "label": "Number of Members",
+          "type": "IN",
+          "required": false,
+          "constraint": null,
+          "default": null,
+          "hint": null,
+          "relevant": null
+        },
+        {
+          "name": "date_formed",
+          "label": "Date Group Formed",
+          "type": "DA",
+          "required": false,
+          "constraint": null,
+          "default": null,
+          "hint": null,
+          "relevant": null
+        }
+      ]
+    },
+    {
+      "name": "party_attributes_individual",
+      "label": "Individual Party Attributes",
+      "type": "group",
+      "questions": [
+        {
+          "name": "gender",
+          "label": "Gender",
+          "type": "S1",
+          "required": false,
+          "constraint": null,
+          "default": "f",
+          "hint": null,
+          "relevant": null,
+          "options": [
+            {
+              "name": "m",
+              "label": "Male",
+              "index": 1
+            },
+            {
+              "name": "f",
+              "label": "Female",
+              "index": 2
+            }
+          ]
+        },
+        {
+          "name": "homeowner",
+          "label": "Homeowner",
+          "type": "S1",
+          "required": false,
+          "constraint": null,
+          "default": "no",
+          "hint": "Is homeowner",
+          "relevant": null,
+          "options": [
+            {
+              "name": "yes",
+              "label": "Yes",
+              "index": 1
+            },
+            {
+              "name": "no",
+              "label": "No",
+              "index": 2
+            }
+          ]
+        },
+        {
+          "name": "dob",
+          "label": "Date of Birth",
+          "type": "DA",
+          "required": false,
+          "constraint": null,
+          "default": null,
+          "hint": null,
+          "relevant": null
+        }
+      ]
+    },
+    {
+      "name": "party_attributes_default",
+      "label": "Default Party Attributes",
+      "type": "group",
+      "questions": [
+        {
+          "name": "notes",
+          "label": "Notes",
+          "type": "TX",
+          "required": false,
+          "constraint": null,
+          "default": null,
+          "hint": null,
+          "relevant": null
+        }
+      ]
+    },
+    {
+      "name": "location_attributes",
+      "label": "Location Attributes",
+      "type": "group",
+      "questions": [
+        {
+          "name": "name",
+          "label": "Name of Location",
+          "type": "TX",
+          "required": false,
+          "constraint": null,
+          "default": null,
+          "hint": null,
+          "relevant": null
+        },
+        {
+          "name": "quality",
+          "label": "Spatial Unit Quality",
+          "type": "S1",
+          "required": false,
+          "constraint": null,
+          "default": "null",
+          "hint": "Quality of parcel geometry",
+          "relevant": null,
+          "options": [
+            {
+              "name": "null",
+              "label": "No data",
+              "index": 1
+            },
+            {
+              "name": "text",
+              "label": "Textual",
+              "index": 2
+            },
+            {
+              "name": "point",
+              "label": "Point data",
+              "index": 3
+            },
+            {
+              "name": "polygon_low",
+              "label": "Low quality polygon",
+              "index": 4
+            },
+            {
+              "name": "polygon_high",
+              "label": "High quality polygon",
+              "index": 5
+            }
+          ]
+        },
+        {
+          "name": "acquired_how",
+          "label": "How was this location acquired?",
+          "type": "S1",
+          "required": false,
+          "constraint": null,
+          "default": "OT",
+          "hint": null,
+          "relevant": null,
+          "options": [
+            {
+              "name": "CS",
+              "label": "Contractual Share Crop",
+              "index": 1
+            },
+            {
+              "name": "CA",
+              "label": "Customary Arrangement",
+              "index": 2
+            },
+            {
+              "name": "GF",
+              "label": "Gift",
+              "index": 3
+            },
+            {
+              "name": "HS",
+              "label": "Homestead",
+              "index": 4
+            },
+            {
+              "name": "IO",
+              "label": "Informal Occupant",
+              "index": 5
+            },
+            {
+              "name": "IN",
+              "label": "Inheritance",
+              "index": 6
+            },
+            {
+              "name": "LH",
+              "label": "Leasehold",
+              "index": 7
+            },
+            {
+              "name": "PF",
+              "label": "Purchased Freehold",
+              "index": 8
+            },
+            {
+              "name": "RN",
+              "label": "Rental",
+              "index": 9
+            },
+            {
+              "name": "OT",
+              "label": "Other",
+              "index": 10
+            }
+          ]
+        },
+        {
+          "name": "acquired_when",
+          "label": "When was this location acquired?",
+          "type": "DA",
+          "required": false,
+          "constraint": null,
+          "default": "null",
+          "hint": null,
+          "relevant": null
+        },
+        {
+          "name": "notes",
+          "label": "Notes",
+          "type": "TX",
+          "required": false,
+          "constraint": null,
+          "default": null,
+          "hint": "Additional Notes",
+          "relevant": null
+        }
+      ]
+    }
+  ]
+}

@@ -38,6 +38,8 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 class StepProjectCreation3(WizardStep, FORM_CLASS):
     """Step 3 for project creation."""
 
+    upload_increment = 20
+
     def __init__(self, parent=None):
         """Constructor.
 
@@ -90,7 +92,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             json_result = json.loads(result)
             if 'detail' in json_result:
                 detail = json_result['detail']
-        except TypeError:
+        except (TypeError, ValueError):
             detail = result
         error_detail += detail
         return '<span style="color:red">%s</span><br>' % error_detail
@@ -158,18 +160,18 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             self.data['organisation']['slug']
         )
 
+        post_data = json.dumps(post_data)
         connector = ApiConnect(get_url_instance() + post_url)
         status, result = self._call_json_post(
             connector,
             json.dumps(post_data))
 
-        self.set_progress_bar(self.current_progress + 25)
+        self.set_progress_bar(self.current_progress + self.upload_increment)
         self.set_status(
             tr('Finished uploading project')
         )
 
         if status:
-            LOGGER.debug(result)
             self.project_upload_result = result
             total_locations = len(self.data['locations']['features'])
             if total_locations > 0:
@@ -177,6 +179,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                 self.upload_parties()
                 self.upload_relationships()
             self.rerender_saved_layer()
+            if self.data['questionnaire']:
+                self.update_questionnaire_project()
             self.set_progress_bar(100)
         else:
             self.set_progress_bar(0)
@@ -219,7 +223,9 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             tr('Uploading locations')
         )
         total_locations = len(self.data['locations']['features'])
-        progress_left = (100 - self.current_progress) / total_locations
+        progress_left = \
+            (100 - self.current_progress - self.upload_increment) \
+            / total_locations
 
         post_url = '/api/v1/organizations/%s/projects/%s/spatial/' % (
             self.data['organisation']['slug'],
@@ -430,6 +436,35 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         """
         return None
 
+    def update_questionnaire_project(self):
+        """Update questionnaire."""
+        self.set_status(
+            tr('Update questionnaire')
+        )
+        post_url = '/api/v1/organizations/' \
+                   '%s/projects/%s/questionnaire/' % (
+                       self.data['organisation']['slug'],
+                       self.project_upload_result['slug']
+                   )
+
+        post_data = QByteArray()
+        post_data.append(self.data['questionnaire'])
+
+        connector = ApiConnect(get_url_instance() + post_url)
+        status, result = self._call_json_put(connector, post_data)
+
+        self.set_status(
+            tr('Finished update questionnaire')
+        )
+        if status:
+            self.set_progress_bar(
+                self.current_progress + self.upload_increment)
+        else:
+            self.set_progress_bar(0)
+            self.set_status(
+                self.extract_error_detail(result)
+            )
+
     def _call_post(self, connector, post_data):
         """Call post method from connector.
 
@@ -461,3 +496,19 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         :rtype: ( bool, str )
         """
         return connector.post_json(post_data)
+
+    def _call_json_put(self, connector, post_data):
+        """Call put method with json string from connector.
+
+        For testing purpose.
+
+        :param connector: Api connector instance
+        :type connector: ApiConnect
+
+        :param post_data: data to post
+        :type post_data: str
+
+        :returns: Tuple of post status and results
+        :rtype: ( bool, str )
+        """
+        return connector.put_json(post_data)

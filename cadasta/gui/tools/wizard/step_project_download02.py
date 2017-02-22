@@ -12,7 +12,6 @@ This module provides: Project Download Step 2 : Download Project
 """
 import logging
 import os
-from uuid import uuid4
 from PyQt4.QtCore import QVariant
 from qgis.core import (
     QgsVectorLayer,
@@ -150,6 +149,9 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
 
         :param vector_layer: QGS vector layer in memory
         :type vector_layer: QgsVectorLayer
+
+        :return: Party layer
+        :rtype: QgsVectorLayer
         """
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
@@ -180,7 +182,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             fields=[
                 QgsField('id', QVariant.String, "string"),
                 QgsField('name', QVariant.String, "string"),
-                QgsField('type', QVariant.String, "string")
+                QgsField('type', QVariant.String, "string"),
+                QgsField('attributes', QVariant.String, "string"),
             ]
         )
 
@@ -189,36 +192,18 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         for party in results:
             party_layer.startEditing()
             feature = QgsFeature()
+            questionnaire_attr = party['attributes']
+            if not questionnaire_attr:
+                questionnaire_attr = '-'
             feature.setAttributes([
                 party['id'],
                 party['name'],
-                party['type']
+                party['type'],
+                questionnaire_attr
             ])
             party_layer.addFeature(feature, True)
             party_layer.commitChanges()
             QCoreApplication.processEvents()
-
-        LOGGER.debug(party_layer)
-
-        # Save relationship id to spatial layer
-        vector_layer.startEditing()
-        vector_layer.dataProvider().addAttributes([
-            QgsField('party_layer_id', QVariant.String),
-        ])
-        vector_layer.commitChanges()
-
-        for index, feat in enumerate(vector_layer.getFeatures()):
-            # Edit the attribute value
-            vector_layer.startEditing()
-            try:
-                vector_layer.changeAttributeValue(
-                    feat.id(), 3, party_layer.id()
-                )
-            except (IndexError, KeyError) as e:
-                continue
-
-            # Commit changes
-            vector_layer.commitChanges()
 
         Utilities.add_tabular_layer(
             party_layer,
@@ -227,11 +212,16 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             attribute
         )
 
+        return party_layer
+
     def relationships_layer(self, vector_layer):
         """Create relationship layer.
 
         :param vector_layer: QGS vector layer in memory
         :type vector_layer: QgsVectorLayer
+
+        :return: Relationship layer
+        :rtype: QgsVectorLayer
         """
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
@@ -259,6 +249,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                 QgsField('rel_id', QVariant.String, "string"),
                 QgsField('rel_name', QVariant.String, "string"),
                 QgsField('party_id', QVariant.String, "string"),
+                QgsField('attributes', QVariant.String, "string"),
             ]
         )
 
@@ -284,12 +275,16 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                 for result in results:
                     relationship_layer.startEditing()
                     fet = QgsFeature()
+                    questionnaire_attr = result['attributes']
+                    if not questionnaire_attr:
+                        questionnaire_attr = '-'
                     fet.setAttributes([
                         attributes[spatial_id_index],
                         result['id'],
                         result['tenure_type'],
                         result['party']['id'],
-                    ])
+                        questionnaire_attr,
+                        ])
                     relationship_layer.addFeature(fet, True)
                     relationship_layer.commitChanges()
             except (IndexError, KeyError):
@@ -302,22 +297,34 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             attribute
         )
 
-        # Save relationship id to spatial layer
-        vector_layer.startEditing()
-        vector_layer.dataProvider().addAttributes([
-            QgsField('relationship_layer_id', QVariant.String),
-        ])
-        vector_layer.commitChanges()
+        return relationship_layer
 
-        for index, feat in enumerate(vector_layer.getFeatures()):
-            # Edit the attribute value
-            vector_layer.startEditing()
-            try:
-                vector_layer.changeAttributeValue(
-                    feat.id(), 2, relationship_layer.id()
-                )
-            except (IndexError, KeyError) as e:
-                continue
+    def save_layer(self, geojson, organization_slug, project_slug):
+        """Save geojson to local file.
 
-            # Commit changes
-            vector_layer.commitChanges()
+        :param organization_slug: organization slug for data
+        :type organization_slug: str
+
+        :param project_slug: project_slug for getting spatial
+        :type project_slug: str
+
+        :param geojson: geojson that will be saved
+        :type geojson: JSON object
+        """
+        geojson = GeojsonParser(geojson)
+        filename = get_path_data(organization_slug, project_slug)
+        file_ = open(filename, 'w')
+        file_.write(geojson.geojson_string())
+        file_.close()
+        vlayer = QgsVectorLayer(
+            filename, "%s/%s" % (organization_slug, project_slug), "ogr")
+        QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+        relationship_layer = self.relationships_layer(vlayer)
+        party_layer = self.parties_layer(vlayer)
+        QCoreApplication.processEvents()
+        # save basic information
+        Utilities.save_project_basic_information(
+            self.project,
+            relationship_layer.id(),
+            party_layer.id()
+        )

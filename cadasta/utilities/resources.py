@@ -129,3 +129,55 @@ def get_project_path():
         )
     )
     return project_path
+
+
+def get_license_path():
+    """Get absolute license file path.
+
+    :rtype: basetring
+    :return absolute license path
+    """
+    project_path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            os.pardir,
+            os.pardir,
+            'LICENSE.txt'
+        )
+    )
+    return project_path
+
+
+def get_metadata_path():
+    """Get absolute metadata file path.
+
+    :rtype: basetring
+    :return absolute metadata path
+    """
+    project_path = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            os.pardir,
+            os.pardir,
+            'metadata.txt'
+        )
+    )
+    return project_path
+
+
+def get_plugin_version():
+    """Get plugin version from metadata.
+
+    :rtype: basetring
+    :return absolute metadata path
+    """
+    # get version
+    with open(get_metadata_path()) as metadata_file:
+        contents = metadata_file.readlines()
+    version = ''
+    for content in contents:
+        content = content.replace('\n', '')
+        if 'version=' in content:
+            version = content.split('=')[1]
+            break
+    return version

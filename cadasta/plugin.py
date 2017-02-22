@@ -44,6 +44,9 @@ from cadasta.gui.tools.wizard.project_update_wizard import (
 from cadasta.gui.tools.helper.helper_dialog import (
     HelperDialog
 )
+from cadasta.gui.tools.about.about_dialog import (
+    AboutDialog
+)
 from cadasta.common.setting import get_authtoken, get_user_organizations
 
 # Initialize Qt resources from file resources.py
@@ -68,10 +71,11 @@ class CadastaPlugin:
         # Save reference to the QGIS interface
         self.iface = iface
         self.action_options_wizard = None
+        self.project_download_wizard = None
         self.project_creation_wizard = None
         self.project_update_wizard = None
+        self.questionnaire_update_wizard = None
         self.wizard = None
-        self.iface.currentLayerChanged.connect(self.layer_changed)
 
         registry = QgsMapLayerRegistry.instance()
         registry.layerWillBeRemoved.connect(self.layer_removed)
@@ -87,7 +91,8 @@ class CadastaPlugin:
         """
         layer = QgsMapLayerRegistry.instance().mapLayer(layer_id)
         layer_names = layer.name().split('/')
-        if len(layer_names) > 1:
+        if len(layer_names) > 1 and \
+                ('relationships' in layer.name() or 'parties' in layer.name()):
             try:
                 project_slug, attribute = layer_names[1].split('_')
                 organization_slug = layer_names[0]
@@ -96,6 +101,7 @@ class CadastaPlugin:
                     organization_slug,
                     project_slug,
                     attribute)
+                self.project_update_wizard.setEnabled(False)
             except ValueError:
                 return
 
@@ -108,7 +114,8 @@ class CadastaPlugin:
 
         # Load csv file
         layer_names = layer.name().split('/')
-        if len(layer_names) > 1:
+        if len(layer_names) > 1 and \
+                ('relationships' in layer.name() or 'parties' in layer.name()):
             try:
                 project_slug, attribute = layer_names[1].split('_')
                 organization_slug = layer_names[0]
@@ -117,6 +124,7 @@ class CadastaPlugin:
                     organization_slug,
                     project_slug,
                     attribute)
+                self.layer_changed(layer)
             except ValueError:
                 return
 
@@ -127,6 +135,9 @@ class CadastaPlugin:
         :type layer: QgsVectorLayer
         """
         if get_authtoken() and layer:
+            if 'parties' in layer.name() or 'relationships' in layer.name():
+                self.project_update_wizard.setEnabled(True)
+                return
             information = Utilities.get_basic_information_by_vector(layer)
             if information and 'organization' in information:
                 try:
@@ -232,6 +243,7 @@ class CadastaPlugin:
         self._create_project_update_wizard()
         self._create_contact_dialog()
         self._create_help_dialog()
+        self._create_about_dialog()
         for action in self.actions:
             self.iface.addPluginToVectorMenu(
                 self.tr(u'&Cadasta'),
@@ -421,5 +433,28 @@ class CadastaPlugin:
             iface=self.iface
         )
 
+        dialog.show()
+        dialog.exec_()
+
+    # ------------------------------------------------------------------------
+    # initiate about dialog
+    # ------------------------------------------------------------------------
+    def _create_about_dialog(self):
+        """Create action for help diaog."""
+        icon_path = resources_path('images', 'icon.png')
+        self.action_options_wizard = self.add_action(
+            icon_path,
+            text=self.tr(u'About'),
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            enabled_flag=True,
+            callback=self.show_about_dialog
+        )
+
+    def show_about_dialog(self):
+        """Show the help dialog."""
+        dialog = AboutDialog(
+            iface=self.iface
+        )
         dialog.show()
         dialog.exec_()

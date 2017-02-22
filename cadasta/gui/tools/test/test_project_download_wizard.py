@@ -58,11 +58,11 @@ class CadastaProjectDownloadWizardTest(unittest.TestCase):
         """Test step 01"""
         current_step = self.dialog.get_current_step()
         button = current_step.get_available_projects_button
+        self.assertIsNotNone(button)
         button.click()
-
-        while not current_step.project_api.reply.isFinished():
-            QCoreApplication.processEvents()
-        self.assertIsNotNone(current_step.selected_project())
+        self.assertFalse(
+                current_step.get_available_projects_button.isEnabled()
+        )
 
     def test_step_02(self):
         """Test step 02"""
@@ -70,11 +70,9 @@ class CadastaProjectDownloadWizardTest(unittest.TestCase):
         current_step.selected_project = MagicMock(
             return_value=self.test_project
         )
-        self.dialog.next_button.click()
+        self.dialog.go_to_step(self.dialog.step_project_download02)
         current_step = self.dialog.get_current_step()
-        while not current_step.spatial_api.reply.isFinished():
-            QCoreApplication.processEvents()
-
+        self.assertEqual(current_step, self.dialog.step_project_download02)
         self.assertTrue(self.dialog.next_button.isEnabled())
 
 
