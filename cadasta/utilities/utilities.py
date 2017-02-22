@@ -284,7 +284,8 @@ class Utilities(object):
         for dirpath, _, filenames in os.walk(file_path):
             for f in filenames:
                 if 'geojson' in f:
-                    abs_path = os.path.abspath(os.path.join(dirpath, f)).split('.')[1].split('/')
+                    abs_path = os.path.abspath(
+                            os.path.join(dirpath, f)).split('.')[1].split('/')
                     LOGGER.debug(abs_path)
                     names = []
                     names.append(abs_path[-3])
