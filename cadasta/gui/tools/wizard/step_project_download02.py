@@ -153,7 +153,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                 fields=[
                     QgsField('id', QVariant.String, "string"),
                     QgsField('name', QVariant.String, "string"),
-                    QgsField('type', QVariant.String, "string")
+                    QgsField('type', QVariant.String, "string"),
+                    QgsField('attributes', QVariant.String, "string"),
                 ]
         )
 
@@ -162,10 +163,14 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         for party in results:
             party_layer.startEditing()
             feature = QgsFeature()
+            questionnaire_attr = party['attributes']
+            if not questionnaire_attr:
+                questionnaire_attr = '-'
             feature.setAttributes([
                 party['id'],
                 party['name'],
-                party['type']
+                party['type'],
+                questionnaire_attr
             ])
             party_layer.addFeature(feature, True)
             party_layer.commitChanges()
@@ -215,6 +220,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                 QgsField('rel_id', QVariant.String, "string"),
                 QgsField('rel_name', QVariant.String, "string"),
                 QgsField('party_id', QVariant.String, "string"),
+                QgsField('attributes', QVariant.String, "string"),
             ]
         )
 
@@ -240,11 +246,15 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                 for result in results:
                     relationship_layer.startEditing()
                     fet = QgsFeature()
+                    questionnaire_attr = result['attributes']
+                    if not questionnaire_attr:
+                        questionnaire_attr = '-'
                     fet.setAttributes([
                         attributes[spatial_id_index],
                         result['id'],
                         result['tenure_type'],
                         result['party']['id'],
+                        questionnaire_attr,
                         ])
                     relationship_layer.addFeature(fet, True)
                     relationship_layer.commitChanges()
