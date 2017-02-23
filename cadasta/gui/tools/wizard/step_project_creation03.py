@@ -220,7 +220,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             # save result to local file
             organization_slug = result[2]
             project_slug = result[3]
-            vlayers = Utilities.save_layer(result[1], organization_slug, project_slug)
+            vlayers = Utilities.save_layer(
+                result[1], organization_slug, project_slug)
             relationship_layer = self.relationships_layer(
                 vlayers,
                 organization_slug,
@@ -535,7 +536,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         """
         return connector.put_json(post_data)
 
-    def relationships_layer(self, vector_layers, organization_slug, project_slug):
+    def relationships_layer(
+            self, vector_layers, organization_slug, project_slug):
         """Create relationship layer.
 
         :param vector_layers: List of QGS vector layer in memory

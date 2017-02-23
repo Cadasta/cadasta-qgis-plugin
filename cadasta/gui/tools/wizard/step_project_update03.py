@@ -51,7 +51,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         """Set all widgets on the tab."""
         self.project = self.parent.project['information']
         for project_layer in self.project['layers']:
-            layer = QgsMapLayerRegistry.instance().mapLayer(project_layer['id'])
+            layer = QgsMapLayerRegistry.instance().mapLayer(
+                project_layer['id'])
             if layer:
                 self.vlayers.append(layer)
 

@@ -159,7 +159,10 @@ class CadastaPlugin:
                     set_setting('layers_added', setting_value)
                 else:
                     if setting_value not in setting_file:
-                        set_setting('layers_added', setting_file + ',' + setting_value)
+                        set_setting(
+                            'layers_added',
+                            setting_file + ',' + setting_value
+                        )
             except ValueError:
                 return
 
