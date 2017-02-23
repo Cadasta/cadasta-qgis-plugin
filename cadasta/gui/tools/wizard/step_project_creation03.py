@@ -184,14 +184,16 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         if status:
             self.project_upload_result = result
+            # create questionnaire first
+            # after creating location, questionnaire is blocked
+            if self.data['questionnaire']:
+                self.update_questionnaire_project()
             total_locations = len(self.data['locations']['features'])
             if total_locations > 0:
                 self.upload_locations()
                 self.upload_parties()
                 self.upload_relationships()
             self.rerender_saved_layer()
-            if self.data['questionnaire']:
-                self.update_questionnaire_project()
             self.set_progress_bar(100)
         else:
             self.set_progress_bar(0)

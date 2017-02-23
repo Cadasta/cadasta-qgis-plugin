@@ -172,16 +172,6 @@ class CadastaPlugin:
         :param layer: New layer that selected.
         :type layer: QgsVectorLayer
         """
-        if get_authtoken() and layer:
-            information = Utilities.get_basic_information_by_vector(layer)
-            if information and 'organization' in information:
-                try:
-                    organization_slug = information['organization']['slug']
-                    if organization_slug in get_user_organizations():
-                        self.project_update_wizard.setEnabled(True)
-                        return
-                except TypeError:
-                    pass
         self.project_update_wizard.setEnabled(False)
 
     # noinspection PyMethodMayBeStatic

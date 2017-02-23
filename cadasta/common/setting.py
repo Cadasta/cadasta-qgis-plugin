@@ -160,6 +160,8 @@ def get_path_data(organization_slug=None, project_slug=None):
         data_path,
         'data'
     )
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
     if organization_slug:
         data_path = os.path.join(
             data_path,

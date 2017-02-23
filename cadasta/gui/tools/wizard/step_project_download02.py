@@ -118,12 +118,16 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                     project_slug)
             relationship_layer = self.relationships_layer(vlayers)
             party_layer = self.parties_layer()
+            party_layer_id = None
+            if party_layer:
+                party_layer_id = party_layer.id()
+
             QCoreApplication.processEvents()
             Utilities.save_project_basic_information(
                 self.project,
                 vlayers,
                 relationship_layer.id(),
-                party_layer.id()
+                party_layer_id
             )
         else:
             pass

@@ -76,4 +76,4 @@ class CadastaProjectCreationTest(unittest.TestCase):
         current_step = self.wizard.get_current_step()
         button = current_step.get_available_projects_button
         button.click()
-        self.assertIsNotNone(current_step.selected_project())
+        self.assertIsNone(current_step.selected_project())
