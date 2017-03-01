@@ -11,6 +11,7 @@ This module provides: Project Download Step 2 : Download Project
 
 """
 import logging
+import json
 import os
 from PyQt4.QtCore import QVariant
 from qgis.core import (
@@ -205,6 +206,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             questionnaire_attr = party['attributes']
             if not questionnaire_attr:
                 questionnaire_attr = '-'
+            else:
+                questionnaire_attr = json.dumps(questionnaire_attr)
             feature.setAttributes([
                 party['id'],
                 party['name'],
@@ -289,6 +292,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                         questionnaire_attr = result['attributes']
                         if not questionnaire_attr:
                             questionnaire_attr = '-'
+                        else:
+                            questionnaire_attr = json.dumps(questionnaire_attr)
                         fet.setAttributes([
                             attributes[spatial_id_index],
                             result['id'],

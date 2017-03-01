@@ -400,7 +400,7 @@ class Utilities(object):
 
         if os.path.isfile(file_path):
             with open(file_path, 'rb') as csv_file:
-                reader = csv.reader(csv_file, delimiter=',', quotechar='|')
+                reader = csv.reader(csv_file, delimiter=',', quotechar='"')
                 next(reader, None)
                 layer.startEditing()
                 for row in reader:

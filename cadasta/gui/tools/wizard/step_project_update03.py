@@ -372,7 +372,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         }
 
         if attributes and attributes != '-':
-            post_data['attributes'] = attributes
+            post_data['attributes'] = json.loads(attributes)
 
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.patch_json(json.dumps(post_data))
@@ -404,7 +404,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         }
 
         if attributes and attributes != '-':
-            post_data['attributes'] = attributes
+            post_data['attributes'] = json.loads(attributes)
 
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.patch_json(json.dumps(post_data))
