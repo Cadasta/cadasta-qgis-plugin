@@ -117,7 +117,9 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                     result[1],
                     organization_slug,
                     project_slug)
+            self.progress_bar.setValue(50)
             relationship_layer = self.relationships_layer(vlayers)
+            self.progress_bar.setValue(80)
             party_layer = self.parties_layer()
             party_layer_id = None
             if party_layer:
@@ -290,7 +292,10 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                 index = layer.fieldNameIndex(key)
 
             layer.startEditing()
-            layer.changeAttributeValue(feature.id(), index, value)
+            column_value = value
+            if not value:
+                column_value = '-'
+            layer.changeAttributeValue(feature.id(), index, column_value)
             layer.commitChanges()
 
     def relationships_layer(self, vector_layers):
