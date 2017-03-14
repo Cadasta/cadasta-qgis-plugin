@@ -47,6 +47,11 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         self.layer = None
         self.vlayers = []
 
+        self.should_update_project = True
+        self.should_update_spatial = True
+        self.should_update_party = True
+        self.should_update_relationship = True
+
     def set_widgets(self):
         """Set all widgets on the tab."""
         self.project = self.parent.project['information']
@@ -190,6 +195,14 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         update_api = '/api/v1/organizations/{organization_slug}/projects/' \
                      '{project_slug}/relationships/tenure/{relationship_id}/'
 
+        field_names = [field.name() for field in relationship_layer.pendingFields()]
+
+        # Remove unneeded fields
+        field_names.remove('spatial_id')
+        field_names.remove('rel_id')
+        field_names.remove('rel_name')
+        field_names.remove('party_id')
+
         for feature in relationship_feats:
             attributes = feature.attributes()
             api = update_api.format(
@@ -197,10 +210,21 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
                 project_slug=self.project['slug'],
                 relationship_id=attributes[relationship_id_idx]
             )
+
+            # Check if there are questionnaire attributes
+            questionnaire_attributes = dict()
+            for field_name in field_names:
+                index = relationship_layer.fieldNameIndex(field_name)
+                if index == -1:
+                    continue
+                questionnaire = attributes[index]
+                if questionnaire and questionnaire != '-':
+                    questionnaire_attributes[field_name] = questionnaire
+
             self.upload_relationship(
                 api,
                 attributes[relationship_type_idx],
-                attributes[attributes_idx]
+                questionnaire_attributes
             )
 
     def update_party_attributes(self):
@@ -223,10 +247,15 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         id_idx = 0
         name_idx = 1
         type_idx = 2
-        attributes_idx = 3
 
         update_api = '/api/v1/organizations/{organization_slug}/projects/' \
                      '{project_slug}/parties/{party_id}/'
+
+        # Remove unneeded fields
+        field_names = [field.name() for field in party_layer.pendingFields()]
+        field_names.remove('id')
+        field_names.remove('name')
+        field_names.remove('type')
 
         for feature in party_feats:
             attributes = feature.attributes()
@@ -235,11 +264,22 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
                 project_slug=self.project['slug'],
                 party_id=attributes[id_idx]
             )
+
+            # Check if there are questionnaire attributes
+            questionnaire_attributes = dict()
+            for field_name in field_names:
+                index = party_layer.fieldNameIndex(field_name)
+                if index == -1:
+                    continue
+                questionnaire = attributes[index]
+                if questionnaire and questionnaire != '-':
+                    questionnaire_attributes[field_name] = questionnaire
+
             self.upload_parties(
                 api,
                 attributes[name_idx],
                 attributes[type_idx],
-                attributes[attributes_idx]
+                questionnaire_attributes
             )
 
     def upload_update(self):
@@ -248,41 +288,45 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         self.submit_button.setVisible(False)
         self.parent.back_button.setEnabled(False)
 
-        self.set_status(
-            self.tr('Update project information')
-        )
-        self.update_project()
-        self.set_progress_bar(25)
-        self.set_status(
-            self.tr('Finished update project information')
-        )
+        if self.should_update_project:
+            self.set_status(
+                self.tr('Update project information')
+            )
+            self.update_project()
+            self.set_progress_bar(25)
+            self.set_status(
+                self.tr('Finished update project information')
+            )
 
-        self.set_status(
-            self.tr('Update spatial information')
-        )
-        self.set_progress_bar(50)
-        self.update_spatial_location()
-        self.set_status(
-            self.tr('Finished update locations')
-        )
+        if self.should_update_spatial:
+            self.set_status(
+                self.tr('Update spatial information')
+            )
+            self.set_progress_bar(50)
+            self.update_spatial_location()
+            self.set_status(
+                self.tr('Finished update locations')
+            )
 
-        self.set_status(
-            self.tr('Update relationship')
-        )
-        self.set_progress_bar(60)
-        self.update_relationship_attributes()
-        self.set_status(
-            self.tr('Finished update relationship')
-        )
+        if self.should_update_relationship:
+            self.set_status(
+                self.tr('Update relationship')
+            )
+            self.set_progress_bar(60)
+            self.update_relationship_attributes()
+            self.set_status(
+                self.tr('Finished update relationship')
+            )
 
-        self.set_status(
-            self.tr('Update parties')
-        )
-        self.set_progress_bar(80)
-        self.update_party_attributes()
-        self.set_status(
-            self.tr('Finished update party')
-        )
+        if self.should_update_party:
+            self.set_status(
+                self.tr('Update parties')
+            )
+            self.set_progress_bar(80)
+            self.update_party_attributes()
+            self.set_status(
+                self.tr('Finished update party')
+            )
 
         self.set_progress_bar(100)
 
@@ -364,15 +408,15 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
         :param attributes: Project-specific attributes that are defined
                            through the project's questionnaire
-        :type attributes: str
+        :type attributes: dict
         """
         post_data = {
             'name': party_name,
             'type': party_type
         }
 
-        if attributes and attributes != '-':
-            post_data['attributes'] = json.loads(attributes)
+        if attributes:
+            post_data['attributes'] = attributes
 
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.patch_json(json.dumps(post_data))
@@ -403,8 +447,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             'tenure_type': relationship_type,
         }
 
-        if attributes and attributes != '-':
-            post_data['attributes'] = json.loads(attributes)
+        if attributes:
+            post_data['attributes'] = attributes
 
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.patch_json(json.dumps(post_data))
