@@ -218,6 +218,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             party_layer.commitChanges()
             QCoreApplication.processEvents()
 
+        self.process_attributes(party_layer)
+
         Utilities.add_tabular_layer(
             party_layer,
             organization_slug,
@@ -226,6 +228,70 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         )
 
         return party_layer
+
+    def process_attributes(self, layer):
+        """Check questionnaire attributes column on each feature.
+
+           If json string, then run parse questionnaire.
+
+        :param layer: Attribute layer
+        :type layer: QgsVectorLayer
+        """
+        features = layer.getFeatures()
+
+        for feature in features:
+            attributes = feature.attributes()
+            questionnaire_index = layer.fieldNameIndex('attributes')
+            questionnaire = attributes[questionnaire_index]
+
+            if not questionnaire:
+                continue
+
+            try:
+                questionnaire_dict = json.loads(questionnaire)
+            except ValueError, e:
+                continue
+
+            if questionnaire_dict:
+                layer.startEditing()
+                layer.deleteAttribute(questionnaire_index)
+                layer.commitChanges()
+                self.parse_questionnaire(layer, feature, questionnaire_dict)
+
+    def parse_questionnaire(self, layer, feature, questionnaire_dict):
+        """Parsing list of attribute to attribute table.
+
+        :param layer: attribute vector layer
+        :type layer: QgsVectorLayer
+
+        :param feature: attribute feature
+        :type feature: QgsFeature
+
+        :param questionnaire_dict: questionnaire object dictionary
+        :type questionnaire_dict: dict
+        """
+
+        for key, value in questionnaire_dict.iteritems():
+            index = layer.fieldNameIndex(key)
+            if index == -1:
+                # Add column
+                new_field = QgsField(
+                    QgsField(
+                        key,
+                        QVariant.String,
+                        'string'
+                    )
+                )
+
+                layer.startEditing()
+                layer.addAttribute(new_field)
+                layer.commitChanges()
+
+                index = layer.fieldNameIndex(key)
+
+            layer.startEditing()
+            layer.changeAttributeValue(feature.id(), index, value)
+            layer.commitChanges()
 
     def relationships_layer(self, vector_layers):
         """Create relationship layer.
