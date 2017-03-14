@@ -377,6 +377,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                 except (IndexError, KeyError):
                     continue
 
+        self.process_attributes(relationship_layer)
+
         Utilities.add_tabular_layer(
             relationship_layer,
             organization_slug,

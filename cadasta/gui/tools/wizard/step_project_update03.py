@@ -195,6 +195,14 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         update_api = '/api/v1/organizations/{organization_slug}/projects/' \
                      '{project_slug}/relationships/tenure/{relationship_id}/'
 
+        field_names = [field.name() for field in relationship_layer.pendingFields()]
+
+        # Remove unneeded fields
+        field_names.remove('spatial_id')
+        field_names.remove('rel_id')
+        field_names.remove('rel_name')
+        field_names.remove('party_id')
+
         for feature in relationship_feats:
             attributes = feature.attributes()
             api = update_api.format(
@@ -202,10 +210,21 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
                 project_slug=self.project['slug'],
                 relationship_id=attributes[relationship_id_idx]
             )
+
+            # Check if there are questionnaire attributes
+            questionnaire_attributes = dict()
+            for field_name in field_names:
+                index = relationship_layer.fieldNameIndex(field_name)
+                if index == -1:
+                    continue
+                questionnaire = attributes[index]
+                if questionnaire and questionnaire != '-':
+                    questionnaire_attributes[field_name] = questionnaire
+
             self.upload_relationship(
                 api,
                 attributes[relationship_type_idx],
-                attributes[attributes_idx]
+                questionnaire_attributes
             )
 
     def update_party_attributes(self):
@@ -228,11 +247,11 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         id_idx = 0
         name_idx = 1
         type_idx = 2
-        attributes_idx = 3
 
         update_api = '/api/v1/organizations/{organization_slug}/projects/' \
                      '{project_slug}/parties/{party_id}/'
 
+        # Remove unneeded fields
         field_names = [field.name() for field in party_layer.pendingFields()]
         field_names.remove('id')
         field_names.remove('name')
@@ -428,8 +447,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             'tenure_type': relationship_type,
         }
 
-        if attributes and attributes != '-':
-            post_data['attributes'] = json.loads(attributes)
+        if attributes:
+            post_data['attributes'] = attributes
 
         connector = ApiConnect(get_url_instance() + api)
         status, result = connector.patch_json(json.dumps(post_data))
