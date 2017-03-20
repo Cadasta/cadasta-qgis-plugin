@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>656</width>
+    <width>628</width>
     <height>669</height>
    </rect>
   </property>
@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>630</width>
-        <height>643</height>
+        <width>608</width>
+        <height>649</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -76,6 +76,21 @@
         <widget class="QComboBox" name="relationship_type_box"/>
        </item>
        <item>
+        <widget class="QLabel" name="required_label">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>true</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>* required field</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -89,18 +104,28 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="required_label">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>* required field</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QRadioButton" name="questionnaire_radio_button">
+           <property name="text">
+            <string>Include updated questionnaire</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="questionnaire_button">
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Check questionnaire</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

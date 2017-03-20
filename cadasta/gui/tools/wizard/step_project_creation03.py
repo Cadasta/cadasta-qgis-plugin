@@ -123,10 +123,11 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         step_1_data = self.parent.step_1_data()
         self.set_progress_bar(self.current_progress + 25)
 
-        step_2_data = self.parent.step_2_data()
+        step_2_data, questionnaire = self.parent.step_2_data()
         self.set_progress_bar(self.current_progress + 25)
 
         self.data = step_1_data
+        self.data['questionnaire'] = questionnaire
 
         # Finalize the data
         for location in self.data['locations']['features']:
