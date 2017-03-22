@@ -134,6 +134,7 @@ class QuestionnaireUtility(object):
             "type": 'group',
             "questions": []
         }
+        index = 1
         for field in current_layer.fields():
             field_name = field.name()
             if field_name != 'id':
@@ -143,6 +144,7 @@ class QuestionnaireUtility(object):
                             # check location attributes in question group
                             location_attributes["questions"].append(
                                 {
+                                    "index": index,
                                     "name": field_name,
                                     "label": field_name,
                                     "type": mapping_type[field.typeName().lower()],
@@ -150,25 +152,27 @@ class QuestionnaireUtility(object):
                                     "constraint": 'null',
                                     "default": 'null',
                                     "hint": 'null',
-                                    "relevant": 'null'
+                                    "relevant": 'null',
                                 }
                             )
                         except KeyError:
                             pass
+                        index += 1
 
         # insert into questionnaire
-        if len(location_attributes["questions"]) > 0:
-            index = -1
-            for question_group in questionnaire['question_groups']:
-                index += 1
-                if question_group['name'] == 'location_attributes':
-                    break
+        index = -1
+        for question_group in questionnaire['question_groups']:
+            index += 1
+            if question_group['name'] == 'location_attributes':
+                break
 
-            if index == -1:
-                questionnaire['question_groups'].append(
-                    location_attributes)
-            else:
-                questionnaire['question_groups'][index] = location_attributes
+        if index == -1:
+            location_attributes['index'] = 1
+            questionnaire['question_groups'].append(
+                location_attributes)
+        else:
+            location_attributes['index'] = index
+            questionnaire['question_groups'][index] = location_attributes
 
         return json.dumps(questionnaire, indent=4)
 
