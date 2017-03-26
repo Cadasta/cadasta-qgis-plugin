@@ -11,7 +11,8 @@
       "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null
+      "relevant": null,
+      "index":1
     },
     {
       "name": "end",
@@ -21,7 +22,8 @@
       "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null
+      "relevant": null,
+      "index":2
     },
     {
       "name": "today",
@@ -31,7 +33,8 @@
       "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null
+      "relevant": null,
+      "index":3
     },
     {
       "name": "deviceid",
@@ -41,7 +44,8 @@
       "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null
+      "relevant": null,
+      "index":4
     },
     {
       "name": "title",
@@ -51,7 +55,8 @@
       "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null
+      "relevant": null,
+      "index":5
     },
     {
       "name": "party_type",
@@ -62,6 +67,7 @@
       "default": null,
       "hint": null,
       "relevant": null,
+      "index":6,
       "options": [
         {
           "name": "GR",
@@ -88,7 +94,8 @@
       "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null
+      "relevant": null,
+      "index":7
     },
     {
       "name": "location_geometry",
@@ -98,7 +105,8 @@
       "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null
+      "relevant": null,
+      "index":8
     },
     {
       "name": "location_type",
@@ -109,6 +117,7 @@
       "default": null,
       "hint": null,
       "relevant": null,
+      "index":9,
       "options": [
         {
           "name": "PA",
@@ -151,7 +160,116 @@
           "index": 8
         }
       ]
+    },
+    {
+      "name": "tenure_type",
+      "label": "What is the social tenure type?",
+      "type": "S1",
+      "required": true,
+      "constraint": null,
+      "default": null,
+      "hint": null,
+      "relevant": null,
+      "index":10,
+      "options": [
+        {
+          "name": "AL",
+          "label": "All Types",
+          "index": 1
+        },
+        {
+          "name": "CR",
+          "label": "Carbon Rights",
+          "index": 2
+        },
+        {
+          "name": "CO",
+          "label": "Concessionary Rights",
+          "index": 3
+        },
+        {
+          "name": "CU",
+          "label": "Customary Rights",
+          "index": 4
+        },
+        {
+          "name": "EA",
+          "label": "Easement",
+          "index": 5
+        },
+        {
+          "name": "ES",
+          "label": "Equitable Servitude",
+          "index": 6
+        },
+        {
+          "name": "FH",
+          "label": "Freehold",
+          "index": 7
+        },
+        {
+          "name": "GR",
+          "label": "Grazing Rights",
+          "index": 8
+        },
+        {
+          "name": "HR",
+          "label": "Hunting/Fishing/Harvest Rights",
+          "index": 9
+        },
+        {
+          "name": "IN",
+          "label": "Indigenous Land Rights",
+          "index": 10
+        },
+        {
+          "name": "JT",
+          "label": "Joint Tenancy",
+          "index": 11
+        },
+        {
+          "name": "LH",
+          "label": "Leasehold",
+          "index": 12
+        },
+        {
+          "name": "LL",
+          "label": "Longterm leasehold",
+          "index": 13
+        },
+        {
+          "name": "MR",
+          "label": "Mineral Rights",
+          "index": 14
+        },
+        {
+          "name": "OC",
+          "label": "Occupancy (No Documented Rights)",
+          "index": 15
+        },
+        {
+          "name": "TN",
+          "label": "Tenancy (Documented Sub-lease)",
+          "index": 16
+        },
+        {
+          "name": "TC",
+          "label": "Tenancy in Common",
+          "index": 17
+        },
+        {
+          "name": "UC",
+          "label": "Undivided Co-ownership",
+          "index": 18
+        },
+        {
+          "name": "WR",
+          "label": "Water Rights",
+          "index": 19
+        }
+      ]
     }
   ],
-  "question_groups": []
+  "question_groups": [],
+  "default_language": "en"
 }

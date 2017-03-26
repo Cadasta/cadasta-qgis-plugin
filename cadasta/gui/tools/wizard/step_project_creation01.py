@@ -13,7 +13,6 @@ This module provides: Project Creation Step 1 : Define basic project properties
 import logging
 import os
 import json
-from qgis.gui import QgsMessageBar
 from PyQt4.QtGui import QAbstractItemView, QListWidgetItem
 from PyQt4.QtCore import Qt
 from qgis.core import QgsVectorFileWriter
@@ -23,8 +22,6 @@ from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.api.organization import Organization
-from cadasta.gui.tools.utilities.questionnaire import QuestionnaireUtility
-from cadasta.gui.tools.utilities.edit_text_dialog import EditTextDialog
 from cadasta.common.setting import get_path_data
 from cadasta.model.contact import Contact
 
@@ -38,7 +35,7 @@ FORM_CLASS = get_wizard_step_ui_class(__file__)
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
-class StepProjectCreation1(WizardStep, FORM_CLASS, QuestionnaireUtility):
+class StepProjectCreation1(WizardStep, FORM_CLASS):
     """Step 1 for project creation."""
 
     def __init__(self, parent=None):
@@ -52,16 +49,6 @@ class StepProjectCreation1(WizardStep, FORM_CLASS, QuestionnaireUtility):
         self.get_organisation_button.clicked.connect(
             self.get_available_organisations
         )
-        self.qgis_layer_box.currentIndexChanged.connect(
-            self.check_questionnaire_check_button
-        )
-        self.questionnaire_radio_button.toggled.connect(
-            self.check_questionnaire_check_button
-        )
-        self.questionnaire_button.clicked.connect(
-            self.show_questionnaire
-        )
-        self.check_questionnaire_check_button()
 
     def set_widgets(self):
         """Set all widgets on the tab."""
@@ -235,52 +222,9 @@ class StepProjectCreation1(WizardStep, FORM_CLASS, QuestionnaireUtility):
         if result == QgsVectorFileWriter.NoError:
             LOGGER.debug('Wrote layer to geojson: %s' % output_file)
             with open(output_file) as json_data:
-                LOGGER.debug(json_data)
                 layer_data = json.load(json_data)
                 data['locations'] = layer_data
             os.remove(output_file)
         else:
             LOGGER.error('Failed with error: %s' % result)
-
-        data['questionnaire'] = self.questionnaire
         return data
-
-    def check_questionnaire_check_button(self):
-        """Method when questionnaire check button is changed.
-        """
-        if self.selected_layer():
-            self.questionnaire_radio_button.setEnabled(True)
-            self.questionnaire_button.setEnabled(True)
-        else:
-            self.questionnaire_radio_button.setEnabled(False)
-            self.questionnaire_button.setEnabled(False)
-
-        if self.questionnaire_radio_button.isChecked():
-            self.questionnaire_button.setEnabled(True)
-            if not self.selected_layer():
-                self.message_bar = QgsMessageBar()
-                self.message_bar.pushWarning(
-                    self.tr('Error'),
-                    self.tr(
-                        'No QGIS layer selected.'
-                    )
-                )
-            else:
-                self.questionnaire = self.generate_new_questionnaire(
-                    self.selected_layer(), ''
-                )
-        else:
-            self.questionnaire_button.setEnabled(False)
-            self.questionnaire = ""
-
-    def show_questionnaire(self):
-        """Method to show current questionnaire.
-        """
-        self.input_dialog = EditTextDialog(
-            self, self.parent.iface, self.questionnaire)
-        self.input_dialog.edit_text_done.connect(self.edit_text_dialog_done)
-
-    def edit_text_dialog_done(self):
-        """Method when edit text dialog is done.
-        """
-        self.questionnaire = self.input_dialog.get_text()

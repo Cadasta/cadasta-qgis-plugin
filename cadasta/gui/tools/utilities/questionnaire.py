@@ -60,14 +60,22 @@ class QuestionnaireUtility(object):
         """
         pass
 
-    def generate_new_questionnaire(self, current_layer, current_questionnaire):
+    def generate_new_questionnaire(
+            self, current_layer, mapped_fields, current_questionnaire):
         """Generate new questionnaire.
 
-        Thiw will get current questionnaire of create from default
-        questionnaire. Updating it by looking of attributes.
+        This will get current questionnaire or create from default
+        questionnaire. Updating it by looking of fields from current layer.
 
-        :param current_layer:layer that for generate questionnaire
+        Questionnaire is based on current layer field.
+        All of new field that not in questionnaire will be append to
+        question group -> 'location_attributes'
+
+        :param current_layer: layer that using for generate questionnaire
         :type current_layer: QgsVectorLayer
+
+        :param mapped_fields: Mapping fields of layer to key on questionnaire
+        :type mapped_fields: dict
 
         :param current_questionnaire: Questionnaire that found
         :type current_questionnaire: Str
@@ -108,25 +116,64 @@ class QuestionnaireUtility(object):
             default_questionnaire['id_string'] = current_layer.name()
             questionnaire = default_questionnaire
 
+        # get all question name in questionnaire
+        attributes_in_questionnaire = []
+        for question in questionnaire["questions"]:
+            attributes_in_questionnaire.append(question["name"])
+
+        # get question group in questionnaire question group
+        if 'question_groups' not in questionnaire:
+            questionnaire['question_groups'] = []
+
         # Get current fields
+        # Current field of layer for attribute
+        # insert into 'location_attributes'
+        location_attributes = {
+            "name": "location_attributes",
+            "label": "Location Attributes",
+            "type": 'group',
+            "questions": []
+        }
+        index = 1
         for field in current_layer.fields():
-            found = False
-            for question in questionnaire["questions"]:
-                if question["name"] == field.name():
-                    found = True
-            if not found:
-                questionnaire["questions"].append(
-                    {
-                        "name": field.name(),
-                        "label": field.name(),
-                        "type": mapping_type[field.typeName().lower()],
-                        "required": False,
-                        "constraint": 'null',
-                        "default": 'null',
-                        "hint": 'null',
-                        "relevant": 'null'
-                    }
-                )
+            field_name = field.name()
+            if field_name != 'id':
+                if field_name not in attributes_in_questionnaire:
+                    if field_name not in mapped_fields:
+                        try:
+                            # check location attributes in question group
+                            location_attributes["questions"].append(
+                                {
+                                    "index": index,
+                                    "name": field_name,
+                                    "label": field_name,
+                                    "type": mapping_type[field.typeName().lower()],
+                                    "required": False,
+                                    "constraint": 'null',
+                                    "default": 'null',
+                                    "hint": 'null',
+                                    "relevant": 'null',
+                                }
+                            )
+                        except KeyError:
+                            pass
+                        index += 1
+
+        # insert into questionnaire
+        index = -1
+        for question_group in questionnaire['question_groups']:
+            index += 1
+            if question_group['name'] == 'location_attributes':
+                break
+
+        if index == -1:
+            location_attributes['index'] = 1
+            questionnaire['question_groups'].append(
+                location_attributes)
+        else:
+            location_attributes['index'] = index
+            questionnaire['question_groups'][index] = location_attributes
+
         return json.dumps(questionnaire, indent=4)
 
     def update_questionnaire(

@@ -11,6 +11,9 @@ This module provides: Project Creation Step 2 : Attribute Selection
 
 """
 
+from qgis.gui import QgsMessageBar
+from cadasta.gui.tools.utilities.edit_text_dialog import EditTextDialog
+from cadasta.gui.tools.utilities.questionnaire import QuestionnaireUtility
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.utilities.i18n import tr
@@ -23,7 +26,7 @@ __revision__ = '$Format:%H$'
 FORM_CLASS = get_wizard_step_ui_class(__file__)
 
 
-class StepProjectCreation2(WizardStep, FORM_CLASS):
+class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
     """Step 2 for project creation."""
 
     def __init__(self, parent=None):
@@ -35,6 +38,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         super(StepProjectCreation2, self).__init__(parent)
         self.layer = None
         self.layer_attributes = None
+        self.questionnaire = None
 
     def cadasta_fields(self):
         """Returns layer fields that mapped to cadasta attribute.
@@ -51,11 +55,34 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
 
         return cadasta_fields
 
+    def cadasta_fields_reversed(self):
+        """Returns cadasta attribute that mapped to layer fields.
+
+        :returns: cadasta fields
+        :rtype: dict
+        """
+        cadasta_mapped_fields = {
+            self.location_type_box.currentText(): 'location_type',
+            self.party_name_box.currentText(): 'party_name',
+            self.party_type_box.currentText(): 'party_type',
+            self.relationship_type_box.currentText(): 'relationship_type',
+        }
+
+        return cadasta_mapped_fields
+
     def set_widgets(self):
         """Set all widgets on the tab."""
         if not self.layer or self.layer != self.parent.layer:
             self.layer = self.parent.layer
             self.set_attributes_box()
+
+        self.questionnaire_radio_button.toggled.connect(
+            self.check_questionnaire_check_button
+        )
+        self.questionnaire_button.clicked.connect(
+            self.show_questionnaire
+        )
+        self.check_questionnaire_check_button()
 
     def set_items_combo_box(self, combo_box, field_names):
         """Set items for combo box.
@@ -63,13 +90,18 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         :param combo_box: combo box that will be filled.
         :type combo_box: QComboBox
 
-        :param field_names: fields that will be filled to commbo box.
+        :param field_names: fields that will be filled to combo box.
         :type field_names: [str]
 
         """
         field_names.sort()
         combo_box.clear()
         combo_box.addItems(field_names)
+
+        # set combo box listener for update questionnaire
+        combo_box.currentIndexChanged.connect(
+            self.check_questionnaire_check_button
+        )
 
     def set_attributes_box(self):
         """Set all attribute box widgets."""
@@ -96,7 +128,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         """
         error_message = ''
         if not self.location_type_box.currentText() or \
-                self.location_type_box.currentText() == tr('No field'):
+                        self.location_type_box.currentText() == tr('No field'):
             error_message = tr(
                 'Empty location type. '
             )
@@ -116,3 +148,43 @@ class StepProjectCreation2(WizardStep, FORM_CLASS):
         """
         new_step = self.parent.step_project_creation03
         return new_step
+
+    def check_questionnaire_check_button(self):
+        """Method when questionnaire check button is changed.
+        """
+        if self.layer:
+            self.questionnaire_radio_button.setEnabled(True)
+            self.questionnaire_button.setEnabled(True)
+        else:
+            self.questionnaire_radio_button.setEnabled(False)
+            self.questionnaire_button.setEnabled(False)
+
+        if self.questionnaire_radio_button.isChecked():
+            self.questionnaire_button.setEnabled(True)
+            if not self.layer:
+                self.message_bar = QgsMessageBar()
+                self.message_bar.pushWarning(
+                    self.tr('Error'),
+                    self.tr(
+                        'No QGIS layer selected.'
+                    )
+                )
+            else:
+                self.questionnaire = self.generate_new_questionnaire(
+                    self.layer, self.cadasta_fields_reversed(), '',
+                )
+        else:
+            self.questionnaire_button.setEnabled(False)
+            self.questionnaire = ""
+
+    def show_questionnaire(self):
+        """Method to show current questionnaire.
+        """
+        self.input_dialog = EditTextDialog(
+            self, self.parent.iface, self.questionnaire)
+        self.input_dialog.edit_text_done.connect(self.edit_text_dialog_done)
+
+    def edit_text_dialog_done(self):
+        """Method when edit text dialog is done.
+        """
+        self.questionnaire = self.input_dialog.get_text()

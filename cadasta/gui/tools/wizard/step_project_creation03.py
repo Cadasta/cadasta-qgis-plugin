@@ -123,10 +123,11 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         step_1_data = self.parent.step_1_data()
         self.set_progress_bar(self.current_progress + 25)
 
-        step_2_data = self.parent.step_2_data()
+        step_2_data, questionnaire = self.parent.step_2_data()
         self.set_progress_bar(self.current_progress + 25)
 
         self.data = step_1_data
+        self.data['questionnaire'] = questionnaire
 
         # Finalize the data
         for location in self.data['locations']['features']:
@@ -139,6 +140,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                         location['fields'] = dict()
                     location['fields'][cadasta_field] = properties[
                         layer_field]
+                    del location['properties'][layer_field]
+
         self.set_progress_bar(100)
 
         self.set_status(
@@ -184,13 +187,15 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         if status:
             self.project_upload_result = result
+            upload_questionnaire_attribute = False
             # create questionnaire first
             # after creating location, questionnaire is blocked
             if self.data['questionnaire']:
+                upload_questionnaire_attribute = True
                 self.update_questionnaire_project()
             total_locations = len(self.data['locations']['features'])
             if total_locations > 0:
-                self.upload_locations()
+                self.upload_locations(upload_questionnaire_attribute)
                 self.upload_parties()
                 self.upload_relationships()
             self.rerender_saved_layer()
@@ -242,8 +247,12 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         else:
             pass
 
-    def upload_locations(self):
-        """Upload project locations to cadasta."""
+    def upload_locations(self, update_questionnaire_attribute):
+        """Upload project locations to cadasta.
+
+        :param update_questionnaire_attribute: Boolean to check if it need to upload the attributes
+        :type update_questionnaire_attribute: bool
+        """
         self.set_status(
             tr('Uploading locations')
         )
@@ -260,13 +269,18 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         failed = 0
 
         for location in self.data['locations']['features']:
-            post_data = QByteArray()
-            post_data.append(
-                'geometry=%s&' % json.dumps(location['geometry']))
-            post_data.append('type=%s' % location['fields']['location_type'])
+            post_data = {
+                'geometry': location['geometry'],
+                'type': location['fields']['location_type']
+            }
+
+            if update_questionnaire_attribute:
+                post_data['attributes'] = location['properties']
+                if post_data['attributes']['id']:
+                    del post_data['attributes']['id']
 
             connector = ApiConnect(get_url_instance() + post_url)
-            status, result = self._call_post(connector, post_data)
+            status, result = self._call_json_post(connector, json.dumps(post_data))
 
             if status:
                 self.set_progress_bar(self.current_progress + progress_left)

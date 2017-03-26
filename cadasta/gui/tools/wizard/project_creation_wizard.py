@@ -113,7 +113,7 @@ class ProjectCreationWizard(WizardDialog):
     def step_2_data(self):
         """Returns step 2 data.
 
-        :returns: Step 2 data
-        :rtype: dict
+        :returns: Step 2 data, questionnaire
+        :rtype: dict, dict
         """
-        return self.step_project_creation02.cadasta_fields()
+        return self.step_project_creation02.cadasta_fields(), self.step_project_creation02.questionnaire
