@@ -24,6 +24,7 @@ from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.api.organization import Organization
 from cadasta.common.setting import get_path_data
 from cadasta.model.contact import Contact
+from qgis.gui import QgsMapLayerComboBox
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
