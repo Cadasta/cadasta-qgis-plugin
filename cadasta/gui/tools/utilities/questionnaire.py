@@ -30,6 +30,7 @@ mapping_type = {
     'integer': 'IN',
     'integer64': 'IN',
     'double': 'DE',
+    'real': 'DE',
     'date': 'DA',
     'dateTime': 'DT'
 }
@@ -148,7 +149,9 @@ class QuestionnaireUtility(object):
                                     "index": index,
                                     "name": field_name,
                                     "label": field_name,
-                                    "type": mapping_type[field.typeName().lower()],
+                                    "type": mapping_type[
+                                        field.typeName().lower()
+                                    ],
                                     "required": False,
                                     "constraint": 'null',
                                     "default": 'null',

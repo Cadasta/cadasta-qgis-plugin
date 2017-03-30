@@ -250,7 +250,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
     def upload_locations(self, update_questionnaire_attribute):
         """Upload project locations to cadasta.
 
-        :param update_questionnaire_attribute: Boolean to check if it need to upload the attributes
+        :param update_questionnaire_attribute: Boolean to check if it need to
+         upload the attributes
         :type update_questionnaire_attribute: bool
         """
         self.set_status(
@@ -281,7 +282,9 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                     del post_data['attributes']['id']
 
             connector = ApiConnect(get_url_instance() + post_url)
-            status, result = self._call_json_post(connector, json.dumps(post_data))
+            status, result = self._call_json_post(
+                    connector,
+                    json.dumps(post_data))
 
             if status:
                 self.set_progress_bar(self.current_progress + progress_left)
