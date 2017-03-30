@@ -195,7 +195,9 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         update_api = '/api/v1/organizations/{organization_slug}/projects/' \
                      '{project_slug}/relationships/tenure/{relationship_id}/'
 
-        field_names = [field.name() for field in relationship_layer.pendingFields()]
+        field_names = [
+            field.name() for field in relationship_layer.pendingFields()
+        ]
 
         # Remove unneeded fields
         field_names.remove('spatial_id')

@@ -116,4 +116,5 @@ class ProjectCreationWizard(WizardDialog):
         :returns: Step 2 data, questionnaire
         :rtype: dict, dict
         """
-        return self.step_project_creation02.cadasta_fields(), self.step_project_creation02.questionnaire
+        return self.step_project_creation02.cadasta_fields(), \
+               self.step_project_creation02.questionnaire
