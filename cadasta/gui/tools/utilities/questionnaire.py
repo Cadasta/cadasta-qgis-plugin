@@ -28,6 +28,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 mapping_type = {
     'string': 'TX',
     'integer': 'IN',
+    'integer64': 'IN',
     'double': 'DE',
     'date': 'DA',
     'dateTime': 'DT'

@@ -275,8 +275,9 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             }
 
             if update_questionnaire_attribute:
-                post_data['attributes'] = location['properties']
-                if post_data['attributes']['id']:
+                if location['properties']:
+                    post_data['attributes'] = location['properties']
+                if 'id' in post_data['attributes']:
                     del post_data['attributes']['id']
 
             connector = ApiConnect(get_url_instance() + post_url)
