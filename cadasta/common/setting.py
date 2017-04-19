@@ -239,7 +239,10 @@ def logo_element():
     :returns: A sanitised local url to the logo.
     :rtype: str
     """
-    path = os.path.join(resources_path(), 'images', 'white_icon.png')
+    path = os.path.join(
+            resources_path(),
+            'images',
+            'cadasta-logo-transparent.png')
     url = QUrl(path)
     path = url.toLocalFile()
     return path

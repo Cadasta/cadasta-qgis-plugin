@@ -12,7 +12,7 @@ Cadasta **Cadasta About Dialog.**
 
 import logging
 from PyQt4.QtGui import QDialog
-
+from PyQt4.QtCore import pyqtSignature
 from cadasta.gui.tools.about.content.overview import overview
 from cadasta.gui.tools.about.content.version import version
 from cadasta.gui.tools.about.content.license import license_about
@@ -77,3 +77,14 @@ class AboutDialog(QDialog, FORM_CLASS):
         string += footer
 
         self.help_web_view.setHtml(string)
+
+    # prevents actions being handled twice
+    # noinspection PyPep8Naming
+    @pyqtSignature('')
+    def on_close_button_released(self):
+        """Handle the Close button release.
+
+        .. note:: This is an automatic Qt slot
+           executed when the Back button is released.
+        """
+        self.close()

@@ -163,12 +163,14 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             'name': self.data['project_name'],
             'description': self.data['description'],
             'extent': self.data['extent'],
-            'urls': [
-                self.data['project_url']
-            ],
             'access': 'private' if self.data['private'] else 'public',
             'contacts': self.data['contacts']
         }
+
+        if self.data['project_url']:
+            post_data['urls'] = [
+                self.data['project_url']
+            ]
 
         post_url = '/api/v1/organizations/%s/projects/' % (
             self.data['organisation']['slug']

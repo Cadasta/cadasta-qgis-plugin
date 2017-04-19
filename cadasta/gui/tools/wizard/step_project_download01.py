@@ -11,6 +11,7 @@ This module provides: Project Download Step 1 : Project selection
 
 """
 import logging
+from operator import itemgetter
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
@@ -93,7 +94,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         self.get_available_projects_button.setEnabled(True)
         self.project_combo_box.clear()
         if result[0]:
-            projects = sorted(result[1], key=lambda k: k['name'])
+            projects = sorted(result[1], key=itemgetter('slug'))
             for project in projects:
                 self.project_combo_box.addItem(
                     project['name'], project)

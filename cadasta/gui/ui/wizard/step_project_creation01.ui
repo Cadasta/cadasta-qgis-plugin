@@ -83,7 +83,7 @@
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Project url *</string>
+            <string>Project url</string>
            </property>
           </widget>
          </item>
