@@ -34,7 +34,7 @@ class NetworkMixinText(unittest.TestCase):
         request_url = 'http://jsonplaceholder.typicode.com/posts/1'
         manager = NetworkMixin(request_url=request_url)
         manager.connect_get()
-        while not manager.reply.isFinished():
+        while not manager.is_finished():
             QCoreApplication.processEvents()
         self.assertIsNotNone(manager.get_json_results())
         self.assertEqual(
@@ -52,7 +52,7 @@ class NetworkMixinText(unittest.TestCase):
 
         manager = NetworkMixin(request_url=request_url)
         manager.connect_post(post_data)
-        while not manager.reply.isFinished():
+        while not manager.is_finished():
             QCoreApplication.processEvents()
         self.assertIsNotNone(manager.get_json_results())
         self.assertEqual(

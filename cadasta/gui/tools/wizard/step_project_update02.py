@@ -15,7 +15,6 @@ import json
 from PyQt4.QtGui import QAbstractItemView, QListWidgetItem
 from PyQt4.QtCore import Qt
 from PyQt4.QtCore import QCoreApplication
-from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.model.contact import Contact
@@ -144,7 +143,7 @@ class StepProjectUpdate02(WizardStep, FORM_CLASS):
         )
         network = NetworkMixin(get_url_instance() + update_url)
         network.connect_json_patch(json.dumps(post_data))
-        while not network.reply.isFinished():
+        while not network.is_finished():
             QCoreApplication.processEvents()
 
         if not network.error:

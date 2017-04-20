@@ -67,7 +67,7 @@ class CadastaLoginTest(unittest.TestCase):
         button = self.dialog.test_connection_button
         button.click()
 
-        while not self.dialog.login_api.reply.isFinished():
+        while not self.dialog.login_api.is_finished():
             QCoreApplication.processEvents()
 
         self.assertFalse(self.dialog.save_button.isEnabled())
@@ -80,7 +80,7 @@ class CadastaLoginTest(unittest.TestCase):
         button = self.dialog.test_connection_button
         button.click()
 
-        while not self.dialog.login_api.reply.isFinished():
+        while not self.dialog.login_api.is_finished():
             QCoreApplication.processEvents()
 
         self.assertTrue(self.dialog.save_button.isEnabled())

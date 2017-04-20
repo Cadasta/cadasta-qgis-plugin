@@ -38,7 +38,7 @@ class LoginTest(unittest.TestCase):
 
         login = Login(self.url, self.username, self.password)
         # Wait until it finished
-        while not login.reply.isFinished():
+        while not login.is_finished():
             QCoreApplication.processEvents()
         self.assertIsNotNone(login.get_json_results())
 

@@ -31,21 +31,6 @@ class Project(BaseApi):
         :param on_finished: (optional) function that catch result request
         :type on_finished: Function
         """
-        self.request_url = get_url_instance() + self.api_url
-        super(Project, self).__init__()
+        super(Project, self).__init__(get_url_instance() + self.api_url)
         self.on_finished = on_finished
-        self.connect_get()
-
-    def connection_finished(self):
-        """On finished function when tools request is finished."""
-        # extract result
-        if self.error:
-            self.on_finished(
-                (False, self.error)
-            )
-        else:
-            result = self.get_json_results()
-            if self.on_finished and callable(self.on_finished):
-                self.on_finished(
-                    (True, result)
-                )
+        self.connect_get_paginated()

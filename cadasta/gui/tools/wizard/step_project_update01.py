@@ -14,7 +14,6 @@ import logging
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
-from cadasta.api.project import Project
 from cadasta.utilities.utilities import Utilities
 from cadasta.api.organization import Organization
 

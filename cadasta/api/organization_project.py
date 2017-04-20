@@ -34,22 +34,12 @@ class OrganizationProject(BaseApi):
         :param on_finished: (optional) function that catch result request
         :type on_finished: Function
         """
-        self.request_url = get_url_instance() + (
+        request_url = get_url_instance() + (
             self.api_url % organization_slug)
 
-        super(OrganizationProject, self).__init__()
-        self.on_finished = on_finished
-        self.connect_get()
-
-    def connection_finished(self):
-        """On finished function when tools request is finished."""
-        # extract result
-        if self.error:
-            self.on_finished((False, self.error))
-        else:
-            result = self.get_json_results()
-            if self.on_finished and callable(self.on_finished):
-                self.on_finished((True, result))
+        super(OrganizationProject, self).__init__(
+            request_url, on_finished=on_finished)
+        self.connect_get_paginated()
 
 
 class OrganizationProjectSpatial(BaseApi):
@@ -69,15 +59,15 @@ class OrganizationProjectSpatial(BaseApi):
         :param on_finished: (optional) function that catch result request
         :type on_finished: Function
         """
-        self.request_url = get_url_instance() + (
-            self.api_url % (organization_slug, project_slug))
 
         self.organization_slug = organization_slug
         self.project_slug = project_slug
 
-        super(OrganizationProjectSpatial, self).__init__()
-        self.on_finished = on_finished
-        self.connect_get()
+        request_url = get_url_instance() + (
+            self.api_url % (organization_slug, project_slug))
+        super(OrganizationProjectSpatial, self).__init__(
+            request_url, on_finished=on_finished, geojson=True)
+        self.connect_get_paginated()
 
     def connection_finished(self):
         """On finished function when tools request is finished.

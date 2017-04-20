@@ -20,25 +20,21 @@ __copyright__ = 'Copyright 2016, Cadasta'
 class BaseApi(NetworkMixin):
     """Base API using NetworkMixin."""
 
-    def __init__(self, on_finished=None):
+    def __init__(self, request_url, on_finished=None, *args, **kwargs):
         """Constructor.
 
         :param on_finished: (optional) function that catch result request
         :type on_finished: Function
         """
         self.on_finished = on_finished
-        super(BaseApi, self).__init__()
+        super(BaseApi, self).__init__(request_url, *args, **kwargs)
 
     def connection_finished(self):
         """On finished function when tools request is finished."""
         # extract result
         if self.error:
-            self.on_finished(
-                (False, self.error)
-            )
+            self.on_finished((False, self.error))
         else:
             result = self.get_json_results()
             if self.on_finished and callable(self.on_finished):
-                self.on_finished(
-                    (True, result)
-                )
+                self.on_finished((True, result))

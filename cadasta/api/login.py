@@ -34,8 +34,7 @@ class Login(BaseApi):
                             catch tools result request.
         :type on_finished: Function
         """
-        self.request_url = domain + 'api/v1/account/login/?'
-        super(Login, self).__init__()
+        super(Login, self).__init__(domain + 'api/v1/account/login/?')
         post_data = QByteArray()
         post_data.append("username=%s&" % username)
         post_data.append("password=%s" % password)
