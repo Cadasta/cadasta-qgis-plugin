@@ -217,7 +217,11 @@ class Utilities(object):
         for metadata in metadatas:
             if data_path in metadata:
                 source = metadata.split('.geojson')
-                source = source[0].split('/')
+                if Utilities.is_windows():
+                    splitter = '\\'
+                else:
+                    splitter = '/'
+                source = source[0].split(splitter)
                 if len(source) >= 3:
                     # -1 is type layer
                     type = source[-1]
@@ -312,8 +316,13 @@ class Utilities(object):
         for dirpath, _, filenames in os.walk(file_path):
             for f in filenames:
                 if 'geojson' in f:
+                    if Utilities.is_windows():
+                        splitter = '\\'
+                    else:
+                        splitter = '/'
                     abs_path = os.path.abspath(
-                        os.path.join(dirpath, f)).split('.')[1].split('/')
+                            os.path.join(dirpath, f)).split('.')[1].split(
+                            splitter)
                     names = []
                     names.append(abs_path[-3])
                     names.append(abs_path[-2])
@@ -409,6 +418,14 @@ class Utilities(object):
                     feature.setAttributes(row)
                     layer.addFeature(feature, True)
                 layer.commitChanges()
+
+    @staticmethod
+    def is_windows():
+        """Check if qgis running on windows
+
+        :return: boolean
+        """
+        return os.name == 'nt'
 
     @staticmethod
     def extract_error_detail(result):

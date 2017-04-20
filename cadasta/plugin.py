@@ -297,7 +297,7 @@ class CadastaPlugin:
         icon_path = resources_path('images', 'cadasta-options-64.png')
         self.action_options_wizard = self.add_action(
             icon_path,
-            text=self.tr(u'Options'),
+            text=self.tr(u'User Settings'),
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
             enabled_flag=True,
@@ -308,7 +308,7 @@ class CadastaPlugin:
         """Show the options dialog."""
         dialog = CadastaDialog(
             iface=self.iface,
-            subtitle=self.tr(u'Cadasta Options'),
+            subtitle=self.tr(u'Cadasta User Settings'),
             widget=OptionsWidget()
         )
 

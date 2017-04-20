@@ -127,6 +127,8 @@ class StepProjectUpdate01(WizardStep, FORM_CLASS):
                 self.project_description_label.setText(
                     self.tr('No description'))
         except (TypeError, KeyError):
+            self.project_description_label.setText(
+                self.tr('No description'))
             return
 
     def get_downloaded_project(self, organization_slug):

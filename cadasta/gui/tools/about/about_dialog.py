@@ -23,6 +23,8 @@ from cadasta.utilities.resources import (
     get_ui_class,
     get_plugin_version
 )
+from extras import messaging as m
+
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -65,7 +67,14 @@ class AboutDialog(QDialog, FORM_CLASS):
         footer = html_footer()
         string = header
 
+        # create brand
+        message = m.Message()
+        message.add(m.Brand())
+
+        string += message.to_html()
+
         message = overview()
+
         string += message.to_html()
 
         message = version()

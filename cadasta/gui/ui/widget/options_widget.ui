@@ -256,6 +256,17 @@
          </item>
          <item>
           <widget class="QPushButton" name="clear_button">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">width: 120px; height: 20px; </string>
+           </property>
            <property name="text">
             <string>Clear</string>
            </property>
@@ -280,8 +291,16 @@
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QPushButton" name="test_connection_button">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="cursor">
-            <cursorShape>OpenHandCursor</cursorShape>
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">width: 180px; height: 20px; </string>
            </property>
            <property name="text">
             <string>Test connection....</string>
@@ -310,8 +329,16 @@
          </item>
          <item>
           <widget class="QPushButton" name="save_button">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="cursor">
-            <cursorShape>OpenHandCursor</cursorShape>
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">width: 100px; height: 20px; </string>
            </property>
            <property name="text">
             <string>Save</string>

@@ -55,14 +55,23 @@
           <x>0</x>
           <y>0</y>
           <width>640</width>
-          <height>431</height>
+          <height>430</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -95,6 +104,17 @@
        </item>
        <item>
         <widget class="QPushButton" name="close_button">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">height: 20px; width: 60px;</string>
+         </property>
          <property name="text">
           <string>Close</string>
          </property>

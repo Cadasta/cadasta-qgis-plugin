@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>883</width>
-    <height>811</height>
+    <height>814</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -60,13 +60,13 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>140</height>
+       <height>121</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>140</height>
+       <height>120</height>
       </size>
      </property>
      <property name="autoFillBackground">
@@ -96,35 +96,52 @@
         <property name="leftMargin">
          <number>10</number>
         </property>
-        <item row="0" column="0" rowspan="2">
-         <widget class="QLabel" name="label_main_icon">
+        <property name="horizontalSpacing">
+         <number>6</number>
+        </property>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_main_title">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
-            <width>60</width>
-            <height>60</height>
+            <width>0</width>
+            <height>50</height>
            </size>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>60</width>
-            <height>60</height>
-           </size>
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+            <weight>50</weight>
+            <italic>false</italic>
+            <bold>false</bold>
+            <underline>false</underline>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: #fff; padding-bottom: 0px;</string>
           </property>
           <property name="text">
-           <string/>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt; font-weight:600;&quot;&gt;Cadasta&lt;/span&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt; step by step&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
-          <property name="pixmap">
-           <pixmap>../../../assets/images/white_icon.png</pixmap>
-          </property>
-          <property name="scaledContents">
-           <bool>true</bool>
+          <property name="alignment">
+           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
          <widget class="QLabel" name="label_subtitle">
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+           </font>
+          </property>
           <property name="styleSheet">
-           <string notr="true">color: #FFF;</string>
+           <string notr="true">color: #FFF; padding-top:0px;</string>
           </property>
           <property name="text">
            <string>Subtitle</string>
@@ -140,31 +157,34 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="label_main_title">
+        <item row="0" column="0" rowspan="2">
+         <widget class="QLabel" name="label_main_icon">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>50</weight>
-            <italic>false</italic>
-            <bold>false</bold>
-            <underline>false</underline>
-           </font>
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>60</height>
+           </size>
           </property>
-          <property name="styleSheet">
-           <string notr="true">color: #fff;</string>
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>60</height>
+           </size>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt; font-weight:600;&quot;&gt;Cadasta&lt;/span&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt; step by step&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string/>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+          <property name="textFormat">
+           <enum>Qt::RichText</enum>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -172,8 +192,13 @@
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_step">
+        <property name="font">
+         <font>
+          <pointsize>13</pointsize>
+         </font>
+        </property>
         <property name="styleSheet">
-         <string notr="true">color: #FFF</string>
+         <string notr="true">color: #FFF; padding-left: 20px;</string>
         </property>
         <property name="text">
          <string>[ Step Placeholder ]</string>
@@ -224,6 +249,9 @@
        <height>43</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="spacing">
        <number>0</number>
@@ -242,11 +270,32 @@
       </property>
       <item>
        <widget class="QPushButton" name="cancel_button">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <underline>false</underline>
+         </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">width: 80px; height: 20px; </string>
+        </property>
         <property name="text">
          <string>Cancel</string>
         </property>
         <property name="autoDefault">
          <bool>false</bool>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -265,8 +314,33 @@
       </item>
       <item>
        <widget class="QPushButton" name="back_button">
+        <property name="baseSize">
+         <size>
+          <width>50</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">width: 80px; height: 20px; </string>
+        </property>
         <property name="text">
          <string>Back</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
         </property>
         <property name="autoDefault">
          <bool>false</bool>
@@ -274,14 +348,62 @@
        </widget>
       </item>
       <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Maximum</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>25</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QPushButton" name="next_button">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="mouseTracking">
+         <bool>false</bool>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">width: 80px; height: 20px; </string>
+        </property>
         <property name="text">
          <string>Next</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>40</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
         </property>
         <property name="autoDefault">
          <bool>false</bool>
         </property>
         <property name="default">
+         <bool>false</bool>
+        </property>
+        <property name="flat">
          <bool>false</bool>
         </property>
        </widget>
