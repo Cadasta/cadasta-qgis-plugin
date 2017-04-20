@@ -88,26 +88,6 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         self.progress_bar.setValue(value)
         QCoreApplication.processEvents()
 
-    def extract_error_detail(self, result):
-        """Extract detail of error of connection
-
-        :param result: result of connection
-        :type result: str
-
-        :return: detail result
-        :rtype:str
-        """
-        error_detail = tr('Error : ')
-        detail = ''
-        try:
-            json_result = json.loads(result)
-            if 'detail' in json_result:
-                detail = json_result['detail']
-        except (TypeError, ValueError):
-            detail = result
-        error_detail += detail
-        return '<span style="color:red">%s</span><br>' % error_detail
-
     def processing_data(self):
         """Processing data from all step"""
         self.progress_bar.setVisible(True)
@@ -205,7 +185,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         else:
             self.set_progress_bar(0)
             self.set_status(
-                self.extract_error_detail(result)
+                Utilities.extract_error_detail(result)
             )
 
         self.set_status(tr('Finished'))
@@ -285,8 +265,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
             connector = ApiConnect(get_url_instance() + post_url)
             status, result = self._call_json_post(
-                    connector,
-                    json.dumps(post_data))
+                connector,
+                json.dumps(post_data))
 
             if status:
                 self.set_progress_bar(self.current_progress + progress_left)
@@ -300,7 +280,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             else:
                 self.set_progress_bar(0)
                 self.set_status(
-                    self.extract_error_detail(result)
+                    Utilities.extract_error_detail(result)
                 )
                 failed += 1
 
@@ -391,7 +371,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                 else:
                     self.set_progress_bar(0)
                     self.set_status(
-                        self.extract_error_detail(result)
+                        Utilities.extract_error_detail(result)
                     )
             else:
                 self.set_status(
@@ -448,7 +428,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                 else:
                     self.set_progress_bar(0)
                     self.set_status(
-                        self.extract_error_detail(result)
+                        Utilities.extract_error_detail(result)
                     )
             else:
                 self.set_status(
@@ -507,7 +487,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         else:
             self.set_progress_bar(0)
             self.set_status(
-                self.extract_error_detail(result)
+                Utilities.extract_error_detail(result)
             )
 
     def _call_post(self, connector, post_data):
@@ -634,7 +614,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                             result['tenure_type'],
                             result['party']['id'],
                             questionnaire_attr,
-                            ])
+                        ])
                         relationship_layer.addFeature(fet, True)
                         relationship_layer.commitChanges()
                 except (IndexError, KeyError):
@@ -670,8 +650,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         api = '/api/v1/organizations/{organization_slug}/projects/' \
               '{project_slug}/parties/'.format(
-                organization_slug=organization_slug,
-                project_slug=project_slug)
+            organization_slug=organization_slug,
+            project_slug=project_slug)
 
         connector = ApiConnect(get_url_instance() + api)
         status, results = connector.get()

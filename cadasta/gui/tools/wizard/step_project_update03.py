@@ -129,7 +129,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             )
         else:
             self.set_status(
-                'Error: %s' % response
+                Utilities.extract_error_detail(response)
             )
 
     def update_spatial_location(self):
@@ -357,8 +357,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
                 self.tr('Location updated.')
             )
         else:
-            self.text_edit.append(
-                'Error: %s' % result + '\n'
+            self.set_status(
+                Utilities.extract_error_detail(result)
             )
 
     def add_new_locations(self, geometry, location_type):
@@ -391,8 +391,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             )
             return json.loads(result)['properties']['id']
         else:
-            self.text_edit.append(
-                'Error: %s' % result + '\n'
+            self.set_status(
+                Utilities.extract_error_detail(result)
             )
             return None
 
@@ -428,8 +428,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
                 self.tr('Party updated.')
             )
         else:
-            self.text_edit.append(
-                'Error: %s' % result + '\n'
+            self.set_status(
+                Utilities.extract_error_detail(result)
             )
 
     def upload_relationship(self, api, relationship_type, attributes=None):
@@ -460,6 +460,6 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
                 self.tr('Relationship updated.')
             )
         else:
-            self.text_edit.append(
-                'Error: %s' % result + '\n'
+            self.set_status(
+                Utilities.extract_error_detail(result)
             )

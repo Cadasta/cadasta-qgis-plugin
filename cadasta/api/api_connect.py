@@ -45,7 +45,10 @@ class ApiConnect(NetworkMixin):
         if not self.error:
             return True, self.get_json_results()
         else:
-            return False, self.results.data()
+            return False, \
+                   '{"code" : %s, "result": %s}' % (
+                       str(self.http_code), self.results.data()
+                   )
 
     def patch_json(self, post_data):
         """Call patch method with json data.
@@ -65,7 +68,10 @@ class ApiConnect(NetworkMixin):
         if not self.error:
             return True, self.get_json_results()
         else:
-            return False, self.results.data()
+            return False, \
+                   '{"code" : %s, "result": %s}' % (
+                       str(self.http_code), self.results.data()
+                   )
 
     def put_json(self, post_data):
         """Call put method with json data.
@@ -85,7 +91,10 @@ class ApiConnect(NetworkMixin):
         if not self.error:
             return True, self.results.data()
         else:
-            return False, self.results.data()
+            return False, \
+                   '{"code" : %s, "result": %s}' % (
+                       str(self.http_code), self.results.data()
+                   )
 
     def post(self, post_data):
         """Call post method.
@@ -103,7 +112,10 @@ class ApiConnect(NetworkMixin):
         if not self.error:
             return True, self.get_json_results()
         else:
-            return False, self.results.data()
+            return False, \
+                   '{"code" : %s, "result": %s}' % (
+                       str(self.http_code), self.results.data()
+                   )
 
     def post_json(self, post_data):
         """Call post method with json string.
@@ -121,4 +133,7 @@ class ApiConnect(NetworkMixin):
         if not self.error:
             return True, self.get_json_results()
         else:
-            return False, self.results.data()
+            return False, \
+                   '{"code" : %s, "result": %s}' % (
+                       str(self.http_code), self.results.data()
+                   )

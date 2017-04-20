@@ -82,6 +82,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
         self.questionnaire_button.clicked.connect(
             self.show_questionnaire
         )
+        self.questionnaire_radio_button.click()
         self.check_questionnaire_check_button()
 
     def set_items_combo_box(self, combo_box, field_names):

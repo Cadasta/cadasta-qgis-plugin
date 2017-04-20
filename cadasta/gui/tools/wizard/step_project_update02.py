@@ -150,4 +150,7 @@ class StepProjectUpdate02(WizardStep, FORM_CLASS):
         if not network.error:
             return True, network.get_json_results()
         else:
-            return False, network.results.data()
+            return False, \
+                   '{"code" : %s, "result": %s}' % (
+                       str(network.http_code), network.results.data()
+                   )

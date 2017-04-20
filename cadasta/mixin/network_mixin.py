@@ -145,6 +145,7 @@ class NetworkMixin(object):
         except TypeError:
             http_code = None
 
+        self.http_code = 404
         if error_result == QNetworkReply.UnknownNetworkError:
             msg = 'The network is unreachable.'
         elif error_result == QNetworkReply.ProtocolUnknownError \
@@ -153,6 +154,7 @@ class NetworkMixin(object):
         else:
             if http_code:
                 msg = 'Error code:' + str(http_code)
+                self.http_code = http_code
             else:
                 msg = 'Can\'t find the server'
 
