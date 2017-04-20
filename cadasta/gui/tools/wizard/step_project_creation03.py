@@ -144,7 +144,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             except KeyError:
                 self.set_progress_bar(0)
                 self.set_status(
-                    self.extract_error_detail(
+                    Utilities.extract_error_detail(
                         tr('Location_type is not found in attribute. '
                            'Please update before uploading again.')
                     )
