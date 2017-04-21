@@ -186,11 +186,14 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         contact_item_list = self.project_contact_list.selectedItems()
         for contact_item in contact_item_list:
             contact = contact_item.data(Qt.UserRole)
-            data['contacts'].append({
-                'name': contact.name,
-                'tel': contact.phone,
-                'email': contact.email
-            })
+            contact_data = {}
+            if contact.name:
+                contact_data['name'] = contact.name
+            if contact.phone:
+                contact_data['tel'] = contact.phone
+            if contact.email:
+                contact_data['email'] = contact.email
+            data['contacts'].append(contact_data)
 
         # Get extent
         layer = self.selected_layer()

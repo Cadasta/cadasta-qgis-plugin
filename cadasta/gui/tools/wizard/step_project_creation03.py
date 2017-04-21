@@ -604,7 +604,6 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                 QgsField('rel_id', QVariant.String, "string"),
                 QgsField('rel_name', QVariant.String, "string"),
                 QgsField('party_id', QVariant.String, "string"),
-                QgsField('attributes', QVariant.String, "string"),
             ]
         )
 
@@ -639,7 +638,6 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                             result['id'],
                             result['tenure_type'],
                             result['party']['id'],
-                            questionnaire_attr,
                         ])
                         relationship_layer.addFeature(fet, True)
                         relationship_layer.commitChanges()
@@ -695,7 +693,6 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                 QgsField('id', QVariant.String, "string"),
                 QgsField('name', QVariant.String, "string"),
                 QgsField('type', QVariant.String, "string"),
-                QgsField('attributes', QVariant.String, "string"),
             ]
         )
 
@@ -711,7 +708,6 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                 party['id'],
                 party['name'],
                 party['type'],
-                questionnaire_attr
             ])
             party_layer.addFeature(feature, True)
             party_layer.commitChanges()

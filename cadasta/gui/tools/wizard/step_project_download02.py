@@ -246,6 +246,10 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             questionnaire_index = layer.fieldNameIndex('attributes')
             questionnaire = attributes[questionnaire_index]
 
+            layer.startEditing()
+            layer.deleteAttribute(questionnaire_index)
+            layer.commitChanges()
+
             if not questionnaire:
                 continue
 
@@ -255,9 +259,6 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                 continue
 
             if questionnaire_dict:
-                layer.startEditing()
-                layer.deleteAttribute(questionnaire_index)
-                layer.commitChanges()
                 self.parse_questionnaire(layer, feature, questionnaire_dict)
 
     def parse_questionnaire(self, layer, feature, questionnaire_dict):
