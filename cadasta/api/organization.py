@@ -52,15 +52,19 @@ class Organization(object):
         network = NetworkMixin(get_url_instance() + self.api_url)
         return self._call_api(network)
 
-    def organizations_project_filtered(self):
+    def organizations_project_filtered(self, permissions=None):
         """Get organizations with permission to list and add project.
 
         :return: Tuple of status request and list of organizations
                   (if request failed return failure messages).
         :rtype: (bool, list/str)
         """
-        permissions = '?permissions=project.create,project.list'
-        network = NetworkMixin(get_url_instance() + self.api_url + permissions)
+        if not permissions:
+            filter_permissions = '?permissions=project.create,project.list'
+        else:
+            filter_permissions = '?permissions=' + permissions
+        network = NetworkMixin(
+                get_url_instance() + self.api_url + filter_permissions)
         return self._call_api(network)
 
     def summary_organization(self, slug):

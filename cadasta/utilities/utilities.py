@@ -324,8 +324,25 @@ class Utilities(object):
         return vlayers
 
     @staticmethod
+    def get_all_downloaded_projects():
+        """Get all downloaded projects
+
+        :return: downloaded projects
+        :rtype: list of dict
+        """
+        file_path = get_path_data()
+
+        projects = []
+        organizations = next(os.walk(file_path))[1]
+
+        for organization in organizations:
+            projects.extend(Utilities.get_downloaded_projects(organization))
+
+        return projects
+
+    @staticmethod
     def get_downloaded_projects(organization):
-        """Get all downloaded projects.
+        """Get downloaded projects based on organization
 
         :return: downloaded projects
         :rtype: list of dict

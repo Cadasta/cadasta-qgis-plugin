@@ -16,6 +16,8 @@ from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.api.project import Project
+from cadasta.utilities.utilities import Utilities
+from cadasta.api.organization import Organization
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -95,9 +97,25 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         self.project_combo_box.clear()
         if result[0]:
             projects = sorted(result[1], key=itemgetter('slug'))
+
+            processed_downloaded_projects = []
+            downloaded_projects = Utilities.get_all_downloaded_projects()
+
+            for downloaded_project in downloaded_projects:
+                project_descriptions = downloaded_project['name'].split('/')
+                organization = project_descriptions[0]
+                name = project_descriptions[1]
+                processed_downloaded_projects.append(
+                    organization + '-' + name
+                )
+
             for project in projects:
-                self.project_combo_box.addItem(
-                    project['name'], project)
+                project_slug = '{organization_slug}-{project_slug}'.format(
+                        organization_slug=project['organization']['slug'],
+                        project_slug=project['slug'])
+                if project_slug not in processed_downloaded_projects:
+                    self.project_combo_box.addItem(
+                        project['name'], project)
         else:
             pass
 
