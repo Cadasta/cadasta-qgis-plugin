@@ -359,8 +359,8 @@ class Utilities(object):
                     else:
                         splitter = '/'
                     abs_path = os.path.abspath(
-                            os.path.join(dirpath, f)).split('.')[1].split(
-                            splitter)
+                        os.path.join(dirpath, f)).split('.')[1].split(
+                        splitter)
                     names = []
                     names.append(abs_path[-3])
                     names.append(abs_path[-2])
@@ -479,10 +479,15 @@ class Utilities(object):
         detail = ''
         try:
             json_result = json.loads(result)
-            detail = json_result['result']['detail']
+            # get code
             code = json_result['code']
             error_detail = tr('Error %s : ' % str(code))
-        except (TypeError, ValueError, KeyError):
+            try:
+                # get detail
+                detail = json_result['result']['detail']
+            except (TypeError, KeyError):
+                detail = json.dumps(json_result['result'])
+        except ValueError:
             detail = result
         error_detail += detail
         return '<span style="color:red">%s</span><br>' % error_detail
