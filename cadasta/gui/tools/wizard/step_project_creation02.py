@@ -75,14 +75,10 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
         if not self.layer or self.layer != self.parent.layer:
             self.layer = self.parent.layer
             self.set_attributes_box()
-
-        self.questionnaire_radio_button.toggled.connect(
-            self.check_questionnaire_check_button
-        )
         self.questionnaire_button.clicked.connect(
             self.show_questionnaire
         )
-        self.check_questionnaire_check_button()
+        self.check_questionnaire()
 
     def set_items_combo_box(self, combo_box, field_names):
         """Set items for combo box.
@@ -100,7 +96,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
 
         # set combo box listener for update questionnaire
         combo_box.currentIndexChanged.connect(
-            self.check_questionnaire_check_button
+            self.check_questionnaire
         )
 
     def set_attributes_box(self):
@@ -149,33 +145,12 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
         new_step = self.parent.step_project_creation03
         return new_step
 
-    def check_questionnaire_check_button(self):
+    def check_questionnaire(self):
         """Method when questionnaire check button is changed.
         """
-        if self.layer:
-            self.questionnaire_radio_button.setEnabled(True)
-            self.questionnaire_button.setEnabled(True)
-        else:
-            self.questionnaire_radio_button.setEnabled(False)
-            self.questionnaire_button.setEnabled(False)
-
-        if self.questionnaire_radio_button.isChecked():
-            self.questionnaire_button.setEnabled(True)
-            if not self.layer:
-                self.message_bar = QgsMessageBar()
-                self.message_bar.pushWarning(
-                    self.tr('Error'),
-                    self.tr(
-                        'No QGIS layer selected.'
-                    )
-                )
-            else:
-                self.questionnaire = self.generate_new_questionnaire(
-                    self.layer, self.cadasta_fields_reversed(), '',
-                )
-        else:
-            self.questionnaire_button.setEnabled(False)
-            self.questionnaire = ""
+        self.questionnaire = self.generate_new_questionnaire(
+            self.layer, self.cadasta_fields_reversed(), '',
+        )
 
     def show_questionnaire(self):
         """Method to show current questionnaire.
