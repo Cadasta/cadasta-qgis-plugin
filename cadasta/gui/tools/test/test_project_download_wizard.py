@@ -57,12 +57,8 @@ class CadastaProjectDownloadWizardTest(unittest.TestCase):
     def test_step_01(self):
         """Test step 01"""
         current_step = self.dialog.get_current_step()
-        button = current_step.get_available_projects_button
-        self.assertIsNotNone(button)
-        button.click()
-        self.assertFalse(
-                current_step.get_available_projects_button.isEnabled()
-        )
+        throbber_loader = current_step.throbber_loader
+        self.assertIsNotNone(throbber_loader)
 
     def test_step_02(self):
         """Test step 02"""

@@ -106,22 +106,15 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QRadioButton" name="questionnaire_radio_button">
-           <property name="text">
-            <string>Include updated questionnaire</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="questionnaire_button">
            <property name="maximumSize">
             <size>
-             <width>200</width>
+             <width>16777215</width>
              <height>16777215</height>
             </size>
            </property>
            <property name="text">
-            <string>Check questionnaire</string>
+            <string>Edit Questionaire Fields</string>
            </property>
           </widget>
          </item>
