@@ -75,10 +75,20 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
         if not self.layer or self.layer != self.parent.layer:
             self.layer = self.parent.layer
             self.set_attributes_box()
+        self.advanced_box.setVisible(False)
+        self.advanced_button.mousePressEvent = self.toogled_advanced_area
         self.questionnaire_button.clicked.connect(
             self.show_questionnaire
         )
         self.check_questionnaire()
+
+    def toogled_advanced_area(self, event):
+        """Toogled advanced area
+        """
+        if self.advanced_box.isVisible():
+            self.advanced_box.setVisible(False)
+        else:
+            self.advanced_box.setVisible(True)
 
     def set_items_combo_box(self, combo_box, field_names):
         """Set items for combo box.
