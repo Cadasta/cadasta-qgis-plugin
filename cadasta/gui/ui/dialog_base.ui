@@ -48,125 +48,88 @@
    <property name="verticalSpacing">
     <number>0</number>
    </property>
-   <item row="2" column="0">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
-    <widget class="QWidget" name="title_group" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>140</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>140</height>
-      </size>
-     </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
+    <widget class="QWidget" name="horizontalWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="styleSheet">
-      <string notr="true">background: #2e51a3; padding: 5px;</string>
+      <string notr="true">background: #2e51a3</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_27">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>0</number>
-      </property>
-      <item row="0" column="0">
-       <layout class="QGridLayout" name="gridLayout_12">
-        <property name="leftMargin">
-         <number>10</number>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label_main_icon">
+        <property name="enabled">
+         <bool>true</bool>
         </property>
-        <item row="0" column="0" rowspan="2">
-         <widget class="QLabel" name="label_main_icon">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>60</width>
-            <height>60</height>
-           </size>
-          </property>
-          <property name="baseSize">
-           <size>
-            <width>60</width>
-            <height>60</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap>../../../resources/images/cadasta-logo-transparent.png</pixmap>
-          </property>
-          <property name="scaledContents">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" alignment="Qt::AlignVCenter">
-         <widget class="QLabel" name="label_subtitle">
-          <property name="styleSheet">
-           <string notr="true">color: #FFF;</string>
-          </property>
-          <property name="text">
-           <string>Subtitle</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-          </property>
-          <property name="margin">
-           <number>10</number>
-          </property>
-          <property name="indent">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>60</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>60</width>
+          <height>60</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>../../../resources/images/cadasta-logo-transparent.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Maximum</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
          <widget class="QLabel" name="label_main_title">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="font">
            <font>
-            <pointsize>18</pointsize>
-            <weight>50</weight>
-            <italic>false</italic>
-            <bold>false</bold>
+            <pointsize>24</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 18pt; color: #fff;</string>
+           <string notr="true">color: #fff</string>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt; font-weight:600;&quot;&gt;Cadasta&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>Cadasta</string>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_subtitle">
+          <property name="styleSheet">
+           <string notr="true">color: #fff</string>
+          </property>
+          <property name="text">
+           <string>Subtitle</string>
           </property>
          </widget>
         </item>
@@ -175,7 +138,7 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="2" column="0">
     <widget class="QWidget" name="verticalWidget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="leftMargin">
@@ -215,6 +178,13 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
     </widget>
    </item>
   </layout>
