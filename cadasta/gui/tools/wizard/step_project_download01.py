@@ -175,9 +175,9 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
             project_contacts = ''
             for contact in project['contacts']:
                 project_contacts += contact['name']
-                if contact['email']:
+                if 'email' in contact and contact['email']:
                     project_contacts += ', ' + contact['email']
-                if contact['tel']:
+                if 'tel' in contact and contact['tel']:
                     project_contacts += ', ' + contact['tel']
                 project_contacts += ' \n'
 
