@@ -111,16 +111,27 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
                 organization = project_descriptions[0]
                 name = project_descriptions[1]
                 processed_downloaded_projects.append(
-                    organization + '-' + name
+                    (organization + '-' + name).encode('utf-8')
                 )
 
-            for project in projects:
+            for index, project in enumerate(projects):
+
                 project_slug = '{organization_slug}-{project_slug}'.format(
-                        organization_slug=project['organization']['slug'],
-                        project_slug=project['slug'])
-                if project_slug not in processed_downloaded_projects:
-                    self.project_combo_box.addItem(
-                        project['name'], project)
+                    organization_slug=project['organization']['slug'].encode(
+                            'utf-8'),
+                    project_slug=project['slug'].encode('utf-8'))
+
+                self.project_combo_box.addItem(
+                    project['name'], project)
+                self.project_combo_box.setCurrentIndex(index)
+
+                self.project_combo_box.model().item(index).setEnabled(
+                    project_slug not in processed_downloaded_projects
+                )
+
+            # Set selected to first item
+            self.project_combo_box.setCurrentIndex(0)
+
         else:
             pass
 
@@ -129,10 +140,10 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         project = self.selected_project()
         if project['description']:
             self.project_description_label.setText(
-                self.tr(project['description']))
+                    self.tr(project['description'].encode('utf-8')))
         else:
             self.project_description_label.setText(
-                self.tr(project['name']))
+                    self.tr(project['name'].encode('utf-8')))
 
     def get_available_projects(self):
         """Get available projects."""
