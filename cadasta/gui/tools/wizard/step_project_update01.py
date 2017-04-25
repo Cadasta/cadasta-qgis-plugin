@@ -11,12 +11,17 @@ This module provides: Project Update Step 1 : Organisation selection
 
 """
 import logging
+from PyQt4.QtGui import (
+    QMovie
+)
+from PyQt4.QtCore import QCoreApplication
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
-from cadasta.api.project import Project
+from cadasta.utilities.resources import resources_path
 from cadasta.utilities.utilities import Utilities
 from cadasta.api.organization import Organization
+from cadasta.api.organization_project import OrganizationList
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -40,15 +45,18 @@ class StepProjectUpdate01(WizardStep, FORM_CLASS):
         super(StepProjectUpdate01, self).__init__(parent)
         self.parent = parent
         self.project_api = None
-        self.organization = Organization()
+        self.organization = None
 
     def set_widgets(self):
         """Set all widgets on the tab."""
-        self.get_available_projects_button.clicked.connect(
-            self.get_available_projects
-        )
         self.project_combo_box.currentIndexChanged.connect(
             self.project_combo_box_changed)
+
+        icon_path = resources_path('images', 'throbber.gif')
+        movie = QMovie(icon_path)
+        self.throbber_loader.setMovie(movie)
+        movie.start()
+        self.get_available_projects()
 
     def selected_project(self):
         """Get selected project from combo box.
@@ -94,7 +102,6 @@ class StepProjectUpdate01(WizardStep, FORM_CLASS):
         :param projects: list downloaded projects
         :type projects: list of dict
         """
-        self.get_available_projects_button.setEnabled(True)
         self.project_combo_box.clear()
 
         if not projects:
@@ -114,6 +121,8 @@ class StepProjectUpdate01(WizardStep, FORM_CLASS):
                     layer_name, project
                 )
 
+        self.throbber_loader.setVisible(False)
+
     def project_combo_box_changed(self):
         """Update description when combo box changed."""
         project = self.selected_project()
@@ -126,36 +135,69 @@ class StepProjectUpdate01(WizardStep, FORM_CLASS):
             else:
                 self.project_description_label.setText(
                     self.tr('No description'))
+
+            if project['information']['urls']:
+                project_urls = ''
+                for url in project['information']['urls']:
+                    project_urls += url + ' \n'
+
+                if not project_urls.isspace():
+                    project_urls = project_urls[:-2]
+                    self.project_url_label.setText(project_urls)
+                else:
+                    self.project_url_label.setText('-')
+            else:
+                self.project_url_label.setText('-')
+
+            if project['information']['contacts']:
+                project_contacts = ''
+                for contact in project['information']['contacts']:
+                    project_contacts += contact['name']
+                    if 'email' in contact and contact['email']:
+                        project_contacts += ', ' + contact['email']
+                    if 'tel' in contact and contact['tel']:
+                        project_contacts += ', ' + contact['tel']
+                    project_contacts += ' \n'
+
+                if project_contacts:
+                    project_contacts = project_contacts[:-2]
+                    self.contact_information_label.setText(project_contacts)
+            else:
+                self.contact_information_label.setText('-')
+
+            if project['information']['access']:
+                self.privacy_status_label.setText(
+                        project['information']['access'].title())
+
         except (TypeError, KeyError):
             self.project_description_label.setText(
                 self.tr('No description'))
+            self.project_url_label.setText('-')
+            self.contact_information_label.setText('-')
+            self.privacy_status_label.setText('-')
             return
 
-    def get_downloaded_project(self, organization_slug):
+    def get_downloaded_project(self, results):
         """Get downloaded project from organization slug.
 
-        :param organization_slug: Organization slug of project
-        :type organization_slug: str
+        :param results: result of request
+        :type results: (bool, list/dict/str)
         """
-        return Utilities.get_downloaded_projects(organization_slug)
+        projects = []
+        if not results[0]:
+            self.throbber_loader.setVisible(False)
+            return
+
+        for organization in results[1]:
+            projects.extend(
+                Utilities.get_downloaded_projects(organization['slug'])
+            )
+        self.get_available_projects_finished(projects)
 
     def get_available_projects(self):
         """Get available projects."""
-        self.get_available_projects_button.setEnabled(False)
-
-        # Get organization with read/update permission
-        status, results = self.organization.organizations_project_filtered()
-
-        projects = []
-
-        if not status:
-            self.get_available_projects_button.setEnabled(True)
-            LOGGER.error(results)
-            return
-
-        for organization in results:
-            projects.extend(
-                self.get_downloaded_project(organization['slug'])
-            )
-
-        self.get_available_projects_finished(projects)
+        self.throbber_loader.setVisible(True)
+        self.organization = OrganizationList(
+            permissions='project.create',
+            on_finished=self.get_downloaded_project
+        )

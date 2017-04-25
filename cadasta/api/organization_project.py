@@ -97,3 +97,39 @@ class OrganizationProjectSpatial(BaseApi):
                 self.on_finished(
                     (True, result, self.organization_slug, self.project_slug)
                 )
+
+
+class OrganizationList(BaseApi):
+    """Class to fetch available organization data."""
+
+    api_url = 'api/v1/organizations/'
+
+    permission_query = '?permissions='
+
+    def __init__(self, on_finished=None, permissions=None):
+        """Constructor.
+
+        :param on_finished: (optional) function that catch result request
+        :type on_finished: Function
+
+        :param permissions: (optional) permissions filter
+        :type permissions: str
+        """
+        self.request_url = get_url_instance() + self.api_url
+
+        if permissions:
+            self.request_url += self.permission_query + permissions
+
+        super(OrganizationList, self).__init__()
+        self.on_finished = on_finished
+        self.connect_get()
+
+    def connection_finished(self):
+        """On finished function when tools request is finished."""
+        # extract result
+        if self.error:
+            self.on_finished((False, self.error))
+        else:
+            result = self.get_json_results()
+            if self.on_finished and callable(self.on_finished):
+                self.on_finished((True, result))

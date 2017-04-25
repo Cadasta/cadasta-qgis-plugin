@@ -64,9 +64,6 @@ class CadastaProjectCreationTest(unittest.TestCase):
         """Runs before each test."""
         self.wizard = ProjectUpdateWizard(iface=IFACE)
         self.step1 = self.wizard.step_project_update01
-        self.step1.organization._call_api = MagicMock(
-            return_value=(True, self.test_organization)
-        )
         self.step1.get_downloaded_project = MagicMock(
             return_value=[self.test_project]
         )
@@ -74,6 +71,5 @@ class CadastaProjectCreationTest(unittest.TestCase):
     def test_step_01(self):
         """Test step 01"""
         current_step = self.wizard.get_current_step()
-        button = current_step.get_available_projects_button
-        button.click()
-        self.assertIsNone(current_step.selected_project())
+        throbber_loader = current_step.throbber_loader
+        self.assertIsNotNone(throbber_loader)
