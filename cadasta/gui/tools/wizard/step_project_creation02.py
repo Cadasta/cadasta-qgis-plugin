@@ -110,7 +110,8 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
                 (dict(zip(field_names, elem.attributes())))
             )
 
-        field_names.append(tr('No field'))
+        field_names.append('--------- {field} ----------'.format(
+                field=tr('No field')))
         self.set_items_combo_box(self.location_type_box, field_names)
         self.set_items_combo_box(self.party_name_box, field_names)
         self.set_items_combo_box(self.relationship_type_box, field_names)
@@ -124,7 +125,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
         """
         error_message = ''
         if not self.location_type_box.currentText() or \
-                        self.location_type_box.currentText() == tr('No field'):
+                    tr('No field') in self.location_type_box.currentText():
             error_message = tr(
                 'Empty location type. '
             )
