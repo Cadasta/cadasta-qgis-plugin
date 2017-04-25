@@ -11,8 +11,10 @@ Cadasta project - **Project api.**
 
 from cadasta.api.base_api import BaseApi
 from cadasta.common.setting import (
-    get_url_instance
+    get_url_instance,
+    get_setting
 )
+
 
 __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
 __revision__ = '$Format:%H$'
@@ -32,6 +34,8 @@ class Project(BaseApi):
         :type on_finished: Function
         """
         self.request_url = get_url_instance() + self.api_url
+        if not get_setting('public_project'):
+            self.request_url += '?permissions=project.update'
         super(Project, self).__init__()
         self.on_finished = on_finished
         self.connect_get()

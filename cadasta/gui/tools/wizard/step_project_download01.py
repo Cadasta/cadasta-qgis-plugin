@@ -14,6 +14,7 @@ import logging
 from PyQt4.QtGui import (
     QMovie
 )
+from PyQt4.QtCore import Qt
 from operator import itemgetter
 from cadasta.api.project import Project
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
@@ -24,6 +25,10 @@ from cadasta.utilities.utilities import Utilities
 from cadasta.model.contact import Contact
 from cadasta.gui.tools.cadasta_dialog import CadastaDialog
 from cadasta.gui.tools.widget.contact_widget import ContactWidget
+from cadasta.common.setting import (
+    set_setting,
+    get_setting
+)
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -38,7 +43,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 class StepProjectDownload01(WizardStep, FORM_CLASS):
     """Step 1 for project download."""
 
-    def __init__(self, iface, parent=None):
+    def __init__(self, iface=None, parent=None):
         """Constructor.
 
         :param iface: An interface instance that will be passed to this class
@@ -58,6 +63,15 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         """Set all widgets on the tab."""
         self.project_combo_box.currentIndexChanged.connect(
             self.project_combo_box_changed)
+
+        checkbox_checked = get_setting('public_project')
+        if checkbox_checked:
+            self.public_projects_checkbox.setCheckState(
+                Qt.Checked
+            )
+        self.public_projects_checkbox.stateChanged.connect(
+            self.public_check_box_changed)
+
         icon_path = resources_path('images', 'throbber.gif')
         movie = QMovie(icon_path)
         self.throbber_loader.setMovie(movie)
@@ -148,9 +162,32 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         else:
             pass
 
+    def public_check_box_changed(self, state):
+        """Public project check box's state changed.
+
+        :param state: Checkbox state
+        :type state: int
+        """
+        set_setting('public_project', state == Qt.Checked)
+        if self.project_api:
+            self.project_api.cancel_request()
+        self.project_combo_box.clear()
+        self.get_available_projects()
+
     def project_combo_box_changed(self):
         """Update description when combo box changed."""
         project = self.selected_project()
+        if not project:
+            self.project_description_label.setText(tr(
+                'This is the read only project description that '
+                'changes when the combo box above is changed.'
+            ))
+            self.project_url_label.setText('-')
+            self.contact_information_label.setText('-')
+            self.privacy_status_label.setText('-')
+            self.add_contact_button.setEnabled(False)
+            return
+
         if project['description']:
             self.project_description_label.setText(
                     self.tr(project['description'].encode('utf-8')))

@@ -143,6 +143,22 @@
          </layout>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QCheckBox" name="public_projects_checkbox">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Include all Cadasta public projects</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -153,7 +169,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>13</height>
+            <height>20</height>
            </size>
           </property>
          </spacer>

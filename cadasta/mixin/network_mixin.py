@@ -32,6 +32,10 @@ class NetworkMixin(object):
         self.results = QByteArray()
         self.auth_token = get_authtoken()
 
+    def cancel_request(self):
+        """Abort the request."""
+        self.reply.abort()
+
     def connect_request(self):
         """Process the request."""
         LOGGER.info('Requesting...')

@@ -93,8 +93,9 @@ class StepProjectUpdate02(WizardStep, FORM_CLASS):
         for index, contact in enumerate(project_contacts):
             contact_name = contact['name']
             contact_email = ' - ' + contact['email'] \
-                if contact['email'] else ''
-            contact_phone = ' - ' + contact['tel'] if contact['tel'] else ''
+                if 'email' in contact and contact['email'] else ''
+            contact_phone = ' - ' + contact['tel'] \
+                if 'tel' in contact and contact['tel'] else ''
 
             contact_box = self.project_contact_list.findItems(
                 contact_name + contact_email + contact_phone,
