@@ -12,7 +12,8 @@ This module provides: Project Download Step 1 : Project selection
 """
 import logging
 from PyQt4.QtGui import (
-    QMovie
+    QMovie,
+    QCursor
 )
 from PyQt4.QtCore import Qt
 from operator import itemgetter
@@ -58,6 +59,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         self.iface = iface
         self.project_api = None
         self.current_contacts = None
+        self.add_contact_enabled = False
 
     def set_widgets(self):
         """Set all widgets on the tab."""
@@ -77,9 +79,27 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         self.throbber_loader.setMovie(movie)
         movie.start()
         self.get_available_projects()
-        self.add_contact_button.setEnabled(False)
-        self.add_contact_button.clicked.connect(
-            self.add_to_contacts)
+        self.add_contact_label.mousePressEvent = self.add_contact_label_clicked
+        self.set_enabled_add_contact_label(False)
+
+    def add_contact_label_clicked(self, event):
+        """Handler for add_contact_label clicked. """
+        if self.add_contact_enabled:
+            self.add_to_contacts()
+
+    def set_enabled_add_contact_label(self, enabled):
+        """Set add_contact_label enabled or disabled.
+
+        :param enabled: Flag to disable or enabled label
+        :type enabled: bool
+        """
+        self.add_contact_enabled = enabled
+        if not enabled:
+            self.add_contact_label.setStyleSheet('color: gray;')
+            self.add_contact_label.setCursor(QCursor(Qt.ArrowCursor))
+        else:
+            self.add_contact_label.setStyleSheet('color: blue;')
+            self.add_contact_label.setCursor(QCursor(Qt.PointingHandCursor))
 
     def selected_project(self):
         """Get selected project from combo box.
@@ -185,7 +205,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
             self.project_url_label.setText('-')
             self.contact_information_label.setText('-')
             self.privacy_status_label.setText('-')
-            self.add_contact_button.setEnabled(False)
+            self.set_enabled_add_contact_label(False)
             return
 
         if project['description']:
@@ -219,13 +239,13 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
                 project_contacts += ' \n'
 
             if project_contacts:
-                self.add_contact_button.setEnabled(True)
+                self.set_enabled_add_contact_label(True)
                 self.current_contacts = project['contacts']
                 project_contacts = project_contacts[:-2]
                 self.contact_information_label.setText(project_contacts)
         else:
             self.contact_information_label.setText('-')
-            self.add_contact_button.setEnabled(False)
+            self.set_enabled_add_contact_label(False)
 
         if project['access']:
             self.privacy_status_label.setText(project['access'].title())
