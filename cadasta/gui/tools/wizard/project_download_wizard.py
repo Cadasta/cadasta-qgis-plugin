@@ -61,7 +61,7 @@ class ProjectDownloadWizard(WizardDialog):
         self.set_subtitle(
                 tr('Cadasta project download wizard')
         )
-
+        self.iface = iface
         self.organisations_list = None
         self.layer = None
 
@@ -83,7 +83,9 @@ class ProjectDownloadWizard(WizardDialog):
 
     def populate_stacked_widget(self):
         """Append widgets to stacked widget."""
-        self.step_project_download01 = StepProjectDownload01(self)
+        self.step_project_download01 = StepProjectDownload01(
+                iface=self.iface,
+                parent=self)
         self.step_project_download02 = StepProjectDownload02(self)
 
         self.stackedWidget.addWidget(self.step_project_download01)

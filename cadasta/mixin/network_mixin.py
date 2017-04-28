@@ -38,6 +38,10 @@ class NetworkMixin(object):
         if geojson:
             self.combine_new_data = self.combine_new_geojson_data
 
+    def cancel_request(self):
+        """Abort the request."""
+        self.reply.abort()
+
     def connect_request(self):
         """Process the request."""
         LOGGER.info('Requesting "%s"', self.request_url)

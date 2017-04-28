@@ -75,10 +75,20 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
         if not self.layer or self.layer != self.parent.layer:
             self.layer = self.parent.layer
             self.set_attributes_box()
+        self.advanced_box.setVisible(False)
+        self.advanced_button.mousePressEvent = self.toogled_advanced_area
         self.questionnaire_button.clicked.connect(
             self.show_questionnaire
         )
         self.check_questionnaire()
+
+    def toogled_advanced_area(self, event):
+        """Toogled advanced area
+        """
+        if self.advanced_box.isVisible():
+            self.advanced_box.setVisible(False)
+        else:
+            self.advanced_box.setVisible(True)
 
     def set_items_combo_box(self, combo_box, field_names):
         """Set items for combo box.
@@ -110,7 +120,8 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
                 (dict(zip(field_names, elem.attributes())))
             )
 
-        field_names.append(tr('No field'))
+        field_names.append('--------- {field} ----------'.format(
+                field=tr('No field')))
         self.set_items_combo_box(self.location_type_box, field_names)
         self.set_items_combo_box(self.party_name_box, field_names)
         self.set_items_combo_box(self.relationship_type_box, field_names)
@@ -124,7 +135,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
         """
         error_message = ''
         if not self.location_type_box.currentText() or \
-                        self.location_type_box.currentText() == tr('No field'):
+                    tr('No field') in self.location_type_box.currentText():
             error_message = tr(
                 'Empty location type. '
             )

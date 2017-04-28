@@ -99,10 +99,23 @@ class Utilities(object):
 
             for contact in project_contacts:
 
+                phone = None
+                email = None
+
+                try:
+                    phone = contact['tel']
+                except KeyError:
+                    pass
+
+                try:
+                    email = contact['email']
+                except KeyError:
+                    pass
+
                 contact_from_db = Contact.get_rows(
                     name=contact['name'],
-                    phone=contact['tel'],
-                    email=contact['email']
+                    phone=phone,
+                    email=email
                 )
 
                 if not contact_from_db:

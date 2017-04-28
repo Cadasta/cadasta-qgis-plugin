@@ -13,6 +13,7 @@ Cadasta **Cadasta About Dialog.**
 import logging
 from PyQt4.QtGui import QDialog
 from PyQt4.QtCore import pyqtSignature
+from cadasta.gui.tools.about.content.about import about
 from cadasta.gui.tools.about.content.overview import overview
 from cadasta.gui.tools.about.content.version import version
 from cadasta.gui.tools.about.content.license import license_about
@@ -70,6 +71,10 @@ class AboutDialog(QDialog, FORM_CLASS):
         # create brand
         message = m.Message()
         message.add(m.Brand())
+
+        string += message.to_html()
+
+        message = about()
 
         string += message.to_html()
 

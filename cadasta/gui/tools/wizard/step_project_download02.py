@@ -66,7 +66,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
     def set_widgets(self):
         """Set all widgets on the tab."""
         self.loading_label_string = self.tr('Your data is being downloaded')
-        self.loaded_label_string = self.tr('Your data have been downloaded')
+        self.loaded_label_string = self.tr('Your data has been downloaded')
 
         self.warning_label.setText(self.loading_label_string)
         self.get_project_spatial(

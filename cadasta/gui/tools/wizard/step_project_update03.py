@@ -55,11 +55,14 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
     def set_widgets(self):
         """Set all widgets on the tab."""
         self.project = self.parent.project['information']
-        for project_layer in self.project['layers']:
-            layer = QgsMapLayerRegistry.instance().mapLayer(
-                project_layer['id'])
-            if layer:
-                self.vlayers.append(layer)
+        if 'layers' in self.project:
+            for project_layer in self.project['layers']:
+                layer = QgsMapLayerRegistry.instance().mapLayer(
+                    project_layer['id'])
+                if layer:
+                    self.vlayers.append(layer)
+        else:
+            LOGGER.warning('Relationship/Party layer not found')
 
         self.layer = self.parent.project['vector_layer']
         self.lbl_status.setText(
@@ -101,11 +104,14 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         contacts = []
         for contact_item in contact_item_list:
             contact = contact_item.data(Qt.UserRole)
-            contacts.append({
-                'name': contact.name,
-                'tel': contact.phone,
-                'email': contact.email
-            })
+            contact_data = {}
+            if contact.name:
+                contact_data['name'] = contact.name
+            if contact.phone:
+                contact_data['tel'] = contact.phone
+            if contact.email:
+                contact_data['email'] = contact.email
+            contacts.append(contact_data)
 
         access = 'private' if step2.access_checkbox.isChecked() else 'public'
         post_data = {

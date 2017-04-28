@@ -266,7 +266,6 @@ class CadastaPlugin:
         self._create_project_download_wizard()
         self._create_project_creation_wizard()
         self._create_project_update_wizard()
-        self._create_contact_dialog()
         self._create_help_dialog()
         self._create_about_dialog()
         for action in self.actions:
