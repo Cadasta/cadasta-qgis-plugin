@@ -81,6 +81,11 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
             self.show_questionnaire
         )
         self.check_questionnaire()
+        self.label.setToolTip(
+            tr('Location type field is required please select.'))
+
+        # Set tab focus
+        self.location_type_box.setFocus()
 
     def toogled_advanced_area(self, event):
         """Toogled advanced area
@@ -137,7 +142,7 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
         if not self.location_type_box.currentText() or \
                     tr('No field') in self.location_type_box.currentText():
             error_message = tr(
-                'Empty location type. '
+                'Location type field is required, please select.'
             )
 
         return (

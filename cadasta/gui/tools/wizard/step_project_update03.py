@@ -69,6 +69,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             self.tr('Upload the data?')
         )
         self.set_progress_bar(0)
+        self.submit_button.setFocus()
 
     def set_status(self, status):
         """Show status in label and text edit.

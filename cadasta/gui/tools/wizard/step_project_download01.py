@@ -81,6 +81,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         self.get_available_projects()
         self.add_contact_label.mousePressEvent = self.add_contact_label_clicked
         self.set_enabled_add_contact_label(False)
+        self.project_combo_box.setFocus()
 
     def add_contact_label_clicked(self, event):
         """Handler for add_contact_label clicked. """

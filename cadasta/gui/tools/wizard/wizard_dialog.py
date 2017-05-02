@@ -67,6 +67,10 @@ class WizardDialog(QDialog, FORM_CLASS):
         first_step.set_widgets()
         self.go_to_step(first_step)
 
+        # Set tab order for button
+        self.setTabOrder(self.next_button, self.back_button)
+        self.setTabOrder(self.back_button, self.cancel_button)
+
     def last_step(self):
         """Returns the last step of wizard.
 

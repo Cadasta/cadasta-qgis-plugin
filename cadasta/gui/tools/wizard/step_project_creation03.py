@@ -69,6 +69,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         self.lbl_status.setText(
             tr('Are you sure to upload the data?')
         )
+        self.submit_button.setFocus()
 
     def set_status(self, status):
         """Show status in label and text edit.

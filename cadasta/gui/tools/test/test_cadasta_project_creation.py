@@ -52,16 +52,12 @@ class CadastaProjectCreationTest(unittest.TestCase):
 
     def test_get_available_organisations(self):
         """Test get available button works in step 1."""
-        button = self.step1.get_organisation_button
-        button.click()
-        self.assertIsInstance(self.wizard.organisations_list, list)
+        self.assertTrue(self.step1.throbber_loader.isEnabled())
 
     def test_valid_form(self):
         """Check if form is valid."""
         url = 'http://www.google.com'
         project_name = 'project_name'
-        button = self.step1.get_organisation_button
-        button.click()
         self.step1.project_url_text.setText(url)
         self.step1.project_name_text.setText(project_name)
         self.assertTrue(self.step1.validate_step())

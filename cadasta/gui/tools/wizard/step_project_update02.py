@@ -122,6 +122,9 @@ class StepProjectUpdate02(WizardStep, FORM_CLASS):
 
                 selected_item.setSelected(True)
 
+        self.project_name_text.setFocus()
+        self.project_desc_text.setTabChangesFocus(True)
+
     def get_next_step(self):
         """Find the proper step when user clicks the Next button.
 
