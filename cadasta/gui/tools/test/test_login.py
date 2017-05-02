@@ -13,16 +13,12 @@ __date__ = '21/12/16'
 __copyright__ = 'Copyright 2016, Cadasta'
 
 import unittest
-
+from mock import MagicMock
 from qgis.gui import QgsMessageBar
-from PyQt4.QtCore import QCoreApplication
 from qgis.testing.mocked import get_iface
 from qgis.utils import iface
 
-from cadasta.common.setting import (
-    get_authtoken,
-    get_url_instance
-)
+from cadasta.api.login import Login
 
 from cadasta.gui.tools.cadasta_dialog import CadastaDialog
 from cadasta.gui.tools.widget.options_widget import OptionsWidget
@@ -38,15 +34,15 @@ class CadastaLoginTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
-        self.url = 'https://demo.cadasta.org/'
-        self.username = 'kartoza.demo'
-        self.password = 'demo.kartoza1!'
         dialog = CadastaDialog(
             iface=IFACE,
             subtitle='Cadasta Login',
-            widget=OptionsWidget()
+            widget=OptionsWidget(auth_token=None)
         )
+        self.url = 'cadasta-url'
         self.dialog = dialog.widget
+        self.username = 'username'
+        self.password = 'password'
 
     def tearDown(self):
         """Runs after each test."""
@@ -55,6 +51,7 @@ class CadastaLoginTest(unittest.TestCase):
     def test_warning_message(self):
         """Test warning message bar shows up if username/password is empty"""
         button = self.dialog.test_connection_button
+        self.assertTrue(self.dialog.test_connection_button.isEnabled())
         button.click()
         message_bar = self.dialog.message_bar
         self.assertIsInstance(message_bar, QgsMessageBar)
@@ -62,13 +59,29 @@ class CadastaLoginTest(unittest.TestCase):
     def test_connection_fail(self):
         """Test for failed test connection"""
         self.dialog.url_input.setText(self.url)
-        self.dialog.username_input.setText('test')
-        self.dialog.password_input.setText('test')
-        button = self.dialog.test_connection_button
-        button.click()
+        self.dialog.username_input.setText(self.username)
+        self.dialog.password_input.setText(self.password)
 
-        while not self.dialog.login_api.reply.isFinished():
-            QCoreApplication.processEvents()
+        self.assertTrue(self.dialog.test_connection_button.isEnabled())
+
+        login_api = Login(
+            domain=self.url,
+            username=self.username,
+            password=self.password,
+            on_finished=self.dialog.on_finished
+        )
+
+        login_api.get_json_results = MagicMock(
+            return_value=[]
+        )
+
+        login_api.connect_post = MagicMock(
+            side_effect=login_api.connection_finished()
+        )
+
+        self.dialog.call_login_api = MagicMock(
+            return_value=login_api
+        )
 
         self.assertFalse(self.dialog.save_button.isEnabled())
 
@@ -77,17 +90,27 @@ class CadastaLoginTest(unittest.TestCase):
         self.dialog.url_input.setText(self.url)
         self.dialog.username_input.setText(self.username)
         self.dialog.password_input.setText(self.password)
-        button = self.dialog.test_connection_button
-        button.click()
 
-        while not self.dialog.login_api.reply.isFinished():
-            QCoreApplication.processEvents()
+        login_api = Login(
+            domain=self.url,
+            username=self.username,
+            password=self.password,
+            on_finished=self.dialog.on_finished
+        )
+
+        login_api.get_json_results = MagicMock(
+            return_value={'auth_token': 'token'}
+        )
+
+        login_api.connect_post = MagicMock(
+            side_effect=login_api.connection_finished()
+        )
+
+        self.dialog.call_login_api = MagicMock(
+            return_value=login_api
+        )
 
         self.assertTrue(self.dialog.save_button.isEnabled())
-
-        self.dialog.save_button.click()
-        self.assertIsNotNone(get_authtoken())
-        self.assertEqual(self.url, get_url_instance())
 
 
 if __name__ == "__main__":

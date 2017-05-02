@@ -61,7 +61,7 @@ def content():
     bullets.add(m.Text(
         m.ImportantText(tr('Cadasta Instance URL')),
         tr('- overwrite current url as cadasta source.'
-           'default is https://demo.cadasta.org/')
+           'default is https://platform-staging-api.cadasta.org/')
     ))
     bullets.add(m.Text(
         m.ImportantText(tr('Cadasta Username')),

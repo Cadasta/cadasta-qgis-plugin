@@ -18,6 +18,9 @@ __copyright__ = 'Copyright 2016, Cadasta'
 
 
 class Login(BaseApi):
+
+    post_data = QByteArray()
+
     def __init__(self, domain, username, password, on_finished=None):
         """Constructor.
 
@@ -36,12 +39,10 @@ class Login(BaseApi):
         """
         self.request_url = domain + 'api/v1/account/login/?'
         super(Login, self).__init__()
-        post_data = QByteArray()
-        post_data.append("username=%s&" % username)
-        post_data.append("password=%s" % password)
+        self.post_data.append("username=%s&" % username)
+        self.post_data.append("password=%s" % password)
 
         self.on_finished = on_finished
-        self.connect_post(post_data)
 
     def connection_finished(self):
         """Function finished handler.

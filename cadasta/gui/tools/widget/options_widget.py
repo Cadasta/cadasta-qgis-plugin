@@ -49,7 +49,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
     authenticated = pyqtSignal()
     unauthenticated = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, auth_token=None):
         """Constructor
 
         :param parent: parent - widget to use as parent.
@@ -58,7 +58,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
         super(OptionsWidget, self).__init__(parent)
         self.text_test_connection_button = None
         self.url = None
-        self.auth_token = None
+        self.auth_token = auth_token
         self.login_api = None
         self.organisation_api = Organization()
         self.set_widgets()
@@ -86,8 +86,12 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
         self.url_input.setText(get_url_instance())
 
         # If login information exists
-        if get_authtoken():
+        if not self.auth_token:
+            self.auth_token = get_authtoken()
+
+        if self.auth_token:
             self.clear_button.setEnabled(True)
+            self.test_connection_button.setEnabled(False)
             self.username_input.setText(get_setting('username'))
             self.token_status.setText(
                 tr('Auth token is saved.')
@@ -104,6 +108,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
         delete_authtoken()
         delete_setting('username')
         self.clear_button.setEnabled(False)
+        self.test_connection_button.setEnabled(True)
         self.token_status.setText(
             tr(
                 'Auth token is empty.'
@@ -132,11 +137,30 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
             self.test_connection_button.setEnabled(False)
             self.test_connection_button.setText(self.tr('Logging in...'))
             # call tools API
-            self.login_api = Login(
+            self.login_api = self.call_login_api(
                 self.url,
                 username,
-                password,
-                self.on_finished)
+                password)
+            self.login_api.connect_post(self.login_api.post_data)
+
+    def call_login_api(self, url, username, password):
+        """Call login api.
+
+        :param url: platform url
+        :type url: str
+
+        :param username: username for login
+        :type username: str
+
+        :param password: password for login
+        :type password: str
+        """
+        return Login(
+            domain=url,
+            username=username,
+            password=password,
+            on_finished=self.on_finished
+        )
 
     def on_finished(self, result):
         """On finished function when tools request is finished."""
