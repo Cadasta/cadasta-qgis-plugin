@@ -183,7 +183,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             self.data['organisation']['slug']
         )
 
-        post_data = json.dumps(post_data)
+        post_data = Utilities.json_dumps(post_data)
+
         connector = ApiConnect(get_url_instance() + post_url)
         status, result = self._call_json_post(
             connector,
@@ -287,13 +288,18 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             if update_questionnaire_attribute:
                 if location['properties']:
                     post_data['attributes'] = location['properties']
+                for key, value in post_data['attributes'].iteritems():
+                    # Set None to empty string
+                    if not value:
+                        post_data['attributes'][key] = u''
                 if 'id' in post_data['attributes']:
                     del post_data['attributes']['id']
 
             connector = ApiConnect(get_url_instance() + post_url)
+            post_data = Utilities.json_dumps(post_data)
             status, result = self._call_json_post(
                 connector,
-                json.dumps(post_data))
+                post_data)
 
             if status:
                 self.set_progress_bar(self.current_progress + progress_left)
@@ -380,12 +386,15 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         for layer in self.data['locations']['features']:
             if 'party_name' in layer['fields'] and \
                             'party_type' in layer['fields']:
-                post_data = QByteArray()
-                post_data.append('name=%s&' % layer['fields']['party_name'])
-                post_data.append('type=%s&' % layer['fields']['party_type'])
+                post_data = {
+                    'name': layer['fields']['party_name'],
+                    'type': layer['fields']['party_type']
+                }
+
+                post_data = Utilities.json_dumps(post_data)
 
                 connector = ApiConnect(get_url_instance() + post_url)
-                status, result = self._call_post(connector, post_data)
+                status, result = self._call_json_post(connector, post_data)
 
                 if status:
                     party += 1
@@ -440,15 +449,16 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                             'spatial_id' in layer and \
                             'party_id' in layer:
 
-                post_data = QByteArray()
-                post_data.append('tenure_type=%s&' % (
-                    layer['fields']['relationship_type']
-                ))
-                post_data.append('spatial_unit=%s&' % layer['spatial_id'])
-                post_data.append('party=%s&' % layer['party_id'])
+                post_data = {
+                    'tenure_type': layer['fields']['relationship_type'],
+                    'spatial_unit': layer['spatial_id'],
+                    'party': layer['party_id']
+                }
+
+                post_data = Utilities.json_dumps(post_data)
 
                 connector = ApiConnect(get_url_instance() + url)
-                status, result = self._call_post(connector, post_data)
+                status, result = self._call_json_post(connector, post_data)
 
                 if status:
                     relationship += 1
@@ -675,8 +685,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         api = '/api/v1/organizations/{organization_slug}/projects/' \
               '{project_slug}/parties/'.format(
-            organization_slug=organization_slug,
-            project_slug=project_slug)
+                organization_slug=organization_slug,
+                project_slug=project_slug)
 
         connector = ApiConnect(get_url_instance() + api)
         status, results = connector.get()

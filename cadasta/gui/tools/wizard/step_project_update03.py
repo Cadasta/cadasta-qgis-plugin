@@ -359,7 +359,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         }
 
         connector = ApiConnect(get_url_instance() + api)
-        status, result = connector.patch_json(json.dumps(post_data))
+        status, result = connector.patch_json(Utilities.json_dumps(post_data))
 
         if status:
             self.set_status(
@@ -392,7 +392,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             post_data['type'] = location_type
 
         connector = ApiConnect(get_url_instance() + api)
-        status, result = connector.post_json(json.dumps(post_data))
+        status, result = connector.post_json(Utilities.json_dumps(post_data))
 
         if status:
             self.set_status(
@@ -430,7 +430,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             post_data['attributes'] = attributes
 
         connector = ApiConnect(get_url_instance() + api)
-        status, result = connector.patch_json(json.dumps(post_data))
+        status, result = connector.patch_json(Utilities.json_dumps(post_data))
 
         if status:
             self.set_status(
@@ -462,7 +462,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             post_data['attributes'] = attributes
 
         connector = ApiConnect(get_url_instance() + api)
-        status, result = connector.patch_json(json.dumps(post_data))
+        status, result = connector.patch_json(Utilities.json_dumps(post_data))
 
         if status:
             self.set_status(

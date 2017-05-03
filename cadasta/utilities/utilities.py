@@ -504,3 +504,15 @@ class Utilities(object):
             detail = result
         error_detail += detail
         return '<span style="color:red">%s</span><br>' % error_detail
+
+    @staticmethod
+    def json_dumps(obj):
+        """Serialize obj as json formatted string,
+        then replace null to empty string
+
+        :param obj: obj dictionary to be serialized
+        :return: dict
+        """
+        json_string = json.dumps(obj)
+        json_string = json_string.replace('null', '""')
+        return json_string
