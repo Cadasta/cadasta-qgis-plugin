@@ -85,7 +85,7 @@ class CadastaProjectCreationTest(unittest.TestCase):
         self.step3._url_post_parties = MagicMock(
             return_value='api-url'
         )
-        self.step3._call_post = MagicMock(
+        self.step3._call_json_post = MagicMock(
             return_value=(True, '')
         )
         self.step3.upload_parties()
@@ -124,7 +124,7 @@ class CadastaProjectCreationTest(unittest.TestCase):
         self.step3._url_post_relationships = MagicMock(
             return_value='api-url'
         )
-        self.step3._call_post = MagicMock(
+        self.step3._call_json_post = MagicMock(
             return_value=(True, '')
         )
         self.step3.upload_relationships()
