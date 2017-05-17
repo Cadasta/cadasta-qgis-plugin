@@ -29,7 +29,6 @@ from cadasta.api.organization import Organization
 from cadasta.api.organization_project import OrganizationList
 from cadasta.common.setting import get_path_data
 from cadasta.model.contact import Contact
-from qgis.gui import QgsMapLayerComboBox
 from cadasta.utilities.resources import resources_path
 
 __copyright__ = "Copyright 2016, Cadasta"

@@ -25,7 +25,7 @@ __copyright__ = 'Copyright 2016, Cadasta'
 class Project(BaseApi):
     """Class to fetch available project data."""
 
-    api_url = 'api/v1/projects/'
+    api_url = '/api/v1/projects/'
 
     def __init__(self, on_finished=None):
         """Constructor.

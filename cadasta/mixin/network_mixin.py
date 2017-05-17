@@ -220,7 +220,7 @@ class NetworkMixin(object):
                 }
             }
         """
-        old_data = json.loads(old_data_str)
+        old_data = json.loads(old_data_str or 'null')
         new_data = json.loads(new_data_str)
         if not old_data:
             return json.dumps(new_data['results'])

@@ -23,7 +23,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 class OrganizationProject(BaseApi):
     """Class to fetch available organization project data."""
 
-    api_url = 'api/v1/organizations/%s/projects/'
+    api_url = '/api/v1/organizations/%s/projects/'
 
     def __init__(self, organization_slug, on_finished=None):
         """Constructor.
@@ -45,7 +45,7 @@ class OrganizationProject(BaseApi):
 class OrganizationProjectSpatial(BaseApi):
     """Class to fetch available organization project spatial data."""
 
-    api_url = 'api/v1/organizations/%s/projects/%s/spatial/'
+    api_url = '/api/v1/organizations/%s/projects/%s/spatial/'
 
     def __init__(self, organization_slug, project_slug, on_finished=None):
         """Constructor.
@@ -92,7 +92,7 @@ class OrganizationProjectSpatial(BaseApi):
 class OrganizationList(BaseApi):
     """Class to fetch available organization data."""
 
-    api_url = 'api/v1/organizations/'
+    api_url = '/api/v1/organizations/'
 
     permission_query = '?permissions='
 
