@@ -11,7 +11,6 @@ This module provides: Project Creation Step 2 : Attribute Selection
 
 """
 
-from qgis.gui import QgsMessageBar
 from cadasta.gui.tools.utilities.edit_text_dialog import EditTextDialog
 from cadasta.gui.tools.utilities.questionnaire import QuestionnaireUtility
 from cadasta.gui.tools.wizard.wizard_step import WizardStep

@@ -12,7 +12,6 @@ This module provides: Project Creation Step 3 : Upload to cadasta
 """
 
 import os
-import json
 import logging
 from qgis.core import (
     QgsVectorLayer,

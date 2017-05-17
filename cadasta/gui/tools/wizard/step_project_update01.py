@@ -14,13 +14,11 @@ import logging
 from PyQt4.QtGui import (
     QMovie
 )
-from PyQt4.QtCore import QCoreApplication
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.utilities.resources import resources_path
 from cadasta.utilities.utilities import Utilities
-from cadasta.api.organization import Organization
 from cadasta.api.organization_project import OrganizationList
 
 __copyright__ = "Copyright 2016, Cadasta"
