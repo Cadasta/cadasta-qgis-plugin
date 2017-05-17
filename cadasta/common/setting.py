@@ -27,7 +27,7 @@ __date__ = '20/12/16'
 __copyright__ = 'Copyright 2016, Cadasta'
 
 app_name = 'cadasta'
-default_domain = 'https://demo.cadasta.org/'
+default_domain = 'https://platform-staging-api.cadasta.org/'
 
 
 def set_setting(key, value):

@@ -13,18 +13,24 @@ This module provides: Project Creation Step 1 : Define basic project properties
 import logging
 import os
 import json
-from PyQt4.QtGui import QAbstractItemView, QListWidgetItem
+from PyQt4.QtGui import (
+    QAbstractItemView,
+    QListWidgetItem,
+    QMovie,)
 from PyQt4.QtCore import Qt
 from qgis.core import QgsVectorFileWriter
 from qgis.core import QgsGeometry
+from qgis.gui import QgsMessageBar
 from cadasta.utilities.resources import is_valid_url
 from cadasta.utilities.i18n import tr
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.gui.tools.wizard.wizard_step import get_wizard_step_ui_class
 from cadasta.api.organization import Organization
+from cadasta.api.organization_project import OrganizationList
 from cadasta.common.setting import get_path_data
 from cadasta.model.contact import Contact
 from qgis.gui import QgsMapLayerComboBox
+from cadasta.utilities.resources import resources_path
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -47,9 +53,7 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         """
         super(StepProjectCreation1, self).__init__(parent)
         self.organisation = Organization()
-        self.get_organisation_button.clicked.connect(
-            self.get_available_organisations
-        )
+        self.organization = None
 
     def set_widgets(self):
         """Set all widgets on the tab."""
@@ -72,6 +76,14 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
         self.project_contact_list.setSelectionMode(
             QAbstractItemView.ExtendedSelection
         )
+
+        icon_path = resources_path('images', 'throbber.gif')
+        movie = QMovie(icon_path)
+        self.throbber_loader.setMovie(movie)
+        movie.start()
+        self.get_available_organisations()
+        self.organisation_box.setFocus()
+        self.project_description_text.setTabChangesFocus(True)
 
     def project_name(self):
         """Get project name from input.
@@ -146,27 +158,35 @@ class StepProjectCreation1(WizardStep, FORM_CLASS):
             new_step = self.parent.step_project_creation02
         return new_step
 
-    def get_available_organisations(self):
-        """Get available organisations and load it to
-           organisation combo box.
+    def on_downloaded_organization(self, results):
+        """Finish downloading organization list.
         """
-        LOGGER.info('Getting organisations')
-        self.get_organisation_button.setEnabled(False)
-        status, results = self.organisation.organizations_project_filtered()
-        self.get_organisation_button.setEnabled(True)
-        if status:
+        self.throbber_loader.setVisible(False)
+        if results[0]:
             self.organisation_box.clear()
-            self.parent.organisations_list = results
-            for organisation in results:
+            self.parent.organisations_list = results[1]
+            for organisation in results[1]:
                 self.organisation_box.addItem(
                     organisation['name'],
                     organisation
                 )
         else:
+            self.message_bar = QgsMessageBar()
             self.message_bar.pushWarning(
                 self.tr('Error'),
-                self.tr(results)
+                results[1]
             )
+
+    def get_available_organisations(self):
+        """Get available organisations and load it to
+           organisation combo box.
+        """
+        self.throbber_loader.setVisible(True)
+        LOGGER.info('Getting organisations')
+        self.organization = OrganizationList(
+            permissions='project.create,project.list',
+            on_finished=self.on_downloaded_organization
+        )
 
     def all_data(self):
         """Return all data from this step.

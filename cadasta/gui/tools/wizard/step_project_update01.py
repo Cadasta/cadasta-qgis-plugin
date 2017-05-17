@@ -57,6 +57,7 @@ class StepProjectUpdate01(WizardStep, FORM_CLASS):
         self.throbber_loader.setMovie(movie)
         movie.start()
         self.get_available_projects()
+        self.project_combo_box.setFocus()
 
     def selected_project(self):
         """Get selected project from combo box.

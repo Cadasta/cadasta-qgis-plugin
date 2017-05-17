@@ -32,7 +32,7 @@ mapping_type = {
     'double': 'DE',
     'real': 'DE',
     'date': 'DA',
-    'dateTime': 'DT'
+    'datetime': 'DT'
 }
 
 

@@ -16,7 +16,6 @@ import os
 import unittest
 
 from mock.mock import MagicMock
-from PyQt4.QtCore import QCoreApplication
 from qgis.testing.mocked import get_iface
 from qgis.utils import iface
 from cadasta.gui.tools.wizard.project_download_wizard import (
@@ -47,7 +46,6 @@ class CadastaProjectDownloadWizardTest(unittest.TestCase):
 
     def setUp(self):
         """Runs before each test."""
-        self.url = 'https://demo.cadasta.org/'
         self.dialog = ProjectDownloadWizard(iface=IFACE)
 
     def tearDown(self):

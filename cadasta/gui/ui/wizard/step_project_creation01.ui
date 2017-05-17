@@ -48,26 +48,64 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QComboBox" name="organisation_box"/>
-         </item>
-         <item>
-          <widget class="QPushButton" name="get_organisation_button">
+          <widget class="QComboBox" name="organisation_box">
            <property name="minimumSize">
             <size>
-             <width>250</width>
+             <width>400</width>
              <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>250</width>
+             <width>400</width>
              <height>16777215</height>
             </size>
            </property>
-           <property name="text">
-            <string>Get available organisations ...</string>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
            </property>
           </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="throbber_loader">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>27</horstretch>
+             <verstretch>27</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>27</width>
+             <height>27</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>27</width>
+             <height>27</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>300</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>
@@ -251,7 +289,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="project_description_text"/>
+        <widget class="QTextEdit" name="project_description_text">
+         <property name="acceptRichText">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_9">
