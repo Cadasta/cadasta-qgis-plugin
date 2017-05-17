@@ -7,7 +7,7 @@ We’re working to build a future where, through technology and community partne
 
 This repository contains the [QGIS](http://qgis.org) plugin for Cadasta. The QGIS plugin is a client for the Cadasta platform that allows you to manage your Cadasta projects from within QGIS.
 
-[![Build Status](https://travis-ci.org/kartoza/cadasta-qgis-plugin.svg?branch=develop)](https://travis-ci.org/kartoza/cadasta-qgis-plugin)
+[![Build Status](https://travis-ci.org/Cadasta/cadasta-qgis-plugin.svg?branch=develop)](https://travis-ci.org/Cadasta/cadasta-qgis-plugin)
 
 [![Code Health](https://landscape.io/github/kartoza/cadasta-qgis-plugin/develop/landscape.svg?style=flat)](https://landscape.io/github/kartoza/cadasta-qgis-plugin/develop)
 
