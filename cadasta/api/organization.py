@@ -22,7 +22,7 @@ __copyright__ = 'Copyright 2016, Cadasta'
 class Organization(object):
     """Class to fetch available organization data."""
 
-    api_url = 'api/v1/organizations/'
+    api_url = '/api/v1/organizations/'
 
     def _call_api(self, network, paginated=False):
         """Private method to execute api.

@@ -95,7 +95,7 @@ def get_url_instance():
     url = get_setting("url")
     if not url:
         url = default_domain
-    return url
+    return url.rstrip('/')
 
 
 def delete_url_instance():
