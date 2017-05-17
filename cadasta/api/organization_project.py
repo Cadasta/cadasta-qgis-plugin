@@ -105,12 +105,12 @@ class OrganizationList(BaseApi):
         :param permissions: (optional) permissions filter
         :type permissions: str
         """
-        self.request_url = get_url_instance() + self.api_url
+        request_url = get_url_instance() + self.api_url
 
         if permissions:
-            self.request_url += self.permission_query + permissions
+            request_url += self.permission_query + permissions
 
-        super(OrganizationList, self).__init__()
+        super(OrganizationList, self).__init__(request_url)
         self.on_finished = on_finished
         self.connect_get()
 
