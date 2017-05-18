@@ -112,7 +112,7 @@ class OrganizationList(BaseApi):
 
         super(OrganizationList, self).__init__(request_url)
         self.on_finished = on_finished
-        self.connect_get()
+        self.connect_get_paginated()
 
     def connection_finished(self):
         """On finished function when tools request is finished."""
