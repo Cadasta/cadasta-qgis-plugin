@@ -23,23 +23,18 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 class ApiConnect(NetworkMixin):
     """Class to call cadasta API."""
 
-    def __init__(self, api_url):
-        """Constructor.
-
-        :param api_url: url for connection
-        :type api_url: str
-        """
-        self.request_url = api_url
-        super(ApiConnect, self).__init__()
-
-    def get(self):
+    def get(self, paginated=False):
         """Call get method.
 
         :returns: Tuple of post status and results
         :rtype: ( bool, str )
         """
-        self.connect_get()
-        while not self.reply.isFinished():
+        if paginated:
+            self.connect_get_paginated()
+        else:
+            self.connect_get()
+
+        while not self.is_finished(paginated):
             QCoreApplication.processEvents()
 
         if not self.error:
@@ -62,7 +57,7 @@ class ApiConnect(NetworkMixin):
         :rtype: ( bool, str )
         """
         self.connect_json_patch(post_data)
-        while not self.reply.isFinished():
+        while not self.is_finished():
             QCoreApplication.processEvents()
 
         if not self.error:
@@ -85,7 +80,7 @@ class ApiConnect(NetworkMixin):
         :rtype: ( bool, str )
         """
         self.connect_json_put(post_data)
-        while not self.reply.isFinished():
+        while not self.is_finished():
             QCoreApplication.processEvents()
 
         if not self.error:
@@ -106,7 +101,7 @@ class ApiConnect(NetworkMixin):
         :rtype: ( bool, str )
         """
         self.connect_post(post_data)
-        while not self.reply.isFinished():
+        while not self.is_finished():
             QCoreApplication.processEvents()
 
         if not self.error:
@@ -127,7 +122,7 @@ class ApiConnect(NetworkMixin):
         :rtype: ( bool, str )
         """
         self.connect_json_post(post_data)
-        while not self.reply.isFinished():
+        while not self.is_finished():
             QCoreApplication.processEvents()
 
         if not self.error:

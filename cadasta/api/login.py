@@ -37,8 +37,7 @@ class Login(BaseApi):
                             catch tools result request.
         :type on_finished: Function
         """
-        self.request_url = domain + 'api/v1/account/login/?'
-        super(Login, self).__init__()
+        super(Login, self).__init__(domain + '/api/v1/account/login/?')
         self.post_data.append("username=%s&" % username)
         self.post_data.append("password=%s" % password)
 

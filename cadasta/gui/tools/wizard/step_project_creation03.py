@@ -12,7 +12,6 @@ This module provides: Project Creation Step 3 : Upload to cadasta
 """
 
 import os
-import json
 import logging
 from qgis.core import (
     QgsVectorLayer,
@@ -631,8 +630,9 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                     project_slug=project_slug,
                     spatial_unit_id=attributes[spatial_id_index]
                 )
-                connector = ApiConnect(get_url_instance() + spatial_api)
-                status, results = connector.get()
+                connector = ApiConnect(
+                    get_url_instance() + spatial_api, geojson=True)
+                status, results = connector.get(paginated=True)
 
                 if not status or len(results) == 0:
                     continue
@@ -689,7 +689,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                 project_slug=project_slug)
 
         connector = ApiConnect(get_url_instance() + api)
-        status, results = connector.get()
+        status, results = connector.get(paginated=True)
 
         if not status:
             return

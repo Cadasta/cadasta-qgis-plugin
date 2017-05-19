@@ -29,7 +29,7 @@ class SettingTest(unittest.TestCase):
     def setUp(self):
         """Runs before each test."""
         self.authtoken = "test_token"
-        self.url = "http://test.com/"
+        self.url = "http://test.com"
 
     def tearDown(self):
         """Runs after each test."""

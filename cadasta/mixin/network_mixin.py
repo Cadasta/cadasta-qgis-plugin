@@ -1,3 +1,4 @@
+import functools
 import logging
 import abc
 import json
@@ -22,9 +23,8 @@ class NetworkMixin(object):
     error = None
     results = None
 
-    def __init__(self, request_url=None):
-        if request_url is not None:
-            self.request_url = request_url
+    def __init__(self, request_url, geojson=False):
+        self.request_url = request_url
         self.manager = QgsNetworkAccessManager.instance()
         self.reply = None
         self.url = QUrl(self.request_url)
@@ -32,15 +32,29 @@ class NetworkMixin(object):
         self.results = QByteArray()
         self.auth_token = get_authtoken()
 
+        # Paginated data
+        self._pagination_exhausted = False
+        self.geojson = geojson
+        if geojson:
+            self.combine_new_data = self.combine_new_geojson_data
+
     def cancel_request(self):
         """Abort the request."""
         self.reply.abort()
 
     def connect_request(self):
         """Process the request."""
-        LOGGER.info('Requesting...')
+        LOGGER.info('Requesting "%s"', self.request_url)
         self.reply.readyRead.connect(self.connection_read_data)
         self.reply.finished.connect(self.connection_finished)
+        self.reply.error.connect(self.connection_error)
+
+    def connect_paginated_request(self, prev_data, callback):
+        """Process the request of a paginated resource."""
+        LOGGER.info('Requesting "%s" (paginated)', self.request_url)
+        self.reply.readyRead.connect(self.connection_read_data)
+        self.reply.finished.connect(functools.partial(
+            self._handle_paginated_data, prev_data, callback))
         self.reply.error.connect(self.connection_error)
 
     def connect_get(self):
@@ -131,6 +145,88 @@ class NetworkMixin(object):
         )
         self.connect_request()
 
+    def connect_get_paginated(self, prev_data=None, callback=None):
+        if self.auth_token:
+            # Add authentication token to request
+            self.req.setRawHeader(
+                'Authorization',
+                'token %s' % self.auth_token
+            )
+        self.reply = self.manager.get(self.req)
+        self.connect_paginated_request(
+            prev_data or self.results,
+            callback or self._set_results_and_complete
+        )
+
+    def _handle_paginated_data(self, prev_data, callback):
+        """
+        Once all data from single request is returned, merge it with
+        previous responses and follow pagination.
+        """
+        # Add new request's data to prev_data
+        resp_txt = str(self.results)
+        merged_data = self.combine_new_data(str(prev_data or ''), resp_txt)
+        merged_data = QByteArray(merged_data)
+
+        # Get next page
+        next_url = json.loads(resp_txt).get('next')
+        if next_url:
+            next_req = NetworkMixin(next_url, geojson=self.geojson)
+            return next_req.connect_get_paginated(
+                prev_data=merged_data,
+                callback=callback
+            )
+
+        LOGGER.debug('Pagination finished at "%s"', self.request_url)
+        callback(merged_data)
+
+    def _set_results_and_complete(self, results):
+        self.results = results
+        self._pagination_exhausted = True
+        self.connection_finished()
+
+    @staticmethod
+    def combine_new_data(old_data_str, new_data_str):
+        """
+        Merge results from new page of data with results from previous
+        pages of data.
+
+        Expects a response in a format such as:
+            {
+                "count": 10,
+                "next": null,
+                "previous": null,
+                "results": [ ... ]
+            }
+        """
+        old_data = json.loads(old_data_str or '[]')
+        new_data = json.loads(new_data_str)
+        return json.dumps(old_data + new_data['results'])
+
+    @staticmethod
+    def combine_new_geojson_data(old_data_str, new_data_str):
+        """
+        Merge results from new page of GeoJSON data with results from
+        previous pages of data.
+
+        Expects a response in a format such as:
+            {
+                "count": 10,
+                "next": null,
+                "previous": null,
+                "results": {
+                    "type": "FeatureCollection",
+                    "features": [ ... ]
+                }
+            }
+        """
+        old_data = json.loads(old_data_str or 'null')
+        new_data = json.loads(new_data_str)
+        if not old_data:
+            return json.dumps(new_data['results'])
+        old_data['features'] += new_data['results']['features']
+        return json.dumps(old_data)
+
     def connection_read_data(self):
         """Get data from self.reply and append it to results."""
         self.results += self.reply.readAll()
@@ -168,3 +264,7 @@ class NetworkMixin(object):
     @abc.abstractmethod
     def connection_finished(self):
         return
+
+    def is_finished(self, paginated=False):
+        return (self._pagination_exhausted if paginated
+                else self.reply.isFinished())

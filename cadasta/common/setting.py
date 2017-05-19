@@ -12,7 +12,6 @@ import os
 import logging
 from PyQt4.QtCore import QUrl
 from PyQt4.QtCore import QSettings
-from cadasta.utilities.resources import resources_path
 from cadasta.utilities.resources import (
     resources_path,
     resource_url,
@@ -27,7 +26,7 @@ __date__ = '20/12/16'
 __copyright__ = 'Copyright 2016, Cadasta'
 
 app_name = 'cadasta'
-default_domain = 'https://platform-staging-api.cadasta.org/'
+default_domain = 'https://platform-staging-api.cadasta.org'
 
 
 def set_setting(key, value):
@@ -95,7 +94,7 @@ def get_url_instance():
     url = get_setting("url")
     if not url:
         url = default_domain
-    return url
+    return url.rstrip('/')
 
 
 def delete_url_instance():

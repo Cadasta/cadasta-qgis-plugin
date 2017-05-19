@@ -42,12 +42,12 @@ class GetQuestionnaire(BaseApi):
         """
         self.organization_slug = organization_slug
         self.project_slug = project_slug
-        self.request_url = get_url_instance() + self.api_url
-        self.request_url = self.request_url % {
+        request_url = get_url_instance() + self.api_url
+        request_url = request_url % {
             'organization_slug': organization_slug,
             'project_slug': project_slug
         }
-        super(GetQuestionnaire, self).__init__(on_finished)
+        super(GetQuestionnaire, self).__init__(request_url, on_finished)
         self.on_finished = on_finished
         self.connect_get()
 
@@ -92,25 +92,11 @@ class UpdateQuestionnaire(BaseApi):
         :param on_finished: (optional) function that catch result request
         :type on_finished: Function
         """
-        self.request_url = get_url_instance() + self.api_url
-        self.request_url = self.request_url % {
+        request_url = get_url_instance() + self.api_url
+        request_url = request_url % {
             'organization_slug': organization_slug,
             'project_slug': project_slug
         }
-        super(UpdateQuestionnaire, self).__init__(on_finished)
+        super(UpdateQuestionnaire, self).__init__(request_url, on_finished)
         self.on_finished = on_finished
         self.connect_json_put(new_questionnaire)
-
-    def connection_finished(self):
-        """On finished function when tools request is finished."""
-        # extract result
-        if self.error:
-            self.on_finished(
-                (False, self.error)
-            )
-        else:
-            result = self.get_json_results()
-            if self.on_finished and callable(self.on_finished):
-                self.on_finished(
-                    (True, result)
-                )

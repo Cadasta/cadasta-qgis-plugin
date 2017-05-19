@@ -22,9 +22,9 @@ __copyright__ = 'Copyright 2016, Cadasta'
 class Organization(object):
     """Class to fetch available organization data."""
 
-    api_url = 'api/v1/organizations/'
+    api_url = '/api/v1/organizations/'
 
-    def _call_api(self, network):
+    def _call_api(self, network, paginated=False):
         """Private method to execute api.
 
         :param network: NetworkMixin object
@@ -34,9 +34,14 @@ class Organization(object):
                   if request failed returns failure messages.
         :rtype: (bool, list/dict/str)
         """
-        network.connect_get()
-        while not network.reply.isFinished():
+        if paginated:
+            network.connect_get_paginated()
+        else:
+            network.connect_get()
+
+        while not network.is_finished(paginated):
             QCoreApplication.processEvents()
+
         if not network.error:
             return True, network.get_json_results()
         else:
@@ -50,7 +55,7 @@ class Organization(object):
         :rtype: (bool, list/str)
         """
         network = NetworkMixin(get_url_instance() + self.api_url)
-        return self._call_api(network)
+        return self._call_api(network, paginated=True)
 
     def organizations_project_filtered(self, permissions=None):
         """Get organizations with permission to list and add project.
@@ -65,7 +70,7 @@ class Organization(object):
             filter_permissions = '?permissions=' + permissions
         network = NetworkMixin(
                 get_url_instance() + self.api_url + filter_permissions)
-        return self._call_api(network)
+        return self._call_api(network, paginated=True)
 
     def summary_organization(self, slug):
         """Get detail summary organization.

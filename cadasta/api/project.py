@@ -25,7 +25,7 @@ __copyright__ = 'Copyright 2016, Cadasta'
 class Project(BaseApi):
     """Class to fetch available project data."""
 
-    api_url = 'api/v1/projects/'
+    api_url = '/api/v1/projects/'
 
     def __init__(self, on_finished=None):
         """Constructor.
@@ -33,23 +33,9 @@ class Project(BaseApi):
         :param on_finished: (optional) function that catch result request
         :type on_finished: Function
         """
-        self.request_url = get_url_instance() + self.api_url
+        request_url = get_url_instance() + self.api_url
         if not get_setting('public_project'):
-            self.request_url += '?permissions=project.update'
-        super(Project, self).__init__()
+            request_url += '?permissions=project.update'
+        super(Project, self).__init__(request_url)
         self.on_finished = on_finished
-        self.connect_get()
-
-    def connection_finished(self):
-        """On finished function when tools request is finished."""
-        # extract result
-        if self.error:
-            self.on_finished(
-                (False, self.error)
-            )
-        else:
-            result = self.get_json_results()
-            if self.on_finished and callable(self.on_finished):
-                self.on_finished(
-                    (True, result)
-                )
+        self.connect_get_paginated()

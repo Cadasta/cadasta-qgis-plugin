@@ -23,7 +23,7 @@ LOGGER = logging.getLogger('CadastaQGISPlugin')
 class OrganizationProject(BaseApi):
     """Class to fetch available organization project data."""
 
-    api_url = 'api/v1/organizations/%s/projects/'
+    api_url = '/api/v1/organizations/%s/projects/'
 
     def __init__(self, organization_slug, on_finished=None):
         """Constructor.
@@ -34,28 +34,18 @@ class OrganizationProject(BaseApi):
         :param on_finished: (optional) function that catch result request
         :type on_finished: Function
         """
-        self.request_url = get_url_instance() + (
+        request_url = get_url_instance() + (
             self.api_url % organization_slug)
 
-        super(OrganizationProject, self).__init__()
-        self.on_finished = on_finished
-        self.connect_get()
-
-    def connection_finished(self):
-        """On finished function when tools request is finished."""
-        # extract result
-        if self.error:
-            self.on_finished((False, self.error))
-        else:
-            result = self.get_json_results()
-            if self.on_finished and callable(self.on_finished):
-                self.on_finished((True, result))
+        super(OrganizationProject, self).__init__(
+            request_url, on_finished=on_finished)
+        self.connect_get_paginated()
 
 
 class OrganizationProjectSpatial(BaseApi):
     """Class to fetch available organization project spatial data."""
 
-    api_url = 'api/v1/organizations/%s/projects/%s/spatial/'
+    api_url = '/api/v1/organizations/%s/projects/%s/spatial/'
 
     def __init__(self, organization_slug, project_slug, on_finished=None):
         """Constructor.
@@ -69,15 +59,15 @@ class OrganizationProjectSpatial(BaseApi):
         :param on_finished: (optional) function that catch result request
         :type on_finished: Function
         """
-        self.request_url = get_url_instance() + (
-            self.api_url % (organization_slug, project_slug))
 
         self.organization_slug = organization_slug
         self.project_slug = project_slug
 
-        super(OrganizationProjectSpatial, self).__init__()
-        self.on_finished = on_finished
-        self.connect_get()
+        request_url = get_url_instance() + (
+            self.api_url % (organization_slug, project_slug))
+        super(OrganizationProjectSpatial, self).__init__(
+            request_url, on_finished=on_finished, geojson=True)
+        self.connect_get_paginated()
 
     def connection_finished(self):
         """On finished function when tools request is finished.
@@ -102,7 +92,7 @@ class OrganizationProjectSpatial(BaseApi):
 class OrganizationList(BaseApi):
     """Class to fetch available organization data."""
 
-    api_url = 'api/v1/organizations/'
+    api_url = '/api/v1/organizations/'
 
     permission_query = '?permissions='
 
@@ -115,14 +105,14 @@ class OrganizationList(BaseApi):
         :param permissions: (optional) permissions filter
         :type permissions: str
         """
-        self.request_url = get_url_instance() + self.api_url
+        request_url = get_url_instance() + self.api_url
 
         if permissions:
-            self.request_url += self.permission_query + permissions
+            request_url += self.permission_query + permissions
 
-        super(OrganizationList, self).__init__()
+        super(OrganizationList, self).__init__(request_url)
         self.on_finished = on_finished
-        self.connect_get()
+        self.connect_get_paginated()
 
     def connection_finished(self):
         """On finished function when tools request is finished."""
