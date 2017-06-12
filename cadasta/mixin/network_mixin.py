@@ -201,7 +201,10 @@ class NetworkMixin(object):
         """
         old_data = json.loads(old_data_str or '[]')
         new_data = json.loads(new_data_str)
-        return json.dumps(old_data + new_data['results'])
+        results_new_data = []
+        if 'results' in new_data:
+            results_new_data = new_data['results']
+        return json.dumps(old_data + results_new_data)
 
     @staticmethod
     def combine_new_geojson_data(old_data_str, new_data_str):
