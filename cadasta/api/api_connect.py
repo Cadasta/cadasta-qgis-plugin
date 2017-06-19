@@ -119,7 +119,7 @@ class ApiConnect(NetworkMixin):
         :type post_data: str
 
         :returns: Tuple of post status and results
-        :rtype: ( bool, str )
+        :rtype: ( bool, dict )
         """
         self.connect_json_post(post_data)
         while not self.is_finished():
