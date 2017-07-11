@@ -45,6 +45,7 @@ def content():
     :returns: A message object without brand element.
     :rtype: safe.messaging.message.Message
     """
+
     message = m.Message()
 
     message.add(m.Paragraph(tr(
@@ -58,6 +59,7 @@ def content():
     bullets = m.BulletedList()
     bullets.add(m.Text(
         m.ImportantText(tr('Cadasta URL')),
+
         tr('- overwrite current url as cadasta source.'
            'default is https://platform-staging-api.cadasta.org/')
     ))
@@ -68,6 +70,7 @@ def content():
     ))
     bullets.add(m.Text(
         m.ImportantText(tr('Cadasta Password'))
+
     ))
     message.add(bullets)
 
