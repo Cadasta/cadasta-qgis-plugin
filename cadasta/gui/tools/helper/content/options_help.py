@@ -17,7 +17,6 @@ def options_help():
     :returns: A message object containing helpful information.
     :rtype: messaging.message.Message
     """
-
     message = m.Message()
     message.add(heading())
     message.add(content())
@@ -59,7 +58,8 @@ def content():
 
     bullets = m.BulletedList()
     bullets.add(m.Text(
-        m.ImportantText(tr('Cadasta Instance URL')),
+        m.ImportantText(tr('Cadasta URL')),
+
         tr('- overwrite current url as cadasta source.'
            'default is https://platform-staging-api.cadasta.org/')
     ))
@@ -69,13 +69,13 @@ def content():
            'project')
     ))
     bullets.add(m.Text(
-        m.ImportantText(tr('Cadasta password'))
+        m.ImportantText(tr('Cadasta Password'))
+
     ))
     message.add(bullets)
 
     message.add(m.Paragraph(tr(
-        'After those fields are filled, click \'test connection\' button '
-        'below to test connection. Save button will be enabled if test '
-        'connection is success. Save button will save these setting.')))
+        'Fill out the form with your username and password. Click \'Connect\' button '
+        'to login. If that is successful click the \'Save\' button to save the settings.')))
     message.add(m.ImportantText(tr('Note that your password is not saved.')))
     return message
