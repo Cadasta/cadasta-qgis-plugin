@@ -75,6 +75,9 @@ target/
 
 # celery beat schedule file
 celerybeat-schedule
+cadasta/secret/*
+cadasta/data/*
+cadasta/database/db/*
 
 # dotenv
 .env
@@ -84,3 +87,5 @@ celerybeat-schedule
 venv/
 ENV/
 
+.idea
+*.pyc

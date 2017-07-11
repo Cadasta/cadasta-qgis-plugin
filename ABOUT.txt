@@ -1,0 +1,30 @@
+<p>
+The Cadasta Foundation, a non-profit organization, is a global community of technologists and land sector experts that harness innovative technology to document and strengthen land and resource rights. Cadasta develops and supports innovative digital tools, such as this QGIS plugin, to help its partners document, store, and analyze information about people’s relationship to land and natural resources. The technology we use and develop is provided under an open source license which means it can be modified as the project changes or partners’ needs change.
+</p>
+
+<p>
+Our suite of tools-- focused around our web platform on <a href="https://platform.cadasta.org">https://platform.cadasta.org </a>-- permits users to create digital records of land and resource rights data. Information can be collected through traditional paper-based surveys and maps, GPS coordinates, footage from drones, digital maps, video interviews, photographs, paper attestations, tax receipts, and other supporting documentation. The Cadasta platform aims to:
+</p>
+
+<p>
+<ul>
+<li>Incrementally establish evidence of formal or customary land rights – even in the
+absence of government support</li>
+<li>Survey and document the land use and rights of women and other vulnerable groups</li>
+<li>Inform, plan, and deliver urban resilience strategies for governments’ most
+at-risk citizens</li>
+<li>Certify sustainable farms and commodity production</li>
+<li>Identify factors undermining increased productivity</li>
+<li>Identify overlapping claims and potential conflicts over land and resources</li>
+<li>Document and monitor natural resource concessions and extractive industries</li>
+<li>Conduct research and advocacy for land rights as a cross-sectoral development issue</li>
+</ul>
+</p>
+
+<p>
+The platform follows a stringent privacy protocol, certifies the security of the platform, and makes no claims to rights to our partners’ data. Cadasta is a strong advocate for government adoption of open data policies for land rights data. We are active contributors to the Global Open Data Index on land, as well as transparency and accountability initiatives of the Open Government Partnership. That said, our partners determine whether and how the data they collect is shared.
+</p>
+
+<p>
+Thanks to generous funding from UK aid, Omidyar Network, and other funders, large and small, we can provide many of our services to partners free of charge.
+</p>

@@ -1,0 +1,114 @@
+body {
+    font-family: 'Ubuntu', Fallback, sans-serif;
+}
+
+th {
+    text-align: left;
+}
+
+table {
+    font-size: 12px;
+!important;
+}
+
+th.button-cell {
+    padding: 4px 10px 4px;
+    margin-bottom: 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: #ffffff;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(200, 200, 200, 0.75);
+    vertical-align: middle;
+    background-color: #f5f5f5;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
+    background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+    background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+    background-image: linear-gradient(top, #ffffff, #e6e6e6);
+    background-repeat: repeat-x;
+    border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    border: 1px solid #cccccc;
+    border-bottom-color: #b3b3b3;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    *margin-left: .3em;
+    width: 92%;
+}
+
+.branding {
+    background: #2E51A3;
+    padding: 20px 20px 20px 20px;
+    margin: 0 -15px;
+}
+
+h5 {
+    margin-top: 0;
+    margin-right: -15px;
+    margin-left: -15px;
+    padding-left: 20px;
+}
+
+.warning {
+    color: #fff;
+    background-color: #f15a2b;
+    line-height: 2;
+}
+
+.problem {
+    color: #fff;
+    background-color: #faa732;
+    line-height: 2;
+}
+
+.info, caption {
+    color: #fff;
+    background-color: #0E305E;
+    line-height: 2;
+}
+
+.sub_info {
+    color: #fff;
+    background-color: #6ec5e6;
+    line-height: 2;
+}
+
+.suggestion {
+    color: #fff;
+    background-color: #50CF5C;
+    line-height: 2;
+}
+
+.inverse {
+    color: #fff;
+    background-color: #000;
+    line-height: 2;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.caption {
+    font-size: 8pt;
+}
+
+/* List styling */
+.customBulletList, .customBulletList ul {
+    margin-top: 0;
+    padding-left: 2em;
+    list-style-type: none;
+}
+
+.customBulletList li:before {
+    position: absolute;
+    margin-left: -1.3em;
+    font-weight: bold;
+}
+
+.customBulletList li.tick:before {
+    content: "\2713";
+}

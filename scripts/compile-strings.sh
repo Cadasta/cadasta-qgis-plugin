@@ -1,7 +1,6 @@
 #!/bin/bash
 LRELEASE=$1
-LOCALES=$2
-
+LOCALES=$*
 
 for LOCALE in ${LOCALES}
 do
