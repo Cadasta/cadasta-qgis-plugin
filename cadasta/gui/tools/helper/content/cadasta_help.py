@@ -48,9 +48,9 @@ def content():
     message = m.Message()
 
     message.add(m.Paragraph(tr(
-        'The Cadasta QGIS Plugin is a tool for retrieving, editing and publishing '
+        'The Cadasta QGIS Plugin is a tool for retrieving, editing and publishing data. '
         'You can find updated documentation and suggested workflows on our main '
-        'documentation pages: <a href="https://docs.cadasta.org/en/11-qgis-plugin.html">QGIS chapter</a> ')))
+        'documentation pages: <a href="https://docs.cadasta.org/en/11-qgis-plugin.html">QGIS chapter</a>.')))
     message.add(m.Paragraph(tr(
         'There are three windows that will help you '
         'to manage your project\'s data.')))
