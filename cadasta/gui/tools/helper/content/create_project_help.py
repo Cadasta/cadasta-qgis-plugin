@@ -50,11 +50,10 @@ def content():
     message = m.Message()
 
     message.add(m.Paragraph(tr(
-        'Create Project is one of main wizard that will help you to create'
-        'project in qgis and update it to Cadasta with easy steps.')))
+        '"Create Project" will allow you to upload data to Cadasta.')))
 
-    message.add(m.Paragraph(tr('There are 3 step in this wizard.')))
-    message.add(m.ImportantText(tr('1. Project Definition.')))
+    message.add(m.Paragraph(tr('You will encounter three windows:')))
+    message.add(m.ImportantText(tr('1. Defining the Project')))
 
     message.add(m.Paragraph(tr(
         'This step will provide you \'get available organisation\' button. '
