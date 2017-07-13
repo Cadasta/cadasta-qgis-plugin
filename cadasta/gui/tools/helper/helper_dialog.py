@@ -14,14 +14,13 @@ import logging
 from PyQt4.QtGui import QDialog
 
 from cadasta.gui.tools.helper.content.cadasta_help import cadasta_help
-from cadasta.gui.tools.helper.content.options_help import options_help
-from cadasta.gui.tools.helper.content.download_project_help import (
-    download_project_help
-)
-from cadasta.gui.tools.helper.content.create_project_help import (
-    create_project_help
-)
-from cadasta.utilities.i18n import tr
+# from cadasta.gui.tools.helper.content.options_help import options_help
+# from cadasta.gui.tools.helper.content.download_project_help import (
+#     download_project_help
+# )
+# from cadasta.gui.tools.helper.content.create_project_help import (
+#     create_project_help
+# )
 from cadasta.utilities.resources import html_header, html_footer, get_ui_class
 from extras import messaging as m
 
@@ -54,7 +53,7 @@ class HelperDialog(QDialog, FORM_CLASS):
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.setWindowTitle('Cadasta Helper')
+        self.setWindowTitle('Cadasta Help')
         self.iface = iface
         self.close_button.clicked.connect(self.close)
         # set the helpers
@@ -77,24 +76,6 @@ class HelperDialog(QDialog, FORM_CLASS):
         # 2. Create Project
         # 3. Update Project
         message = cadasta_help()
-        string += message.to_html()
-
-        message = download_project_help()
-        string += message.to_html()
-
-        message = create_project_help()
-        string += message.to_html()
-
-        # create other helper
-        # 1. Options
-        # 2. Contact
-
-        message = m.Message()
-        message.add(m.Paragraph(tr(
-            'There are another dialogs, which are:')))
-        string += message.to_html()
-
-        message = options_help()
         string += message.to_html()
         string += footer
 
