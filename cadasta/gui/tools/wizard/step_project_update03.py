@@ -54,6 +54,9 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
     def set_widgets(self):
         """Set all widgets on the tab."""
+        self.text_edit.setStyleSheet(
+                "background-color: #f0f0f0; color: #757575"
+        )
         self.project = self.parent.project['information']
         if 'layers' in self.project:
             for project_layer in self.project['layers']:

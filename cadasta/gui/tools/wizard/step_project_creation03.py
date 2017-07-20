@@ -64,6 +64,9 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
     def set_widgets(self):
         """Set all widgets on the tab."""
+        self.text_edit.setStyleSheet(
+                "background-color: #f0f0f0; color: #757575"
+        )
         self.progress_bar.setVisible(False)
         self.lbl_status.setText(
             tr('Are you sure to upload the data?')
