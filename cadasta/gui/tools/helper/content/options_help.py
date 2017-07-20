@@ -75,7 +75,9 @@ def content():
     message.add(bullets)
 
     message.add(m.Paragraph(tr(
-        'Fill out the form with your username and password. Click \'Connect\' button '
-        'to login. If that is successful click the \'Save\' button to save the settings.')))
+        'Fill out the form with your username and password. Click \'Connect\' '
+        'button '
+        'to login. If that is successful click the \'Save\' button to save '
+        'the settings.')))
     message.add(m.ImportantText(tr('Note that your password is not saved.')))
     return message

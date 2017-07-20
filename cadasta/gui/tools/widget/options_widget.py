@@ -79,7 +79,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
             tr('Clear')
         )
 
-        self.clear_button.setEnabled(False)
+        self.clear_button.setEnabled(True)
         self.clear_button.clicked.connect(
             self.clear_information
         )
@@ -90,7 +90,6 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
             self.auth_token = get_authtoken()
 
         if self.auth_token:
-            self.clear_button.setEnabled(True)
             self.test_connection_button.setEnabled(False)
             self.username_input.setText(get_setting('username'))
             self.token_status.setText(
@@ -107,7 +106,6 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
         self.password_input.clear()
         delete_authtoken()
         delete_setting('username')
-        self.clear_button.setEnabled(False)
         self.test_connection_button.setEnabled(True)
         self.token_status.setText(
             tr(
@@ -166,6 +164,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
         """On finished function when tools request is finished."""
 
         self.ok_label.setVisible(True)
+        self.clear_button.setEnabled(True)
         if 'auth_token' in result:
             self.auth_token = result['auth_token']
             self.save_button.setEnabled(True)
