@@ -38,6 +38,7 @@ from cadasta.utilities.utilities import Utilities
 from cadasta.api.api_connect import ApiConnect
 from cadasta.common.setting import get_url_instance
 from cadasta.vector import tools
+from cadasta.common.setting import get_setting
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -119,8 +120,13 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                     organization_slug,
                     project_slug)
             self.progress_bar.setValue(50)
+
             relationship_layer = self.relationships_layer(vlayers)
+            relationship_layer_id = None
+            if relationship_layer:
+                relationship_layer_id = relationship_layer.id()
             self.progress_bar.setValue(80)
+
             party_layer = self.parties_layer()
             party_layer_id = None
             if party_layer:
@@ -130,7 +136,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
             Utilities.save_project_basic_information(
                 self.project,
                 vlayers,
-                relationship_layer.id(),
+                relationship_layer_id,
                 party_layer_id
             )
         else:
@@ -167,6 +173,9 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         :param vector_layer: QGS vector layer in memory
         :type vector_layer: QgsVectorLayer
         """
+        if get_setting('public_project'):
+            return None
+
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
         attribute = 'parties'
@@ -309,6 +318,9 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         :return: Relationship layer
         :rtype: QgsVectorLayer
         """
+        if get_setting('public_project'):
+            return None
+
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
         attribute = 'relationships'
