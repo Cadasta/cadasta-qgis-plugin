@@ -130,7 +130,7 @@ class StepProjectUpdate01(WizardStep, FORM_CLASS):
         try:
             if project['information']['description']:
                 self.project_description_label.setText(
-                    self.tr(project['information']['description']))
+                    project['information']['description'])
             else:
                 self.project_description_label.setText(
                     self.tr('No description'))

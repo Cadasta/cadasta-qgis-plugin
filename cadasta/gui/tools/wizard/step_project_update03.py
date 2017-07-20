@@ -143,8 +143,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
     def update_spatial_location(self):
         """Update spatial information."""
-        update_loc_api = '/api/v1/organizations/{organization_slug}/' \
-                         'projects/{project_slug}/spatial/{spatial_unit_id}/'
+        update_loc_api = u'/api/v1/organizations/{organization_slug}/' \
+                         u'projects/{project_slug}/spatial/{spatial_unit_id}/'
 
         location_type_idx = self.layer.fieldNameIndex('type')
         location_id_idx = self.layer.fieldNameIndex('id')
@@ -223,8 +223,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         relationship_type_idx = 2
         attributes_idx = 4
 
-        update_api = '/api/v1/organizations/{organization_slug}/projects/' \
-                     '{project_slug}/relationships/tenure/{relationship_id}/'
+        update_api = u'/api/v1/organizations/{organization_slug}/projects/' \
+                     u'{project_slug}/relationships/tenure/{relationship_id}/'
 
         field_names = [
             field.name() for field in relationship_layer.pendingFields()
@@ -281,8 +281,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         name_idx = 1
         type_idx = 2
 
-        update_api = '/api/v1/organizations/{organization_slug}/projects/' \
-                     '{project_slug}/parties/{party_id}/'
+        update_api = u'/api/v1/organizations/{organization_slug}/projects/' \
+                     u'{project_slug}/parties/{party_id}/'
 
         # Remove unneeded fields
         field_names = [field.name() for field in party_layer.pendingFields()]
@@ -417,8 +417,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
            through the project's questionnaire
         :type attributes: dict
         """
-        api = '/api/v1/organizations/{organization_slug}/projects/' \
-              '{project_slug}/spatial/'.format(
+        api = u'/api/v1/organizations/{organization_slug}/projects/' \
+              u'{project_slug}/spatial/'.format(
                 organization_slug=self.project['organization']['slug'],
                 project_slug=self.project['slug'])
 

@@ -1,4 +1,5 @@
-# coding=utf-8
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
 Cadasta project download step -**Cadasta Wizard**
 
@@ -175,8 +176,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         if os.path.isfile(csv_path):
             os.remove(csv_path)
 
-        api = '/api/v1/organizations/{organization_slug}/projects/' \
-              '{project_slug}/parties/'.format(
+        api = u'/api/v1/organizations/{organization_slug}/projects/' \
+              u'{project_slug}/parties/'.format(
                 organization_slug=organization_slug,
                 project_slug=project_slug)
 
@@ -312,8 +313,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         project_slug = self.project['slug']
         attribute = 'relationships'
 
-        api = '/api/v1/organizations/{organization_slug}/projects/' \
-              '{project_slug}/spatial/{spatial_unit_id}/relationships/'
+        api = u'/api/v1/organizations/{organization_slug}/projects/' \
+              u'{project_slug}/spatial/{spatial_unit_id}/relationships/'
 
         csv_path = get_csv_path(
             organization_slug,
@@ -346,10 +347,11 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
 
             for index, feature in enumerate(vector_layer.getFeatures()):
                 attributes = feature.attributes()
+                spatial_unit_id = attributes[spatial_id_index]
                 spatial_api = api.format(
                     organization_slug=organization_slug,
                     project_slug=project_slug,
-                    spatial_unit_id=attributes[spatial_id_index]
+                    spatial_unit_id=spatial_unit_id
                 )
                 connector = ApiConnect(get_url_instance() + spatial_api)
                 status, results = connector.get(paginated=True)

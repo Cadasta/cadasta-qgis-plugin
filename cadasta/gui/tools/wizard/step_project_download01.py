@@ -211,7 +211,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
 
         if project['description']:
             self.project_description_label.setText(
-                    self.tr(project['description'].encode('utf-8')))
+                    project['description'])
         else:
             self.project_description_label.setText(
                     self.tr(project['name'].encode('utf-8')))
