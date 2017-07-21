@@ -148,6 +148,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         """
         self.throbber_loader.setVisible(False)
         self.project_combo_box.clear()
+        self.public_projects_checkbox.setEnabled(True)
         if result[0]:
             projects = sorted(result[1], key=itemgetter('slug'))
 
@@ -254,6 +255,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
     def get_available_projects(self):
         """Get available projects."""
         self.throbber_loader.setVisible(True)
+        self.public_projects_checkbox.setEnabled(False)
         self.project_api = Project(
             on_finished=self.get_available_projects_finished)
 
