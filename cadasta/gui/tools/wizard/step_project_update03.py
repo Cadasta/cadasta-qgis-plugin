@@ -155,9 +155,17 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         for layer in self.vlayers:
             features = layer.getFeatures()
 
-            # Remove unneeded fields
-            field_names = [field.name() for field in
-                           layer.pendingFields()]
+            # Get field names
+            field_names = []
+            layer_prefix = self.project['organization']['slug'] + '/' + \
+                           self.project['slug']
+
+            for field_name in layer.pendingFields():
+                if layer_prefix not in field_name.name() and \
+                        'relationships_' not in field_name.name() and \
+                        'parties_' not in field_name.name():
+                    field_names.append(field_name.name())
+
             field_names.remove('id')
             field_names.remove('type')
 
@@ -229,9 +237,16 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         update_api = u'/api/v1/organizations/{organization_slug}/projects/' \
                      u'{project_slug}/relationships/tenure/{relationship_id}/'
 
-        field_names = [
-            field.name() for field in relationship_layer.pendingFields()
-        ]
+        # Get field names
+        field_names = []
+        layer_prefix = self.project['organization']['slug'] + '/' + \
+                       self.project['slug']
+
+        for field_name in relationship_layer.pendingFields():
+            if layer_prefix not in field_name.name() and \
+                            'relationships_' not in field_name.name() and \
+                            'parties_' not in field_name.name():
+                field_names.append(field_name.name())
 
         # Remove unneeded fields
         field_names.remove('spatial_id')
@@ -287,8 +302,18 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         update_api = u'/api/v1/organizations/{organization_slug}/projects/' \
                      u'{project_slug}/parties/{party_id}/'
 
+        # Get field names
+        field_names = []
+        layer_prefix = self.project['organization']['slug'] + '/' + \
+                       self.project['slug']
+
+        for field_name in party_layer.pendingFields():
+            if layer_prefix not in field_name.name() and \
+                            'relationships_' not in field_name.name() and \
+                            'parties_' not in field_name.name():
+                field_names.append(field_name.name())
+
         # Remove unneeded fields
-        field_names = [field.name() for field in party_layer.pendingFields()]
         field_names.remove('id')
         field_names.remove('name')
         field_names.remove('type')
