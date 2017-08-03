@@ -104,6 +104,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
         """Clear login information."""
         self.username_input.clear()
         self.password_input.clear()
+        self.ok_label.clear()
         delete_authtoken()
         delete_setting('username')
         self.test_connection_button.setEnabled(True)
