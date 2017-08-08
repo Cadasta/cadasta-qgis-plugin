@@ -144,6 +144,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         self.progress_bar.setValue(self.progress_bar.maximum())
         self.parent.next_button.setEnabled(True)
         self.warning_label.setText(self.loaded_label_string)
+        self.parent.close()
 
     def save_organizations(self):
         """Save organizations of user.

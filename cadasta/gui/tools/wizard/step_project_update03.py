@@ -390,6 +390,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             )
 
         self.set_progress_bar(100)
+        self.parent.close()
 
     def upload_update_locations(
             self,

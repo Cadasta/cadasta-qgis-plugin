@@ -140,28 +140,27 @@ class QuestionnaireUtility(object):
         for field in current_layer.fields():
             field_name = field.name()
             if field_name != 'id':
-                if field_name not in attributes_in_questionnaire:
-                    if field_name not in mapped_fields:
-                        try:
-                            # check location attributes in question group
-                            location_attributes["questions"].append(
-                                {
-                                    "index": index,
-                                    "name": field_name,
-                                    "label": field_name,
-                                    "type": mapping_type[
-                                        field.typeName().lower()
-                                    ],
-                                    "required": False,
-                                    "constraint": 'null',
-                                    "default": 'null',
-                                    "hint": 'null',
-                                    "relevant": 'null',
-                                }
-                            )
-                        except KeyError:
-                            pass
-                        index += 1
+                if field_name not in mapped_fields:
+                    try:
+                        # check location attributes in question group
+                        location_attributes["questions"].append(
+                            {
+                                "index": index,
+                                "name": field_name,
+                                "label": field_name,
+                                "type": mapping_type[
+                                    field.typeName().lower()
+                                ],
+                                "required": False,
+                                "constraint": 'null',
+                                "default": 'null',
+                                "hint": 'null',
+                                "relevant": 'null',
+                            }
+                        )
+                    except KeyError:
+                        pass
+                    index += 1
 
         # insert into questionnaire
         index = -1

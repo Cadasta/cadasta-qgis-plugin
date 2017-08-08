@@ -219,6 +219,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             )
 
         self.set_status(tr('Finished'))
+        self.parent.close()
 
     def rerender_saved_layer(self):
         """Rerender saved layer on cadasta."""
