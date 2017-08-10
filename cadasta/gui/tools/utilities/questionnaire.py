@@ -145,14 +145,12 @@ class QuestionnaireUtility(object):
                         # check location attributes in question group
                         location_attributes["questions"].append(
                             {
-                                "index": index,
                                 "name": field_name,
                                 "label": field_name,
                                 "type": mapping_type[
                                     field.typeName().lower()
                                 ],
                                 "required": False,
-                                "constraint": 'null',
                                 "default": 'null',
                                 "hint": 'null',
                                 "relevant": 'null',
@@ -170,14 +168,62 @@ class QuestionnaireUtility(object):
                 break
 
         if index == -1:
-            location_attributes['index'] = 1
             questionnaire['question_groups'].append(
                 location_attributes)
         else:
-            location_attributes['index'] = index
             questionnaire['question_groups'][index] = location_attributes
 
         return json.dumps(questionnaire, indent=4)
+
+    def add_index(self, question_object, index):
+        """Add index to question.
+
+        :param question_object: object to be added index
+        :type question_object: dict
+
+        :param index: current index
+        :type index: int
+
+        :return: latest index
+        :rtype: int
+        """
+        if 'index' not in question_object:
+            question_object['index'] = index
+        else:
+            if question_object['index'] - index != 1:
+                question_object['index'] = index + 1
+        index += 1
+        return index
+
+    def validate_questionnaire(self, questionnaire):
+        """Validate and fix questionnaire file.
+
+        :param questionnaire: questionnaire string
+        :type questionnaire: str
+
+        :return: validated questionnaire
+        :rtype: str
+        """
+        questionnaire_obj = json.loads(questionnaire)
+        index = 1
+        for question in questionnaire_obj['questions']:
+            index = self.add_index(question, index)
+
+            if 'options' in question:
+                option_index = 1
+                for option in question['options']:
+                    option_index = self.add_index(option, option_index)
+
+        index = 1
+        for question_group in questionnaire_obj['question_groups']:
+            index = self.add_index(question_group, index)
+
+            if 'questions' in question_group:
+                question_index = 1
+                for question in question_group['questions']:
+                    question_index = self.add_index(question, question_index)
+
+        return json.dumps(questionnaire_obj)
 
     def update_questionnaire(
             self, organization_slug, project_slug, questionnaire):

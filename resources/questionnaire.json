@@ -1,6 +1,5 @@
 {
   "filename": "",
-  "title": "",
   "id_string": "",
   "questions": [
     {
@@ -8,81 +7,66 @@
       "label": "Label",
       "type": "ST",
       "required": false,
-      "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null,
-      "index":1
+      "relevant": null
     },
     {
       "name": "end",
       "label": "Label",
       "type": "EN",
       "required": false,
-      "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null,
-      "index":2
+      "relevant": null
     },
     {
       "name": "today",
       "label": "Label",
       "type": "TD",
       "required": false,
-      "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null,
-      "index":3
+      "relevant": null
     },
     {
       "name": "deviceid",
       "label": "Label",
       "type": "DI",
       "required": false,
-      "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null,
-      "index":4
+      "relevant": null
     },
     {
       "name": "title",
       "label": "Cadasta Platform - UAT Survey",
       "type": "NO",
       "required": false,
-      "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null,
-      "index":5
+      "relevant": null
     },
     {
       "name": "party_type",
       "label": "Party Classification",
       "type": "S1",
       "required": true,
-      "constraint": null,
       "default": null,
       "hint": null,
       "relevant": null,
-      "index":6,
       "options": [
         {
           "name": "GR",
-          "label": "Group",
-          "index": 1
+          "label": "Group"
         },
         {
           "name": "IN",
-          "label": "Individual",
-          "index": 2
+          "label": "Individual"
         },
         {
           "name": "CO",
-          "label": "Corporation",
-          "index": 3
+          "label": "Corporation"
         }
       ]
     },
@@ -91,73 +75,59 @@
       "label": "Party Name",
       "type": "TX",
       "required": true,
-      "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null,
-      "index":7
+      "relevant": null
     },
     {
       "name": "location_geometry",
       "label": "Location of Parcel",
       "type": "GT",
       "required": false,
-      "constraint": null,
       "default": null,
       "hint": null,
-      "relevant": null,
-      "index":8
+      "relevant": null
     },
     {
       "name": "location_type",
       "label": "What is the land feature?",
       "type": "S1",
       "required": true,
-      "constraint": null,
       "default": null,
       "hint": null,
       "relevant": null,
-      "index":9,
       "options": [
         {
           "name": "PA",
-          "label": "Parcel",
-          "index": 1
+          "label": "Parcel"
         },
         {
           "name": "CB",
-          "label": "Community Boundary",
-          "index": 2
+          "label": "Community Boundary"
         },
         {
           "name": "BU",
-          "label": "Building",
-          "index": 3
+          "label": "Building"
         },
         {
           "name": "AP",
-          "label": "Apartment",
-          "index": 4
+          "label": "Apartment"
         },
         {
           "name": "PX",
-          "label": "Project Extent",
-          "index": 5
+          "label": "Project Extent"
         },
         {
           "name": "RW",
-          "label": "Right-of-way",
-          "index": 6
+          "label": "Right-of-way"
         },
         {
           "name": "NP",
-          "label": "National Park Boundary",
-          "index": 7
+          "label": "National Park Boundary"
         },
         {
           "name": "MI",
-          "label": "Miscellaneous",
-          "index": 8
+          "label": "Miscellaneous"
         }
       ]
     },
@@ -166,106 +136,85 @@
       "label": "What is the social tenure type?",
       "type": "S1",
       "required": true,
-      "constraint": null,
       "default": null,
       "hint": null,
       "relevant": null,
-      "index":10,
       "options": [
         {
           "name": "AL",
-          "label": "All Types",
-          "index": 1
+          "label": "All Types"
         },
         {
           "name": "CR",
-          "label": "Carbon Rights",
-          "index": 2
+          "label": "Carbon Rights"
         },
         {
           "name": "CO",
-          "label": "Concessionary Rights",
-          "index": 3
+          "label": "Concessionary Rights"
         },
         {
           "name": "CU",
-          "label": "Customary Rights",
-          "index": 4
+          "label": "Customary Rights"
         },
         {
           "name": "EA",
-          "label": "Easement",
-          "index": 5
+          "label": "Easement"
         },
         {
           "name": "ES",
-          "label": "Equitable Servitude",
-          "index": 6
+          "label": "Equitable Servitude"
         },
         {
           "name": "FH",
-          "label": "Freehold",
-          "index": 7
+          "label": "Freehold"
         },
         {
           "name": "GR",
-          "label": "Grazing Rights",
-          "index": 8
+          "label": "Grazing Rights"
         },
         {
           "name": "HR",
-          "label": "Hunting/Fishing/Harvest Rights",
-          "index": 9
+          "label": "Hunting/Fishing/Harvest Rights"
         },
         {
           "name": "IN",
-          "label": "Indigenous Land Rights",
-          "index": 10
+          "label": "Indigenous Land Rights"
         },
         {
           "name": "JT",
-          "label": "Joint Tenancy",
-          "index": 11
+          "label": "Joint Tenancy"
         },
         {
           "name": "LH",
-          "label": "Leasehold",
-          "index": 12
+          "label": "Leasehold"
         },
         {
           "name": "LL",
-          "label": "Longterm leasehold",
-          "index": 13
+          "label": "Longterm leasehold"
         },
         {
           "name": "MR",
-          "label": "Mineral Rights",
-          "index": 14
+          "label": "Mineral Rights"
         },
         {
           "name": "OC",
-          "label": "Occupancy (No Documented Rights)",
-          "index": 15
+          "label": "Occupancy (No Documented Rights)"
         },
         {
           "name": "TN",
-          "label": "Tenancy (Documented Sub-lease)",
-          "index": 16
+          "label": "Tenancy (Documented Sub-lease)"
         },
         {
           "name": "TC",
-          "label": "Tenancy in Common",
-          "index": 17
+          "label": "Tenancy in Common"
         },
         {
           "name": "UC",
-          "label": "Undivided Co-ownership",
-          "index": 18
+          "label": "Undivided Co-ownership"
         },
         {
           "name": "WR",
-          "label": "Water Rights",
-          "index": 19
+          "label": "Water Rights"
         }
       ]
     }
