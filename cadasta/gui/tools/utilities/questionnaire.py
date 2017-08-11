@@ -150,10 +150,7 @@ class QuestionnaireUtility(object):
                                 "type": mapping_type[
                                     field.typeName().lower()
                                 ],
-                                "required": False,
-                                "default": 'null',
-                                "hint": 'null',
-                                "relevant": 'null',
+                                "required": False
                             }
                         )
                     except KeyError:
@@ -222,6 +219,12 @@ class QuestionnaireUtility(object):
                 question_index = 1
                 for question in question_group['questions']:
                     question_index = self.add_index(question, question_index)
+                    if 'hint' not in question:
+                        question['hint'] = 'null'
+                    if 'default' not in question:
+                        question['default'] = 'null'
+                    if 'relevant' not in question:
+                        question['relevant'] = 'null'
 
         return json.dumps(questionnaire_obj)
 

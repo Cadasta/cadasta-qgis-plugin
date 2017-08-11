@@ -39,15 +39,6 @@
       "relevant": null
     },
     {
-      "name": "title",
-      "label": "Cadasta Platform - UAT Survey",
-      "type": "NO",
-      "required": false,
-      "default": null,
-      "hint": null,
-      "relevant": null
-    },
-    {
       "name": "party_type",
       "label": "Party Classification",
       "type": "S1",
