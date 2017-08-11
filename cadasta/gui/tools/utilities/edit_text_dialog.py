@@ -14,10 +14,10 @@ import os
 import logging
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtGui import (
-    QDialog,
+    QDialog
 )
-from PyQt4.QtCore import QUrl
-from PyQt4.QtGui import QDesktopServices
+from PyQt4.QtCore import QUrl, QRegExp, Qt
+from PyQt4.QtGui import QDesktopServices, QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 from cadasta.utilities.resources import get_ui_class
 
 __copyright__ = "Copyright 2016, Cadasta"
@@ -58,8 +58,9 @@ class EditTextDialog(QDialog, FORM_CLASS):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.setWindowTitle('Cadasta Questionnaire')
+        self.highlighter = Highlighter(self.edit_text.document())
         self.show()
-        self.edit_text.setText(text)
+        self.edit_text.setPlainText(text)
         self.ok_button.clicked.connect(
             self.close_edit_text_dialog
         )
@@ -84,3 +85,54 @@ class EditTextDialog(QDialog, FORM_CLASS):
         :rtype: str
         """
         return self.edit_text.toPlainText()
+
+
+class Highlighter(QSyntaxHighlighter):
+    def __init__(self, parent=None):
+        super(Highlighter, self).__init__(parent)
+
+        self.highlighting_rules = []
+
+        value_format = QTextCharFormat()
+        value_format.setForeground(Qt.darkRed)
+        self.highlighting_rules.append((
+            QRegExp("\\btrue\\b|\\bnull\\b|\\bfalse\\b|\\b[0-9]+\\b"),
+            value_format
+        ))
+
+        quotation_format = QTextCharFormat()
+        quotation_format.setForeground(Qt.darkGreen)
+        self.highlighting_rules.append((QRegExp("\".*\""),
+                                       quotation_format))
+
+        self.comment_start_expression = QRegExp("/\\*")
+        self.comment_end_expression = QRegExp("\\*/")
+
+    def highlightBlock(self, text):
+        for pattern, highlight_format in self.highlighting_rules:
+            expression = QRegExp(pattern)
+            index = expression.indexIn(text)
+            while index >= 0:
+                length = expression.matchedLength()
+                self.setFormat(index, length, highlight_format)
+                index = expression.indexIn(text, index + length)
+
+        self.setCurrentBlockState(0)
+
+        start_index = 0
+        if self.previousBlockState() != 1:
+            start_index = self.comment_start_expression.indexIn(text)
+
+        while start_index >= 0:
+            end_index = self.comment_end_expression.indexIn(text, start_index)
+
+            if end_index == -1:
+                self.setCurrentBlockState(1)
+                comment_length = len(text) - start_index
+            else:
+                comment_length = end_index - start_index + \
+                                 self.comment_end_expression.matchedLength()
+
+            start_index = self.comment_start_expression.indexIn(
+                    text,
+                    start_index + comment_length)

@@ -68,7 +68,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="edit_text"/>
+       <widget class="QPlainTextEdit" name="edit_text"/>
       </item>
       <item>
        <widget class="QPushButton" name="ok_button">
