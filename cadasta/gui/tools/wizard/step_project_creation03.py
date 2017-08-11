@@ -21,6 +21,7 @@ from qgis.core import (
     QgsFeature,
     QCoreApplication
 )
+import json
 from PyQt4.QtCore import QByteArray, QVariant
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.utilities.i18n import tr
@@ -225,7 +226,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS, QuestionnaireUtility):
             )
 
         self.set_status(tr('Finished'))
-        # self.parent.close()
+        self.parent.close()
 
     def rerender_saved_layer(self):
         """Rerender saved layer on cadasta."""
@@ -288,6 +289,11 @@ class StepProjectCreation3(WizardStep, FORM_CLASS, QuestionnaireUtility):
 
         failed = 0
 
+        try:
+            questionnaire = json.loads(self.questionnaire)
+        except ValueError:
+            questionnaire = {}
+
         for location in self.data['locations']['features']:
             post_data = {
                 'geometry': location['geometry'],
@@ -303,6 +309,11 @@ class StepProjectCreation3(WizardStep, FORM_CLASS, QuestionnaireUtility):
                         post_data['attributes'][key] = u''
                 if 'id' in post_data['attributes']:
                     del post_data['attributes']['id']
+
+                for question in \
+                        questionnaire['question_groups'][0]['questions']:
+                    if question['name'] not in post_data['attributes']:
+                        post_data['attributes'][question['name']] = u''
 
             connector = ApiConnect(get_url_instance() + post_url)
             post_data = Utilities.json_dumps(post_data)
