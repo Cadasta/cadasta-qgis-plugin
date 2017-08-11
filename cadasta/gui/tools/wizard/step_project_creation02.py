@@ -11,8 +11,6 @@ This module provides: Project Creation Step 2 : Attribute Selection
 
 """
 
-from PyQt4.QtCore import QUrl
-from PyQt4.QtGui import QDesktopServices
 import logging
 
 from cadasta.gui.tools.utilities.edit_text_dialog import EditTextDialog
@@ -82,7 +80,6 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
             self.set_attributes_box()
         self.advanced_box.setVisible(False)
         self.advanced_button.mousePressEvent = self.toogled_advanced_area
-        self.advanced_help_label.mousePressEvent = self.show_advanced_help
         self.questionnaire_button.clicked.connect(
             self.show_questionnaire
         )
@@ -92,12 +89,6 @@ class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):
 
         # Set tab focus
         self.location_type_box.setFocus()
-
-    def show_advanced_help(self, event):
-        """Show advanced help
-        """
-        QDesktopServices().openUrl(
-                QUrl("https://cadasta.github.io/api-docs/#questionnaires"))
 
     def toogled_advanced_area(self, event):
         """Toogled advanced area

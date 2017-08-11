@@ -16,6 +16,8 @@ from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtGui import (
     QDialog,
 )
+from PyQt4.QtCore import QUrl
+from PyQt4.QtGui import QDesktopServices
 from cadasta.utilities.resources import get_ui_class
 
 __copyright__ = "Copyright 2016, Cadasta"
@@ -61,6 +63,13 @@ class EditTextDialog(QDialog, FORM_CLASS):
         self.ok_button.clicked.connect(
             self.close_edit_text_dialog
         )
+        self.data_schema_help.mousePressEvent = self.show_advanced_help
+
+    def show_advanced_help(self, event):
+        """Show advanced help
+        """
+        QDesktopServices().openUrl(
+                QUrl("https://cadasta.github.io/api-docs/#questionnaires"))
 
     def close_edit_text_dialog(self):
         """Function that call when ok button is clicked.

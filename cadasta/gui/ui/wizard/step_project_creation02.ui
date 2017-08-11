@@ -156,27 +156,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="advanced_help_label">
-              <property name="font">
-               <font>
-                <pointsize>15</pointsize>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="toolTip">
-               <string>Data Schema Help</string>
-              </property>
-              <property name="statusTip">
-               <string>Data Schema Help</string>
-              </property>
-              <property name="text">
-               <string>?</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <spacer name="horizontalSpacer">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
