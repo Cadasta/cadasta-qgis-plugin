@@ -121,16 +121,34 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                     project_slug)
             self.progress_bar.setValue(50)
 
-            relationship_layer = self.relationships_layer(vlayers)
-            relationship_layer_id = None
-            if relationship_layer:
-                relationship_layer_id = relationship_layer.id()
-            self.progress_bar.setValue(80)
+            download_relationship_and_party = False
 
-            party_layer = self.parties_layer()
+            if self.project['access'] == 'public':
+                # Get organization
+                status, results = self.organisation_api.summary_organization(
+                        organization_slug)
+
+                if status and 'users' in results:
+                    for user in results['users']:
+                        if user['username'] == get_setting('username'):
+                            download_relationship_and_party = True
+                            break
+            else:
+                download_relationship_and_party = True
+
+            relationship_layer_id = None
             party_layer_id = None
-            if party_layer:
-                party_layer_id = party_layer.id()
+
+            if download_relationship_and_party:
+                relationship_layer = self.relationships_layer(vlayers)
+                if relationship_layer:
+                    relationship_layer_id = relationship_layer.id()
+
+                party_layer = self.parties_layer()
+                if party_layer:
+                    party_layer_id = party_layer.id()
+
+            self.progress_bar.setValue(80)
 
             QCoreApplication.processEvents()
             Utilities.save_project_basic_information(
@@ -173,8 +191,6 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         :param vector_layer: QGS vector layer in memory
         :type vector_layer: QgsVectorLayer
         """
-        if get_setting('public_project'):
-            return None
 
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
@@ -318,8 +334,6 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         :return: Relationship layer
         :rtype: QgsVectorLayer
         """
-        if get_setting('public_project'):
-            return None
 
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
