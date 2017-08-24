@@ -92,6 +92,14 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
         if self.auth_token:
             self.test_connection_button.setEnabled(False)
             self.username_input.setText(get_setting('username'))
+            self.username_input.setReadOnly(True)
+            self.password_input.setReadOnly(True)
+            self.username_input.setStyleSheet(
+                "QLineEdit { background-color: '#d9d9d9'; color: '#5b5b5b'; "
+                "selection-background-color: '#969292'; }")
+            self.password_input.setStyleSheet(
+                "QLineEdit { background-color: '#d9d9d9'; color: '#5b5b5b'; "
+                "selection-background-color: '#969292'; }")
             self.token_status.setText(
                 tr('Auth token is saved.')
             )
@@ -102,6 +110,10 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
 
     def clear_information(self):
         """Clear login information."""
+        self.username_input.setReadOnly(False)
+        self.password_input.setReadOnly(False)
+        self.username_input.setStyleSheet("")
+        self.password_input.setStyleSheet("")
         self.username_input.clear()
         self.password_input.clear()
         self.ok_label.clear()
@@ -191,6 +203,14 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
             save_url_instance(self.url)
             self.save_button.setEnabled(False)
             self.save_organizations()
+            self.username_input.setReadOnly(True)
+            self.password_input.setReadOnly(True)
+            self.username_input.setStyleSheet(
+                "QLineEdit { background-color: '#d9d9d9'; color: '#5b5b5b'; "
+                "selection-background-color: '#969292'; }")
+            self.password_input.setStyleSheet(
+                "QLineEdit { background-color: '#d9d9d9'; color: '#5b5b5b'; "
+                "selection-background-color: '#969292'; }")
 
     def save_organizations(self):
         """Save organizations of user.
