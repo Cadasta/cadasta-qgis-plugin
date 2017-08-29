@@ -48,8 +48,11 @@ def content():
     message = m.Message()
 
     message.add(m.Paragraph(tr(
-        'You can find updated documentation and suggested workflows on our main '
-        'documentation pages: <a href="https://docs.cadasta.org/en/11-qgis-plugin.html">QGIS chapter</a>. (requires internet access to view)')))
+        'You can find updated documentation and suggested workflows '
+        'on our main '
+        'documentation pages: <a href="https://docs.cadasta.org/en/'
+        '11-qgis-plugin.html">QGIS chapter</a>. (requires internet '
+        'access to view)')))
     message.add(m.Paragraph(tr(
         'There are three windows that will help you '
         'to manage your project\'s data.')))
@@ -64,6 +67,7 @@ def content():
     message.add(bullets)
 
     message.add(m.Paragraph(tr(
-        'Use the <b>User Settings</b> window to log in to your account and get started!'
+        'Use the <b>User Settings</b> window to log in to your account '
+        'and get started!'
         '')))
     return message

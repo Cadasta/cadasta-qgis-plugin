@@ -17,7 +17,13 @@ from qgis.PyQt.QtGui import (
     QDialog
 )
 from PyQt4.QtCore import QUrl, QRegExp, Qt
-from PyQt4.QtGui import QDesktopServices, QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+from PyQt4.QtGui import (
+    QDesktopServices,
+    QColor,
+    QTextCharFormat,
+    QFont,
+    QSyntaxHighlighter
+)
 from cadasta.utilities.resources import get_ui_class
 
 __copyright__ = "Copyright 2016, Cadasta"
