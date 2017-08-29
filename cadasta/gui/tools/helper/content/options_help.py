@@ -81,3 +81,4 @@ def content():
         'the settings.')))
     message.add(m.ImportantText(tr('Note that your password is not saved.')))
     return message
+\

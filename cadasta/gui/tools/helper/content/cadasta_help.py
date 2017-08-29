@@ -17,7 +17,6 @@ def cadasta_help():
     :returns: A message object containing helpful information.
     :rtype: messaging.message.Message
     """
-
     message = m.Message()
     message.add(heading())
     message.add(content())
@@ -46,16 +45,14 @@ def content():
     :returns: A message object without brand element.
     :rtype: safe.messaging.message.Message
     """
-
     message = m.Message()
 
     message.add(m.Paragraph(tr(
-        'Cadasta QGIS Plugin is a tool to publish and retrieve projects and '
-        'data from Cadasta in QGIS. It will help you with easy wizard '
-        'to create, download or update Cadasta project.')))
+        'You can find updated documentation and suggested workflows on our main '
+        'documentation pages: <a href="https://docs.cadasta.org/en/11-qgis-plugin.html">QGIS chapter</a>. (requires internet access to view)')))
     message.add(m.Paragraph(tr(
-        'There are 3 main wizard that will help you '
-        'to manage your project.')))
+        'There are three windows that will help you '
+        'to manage your project\'s data.')))
 
     bullets = m.BulletedList()
     bullets.add(m.Text(
@@ -67,22 +64,6 @@ def content():
     message.add(bullets)
 
     message.add(m.Paragraph(tr(
-        'There are also others dialog that will help you to manaage '
-        'cadasta project. They are :')))
-    bullets = m.BulletedList()
-    bullets.add(m.Text(
-        m.ImportantText(tr('Options')),
-        tr(
-            '- Define your instance url, to be used as default for Cadasta.'
-            'And also, define username that will be used for create '
-            'and update project.')
-    ))
-    bullets.add(m.Text(
-        m.ImportantText(tr('Contact')),
-        tr(
-            '- It help you to save contact that will be used for projects '
-            'creation.'
-        )
-    ))
-    message.add(bullets)
+        'Use the <b>User Settings</b> window to log in to your account and get started!'
+        '')))
     return message
