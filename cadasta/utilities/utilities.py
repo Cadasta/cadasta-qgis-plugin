@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import shutil
+import unicodedata
 from qgis.core import (
     QgsVectorLayer,
     QgsMapLayerRegistry,
@@ -375,13 +376,23 @@ class Utilities(object):
                         os.path.join(dirpath, f)).split('.')[1].split(
                         splitter)
                     names = []
+
+                    try:
+                        project_name = abs_path[-2].decode('utf-8')
+                    except (UnicodeDecodeError, UnicodeEncodeError):
+                        project_name = unicode(abs_path[-2])
+
+                    normalized = unicodedata.normalize(
+                                    'NFKC',
+                                    project_name)
+
                     names.append(abs_path[-3])
-                    names.append(abs_path[-2])
+                    names.append(normalized)
                     names.append(abs_path[-1])
+
                     list_files.append(
                         '/'.join(names)
                     )
-
         projects = []
 
         for layer in QgsMapLayerRegistry.instance().mapLayers().values():

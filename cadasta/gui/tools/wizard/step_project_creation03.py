@@ -21,6 +21,7 @@ from qgis.core import (
     QgsFeature,
     QCoreApplication
 )
+import json
 from PyQt4.QtCore import QByteArray, QVariant
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
 from cadasta.utilities.i18n import tr
@@ -33,6 +34,7 @@ from cadasta.api.organization_project import (
 )
 from cadasta.common.setting import get_csv_path
 from cadasta.vector import tools
+from cadasta.gui.tools.utilities.questionnaire import QuestionnaireUtility
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -44,7 +46,7 @@ FORM_CLASS = get_wizard_step_ui_class(__file__)
 LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
-class StepProjectCreation3(WizardStep, FORM_CLASS):
+class StepProjectCreation3(WizardStep, FORM_CLASS, QuestionnaireUtility):
     """Step 3 for project creation."""
 
     upload_increment = 20
@@ -61,14 +63,24 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         self.current_progress = 0
         self.data = None
         self.spatial_api = None
+        self.step_1_data = None
+        self.step_2_data = None
+        self.questionnaire = None
 
     def set_widgets(self):
         """Set all widgets on the tab."""
+        self.text_edit.setStyleSheet(
+                "background-color: #f0f0f0; color: #757575"
+        )
         self.progress_bar.setVisible(False)
         self.lbl_status.setText(
             tr('Are you sure to upload the data?')
         )
         self.submit_button.setFocus()
+        self.step_1_data = self.parent.step_1_data()
+        self.step_2_data, self.questionnaire = self.parent.step_2_data()
+        # Validate questionnaire data
+        self.questionnaire = self.validate_questionnaire(self.questionnaire)
 
     def set_status(self, status):
         """Show status in label and text edit.
@@ -100,18 +112,16 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         self.set_progress_bar(self.current_progress + 25)
 
-        step_1_data = self.parent.step_1_data()
         self.set_progress_bar(self.current_progress + 25)
 
-        step_2_data, questionnaire = self.parent.step_2_data()
         self.set_progress_bar(self.current_progress + 25)
 
-        self.data = step_1_data
-        self.data['questionnaire'] = questionnaire
+        self.data = self.step_1_data
+        self.data['questionnaire'] = self.questionnaire
 
         # Finalize the data
         for location in self.data['locations']['features']:
-            for cadasta_field, layer_field in step_2_data.iteritems():
+            for cadasta_field, layer_field in self.step_2_data.iteritems():
                 properties = location['properties']
                 if layer_field in properties:
                     try:
@@ -201,7 +211,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             # after creating location, questionnaire is blocked
             if self.data['questionnaire']:
                 upload_questionnaire_attribute = True
-                self.update_questionnaire_project()
+                self.upload_questionnaire_project()
             total_locations = len(self.data['locations']['features'])
             if total_locations > 0:
                 self.upload_locations(upload_questionnaire_attribute)
@@ -216,6 +226,7 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
             )
 
         self.set_status(tr('Finished'))
+        self.parent.close()
 
     def rerender_saved_layer(self):
         """Rerender saved layer on cadasta."""
@@ -278,6 +289,11 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
 
         failed = 0
 
+        try:
+            questionnaire = json.loads(self.questionnaire)
+        except ValueError:
+            questionnaire = {}
+
         for location in self.data['locations']['features']:
             post_data = {
                 'geometry': location['geometry'],
@@ -293,6 +309,11 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
                         post_data['attributes'][key] = u''
                 if 'id' in post_data['attributes']:
                     del post_data['attributes']['id']
+
+                for question in \
+                        questionnaire['question_groups'][0]['questions']:
+                    if question['name'] not in post_data['attributes']:
+                        post_data['attributes'][question['name']] = u''
 
             connector = ApiConnect(get_url_instance() + post_url)
             post_data = Utilities.json_dumps(post_data)
@@ -497,8 +518,8 @@ class StepProjectCreation3(WizardStep, FORM_CLASS):
         """
         return None
 
-    def update_questionnaire_project(self):
-        """Update questionnaire."""
+    def upload_questionnaire_project(self):
+        """Upload questionnaire."""
         self.set_status(
             tr('Update questionnaire')
         )

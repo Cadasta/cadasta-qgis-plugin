@@ -54,6 +54,9 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
     def set_widgets(self):
         """Set all widgets on the tab."""
+        self.text_edit.setStyleSheet(
+                "background-color: #f0f0f0; color: #757575"
+        )
         self.project = self.parent.project['information']
         if 'layers' in self.project:
             for project_layer in self.project['layers']:
@@ -143,8 +146,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
 
     def update_spatial_location(self):
         """Update spatial information."""
-        update_loc_api = '/api/v1/organizations/{organization_slug}/' \
-                         'projects/{project_slug}/spatial/{spatial_unit_id}/'
+        update_loc_api = u'/api/v1/organizations/{organization_slug}/' \
+                         u'projects/{project_slug}/spatial/{spatial_unit_id}/'
 
         location_type_idx = self.layer.fieldNameIndex('type')
         location_id_idx = self.layer.fieldNameIndex('id')
@@ -152,9 +155,17 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         for layer in self.vlayers:
             features = layer.getFeatures()
 
-            # Remove unneeded fields
-            field_names = [field.name() for field in
-                           layer.pendingFields()]
+            # Get field names
+            field_names = []
+            layer_prefix = self.project['organization']['slug'] + '/' + \
+                           self.project['slug']
+
+            for field_name in layer.pendingFields():
+                if layer_prefix not in field_name.name() and \
+                        'relationships_' not in field_name.name() and \
+                        'parties_' not in field_name.name():
+                    field_names.append(field_name.name())
+
             field_names.remove('id')
             field_names.remove('type')
 
@@ -223,12 +234,19 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         relationship_type_idx = 2
         attributes_idx = 4
 
-        update_api = '/api/v1/organizations/{organization_slug}/projects/' \
-                     '{project_slug}/relationships/tenure/{relationship_id}/'
+        update_api = u'/api/v1/organizations/{organization_slug}/projects/' \
+                     u'{project_slug}/relationships/tenure/{relationship_id}/'
 
-        field_names = [
-            field.name() for field in relationship_layer.pendingFields()
-        ]
+        # Get field names
+        field_names = []
+        layer_prefix = self.project['organization']['slug'] + '/' + \
+                       self.project['slug']
+
+        for field_name in relationship_layer.pendingFields():
+            if layer_prefix not in field_name.name() and \
+                            'relationships_' not in field_name.name() and \
+                            'parties_' not in field_name.name():
+                field_names.append(field_name.name())
 
         # Remove unneeded fields
         field_names.remove('spatial_id')
@@ -281,11 +299,21 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
         name_idx = 1
         type_idx = 2
 
-        update_api = '/api/v1/organizations/{organization_slug}/projects/' \
-                     '{project_slug}/parties/{party_id}/'
+        update_api = u'/api/v1/organizations/{organization_slug}/projects/' \
+                     u'{project_slug}/parties/{party_id}/'
+
+        # Get field names
+        field_names = []
+        layer_prefix = self.project['organization']['slug'] + '/' + \
+                       self.project['slug']
+
+        for field_name in party_layer.pendingFields():
+            if layer_prefix not in field_name.name() and \
+                            'relationships_' not in field_name.name() and \
+                            'parties_' not in field_name.name():
+                field_names.append(field_name.name())
 
         # Remove unneeded fields
-        field_names = [field.name() for field in party_layer.pendingFields()]
         field_names.remove('id')
         field_names.remove('name')
         field_names.remove('type')
@@ -362,6 +390,7 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
             )
 
         self.set_progress_bar(100)
+        self.parent.close()
 
     def upload_update_locations(
             self,
@@ -417,8 +446,8 @@ class StepProjectUpdate03(WizardStep, FORM_CLASS):
            through the project's questionnaire
         :type attributes: dict
         """
-        api = '/api/v1/organizations/{organization_slug}/projects/' \
-              '{project_slug}/spatial/'.format(
+        api = u'/api/v1/organizations/{organization_slug}/projects/' \
+              u'{project_slug}/spatial/'.format(
                 organization_slug=self.project['organization']['slug'],
                 project_slug=self.project['slug'])
 

@@ -11,6 +11,8 @@ This module provides: Project Creation Step 2 : Attribute Selection
 
 """
 
+import logging
+
 from cadasta.gui.tools.utilities.edit_text_dialog import EditTextDialog
 from cadasta.gui.tools.utilities.questionnaire import QuestionnaireUtility
 from cadasta.gui.tools.wizard.wizard_step import WizardStep
@@ -23,6 +25,8 @@ __email__ = "info@kartoza.org"
 __revision__ = '$Format:%H$'
 
 FORM_CLASS = get_wizard_step_ui_class(__file__)
+
+LOGGER = logging.getLogger('CadastaQGISPlugin')
 
 
 class StepProjectCreation2(WizardStep, FORM_CLASS, QuestionnaireUtility):

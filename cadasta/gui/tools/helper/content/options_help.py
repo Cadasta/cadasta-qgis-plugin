@@ -1,5 +1,5 @@
 # coding=utf-8
-"""Cadasta main helper."""
+"""Help for options."""
 
 from cadasta.utilities.i18n import tr
 from extras import messaging as m
@@ -11,8 +11,8 @@ __author__ = 'Irwan Fathurrahman <irwan@kartoza.com>'
 __date__ = '03/01/17'
 
 
-def cadasta_help():
-    """Help message for Cadasta.
+def options_help():
+    """Help message for Options.
 
     :returns: A message object containing helpful information.
     :rtype: messaging.message.Message
@@ -32,7 +32,7 @@ def heading():
     :returns: A heading object.
     :rtype: safe.messaging.heading.Heading
     """
-    message = m.Heading(tr('Cadasta Help'), **INFO_STYLE)
+    message = m.Heading(tr('Options Help'), **INFO_STYLE)
     return message
 
 
@@ -45,29 +45,39 @@ def content():
     :returns: A message object without brand element.
     :rtype: safe.messaging.message.Message
     """
+
     message = m.Message()
 
     message.add(m.Paragraph(tr(
-        'You can find updated documentation and suggested workflows '
-        'on our main '
-        'documentation pages: <a href="https://docs.cadasta.org/en/'
-        '11-qgis-plugin.html">QGIS chapter</a>. (requires internet '
-        'access to view)')))
+        'Options will help you redefine url of Cadasta that is used as '
+        'source. And also it create a credential to be used on submit '
+        'new or updated projects.')))
+
     message.add(m.Paragraph(tr(
-        'There are three windows that will help you '
-        'to manage your project\'s data.')))
+        'There are 3 input that all of that are required.')))
 
     bullets = m.BulletedList()
     bullets.add(m.Text(
-        m.ImportantText(tr('Download Project'))))
+        m.ImportantText(tr('Cadasta URL')),
+
+        tr('- overwrite current url as cadasta source.'
+           'default is https://platform-staging-api.cadasta.org/')
+    ))
     bullets.add(m.Text(
-        m.ImportantText(tr('Create Project'))))
+        m.ImportantText(tr('Cadasta Username')),
+        tr('- username that will be used for other request, e.g: create '
+           'project')
+    ))
     bullets.add(m.Text(
-        m.ImportantText(tr('Update Project'))))
+        m.ImportantText(tr('Cadasta Password'))
+
+    ))
     message.add(bullets)
 
     message.add(m.Paragraph(tr(
-        'Use the <b>User Settings</b> window to log in to your account '
-        'and get started!'
-        '')))
+        'Fill out the form with your username and password. Click \'Connect\' '
+        'button '
+        'to login. If that is successful click the \'Save\' button to save '
+        'the settings.')))
+    message.add(m.ImportantText(tr('Note that your password is not saved.')))
     return message

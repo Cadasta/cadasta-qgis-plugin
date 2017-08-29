@@ -82,6 +82,8 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         self.add_contact_label.mousePressEvent = self.add_contact_label_clicked
         self.set_enabled_add_contact_label(False)
         self.project_combo_box.setFocus()
+        set_setting('public_project',
+                    self.public_projects_checkbox.checkState() == Qt.Checked)
 
     def add_contact_label_clicked(self, event):
         """Handler for add_contact_label clicked. """
@@ -148,6 +150,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
         """
         self.throbber_loader.setVisible(False)
         self.project_combo_box.clear()
+        self.public_projects_checkbox.setEnabled(True)
         if result[0]:
             projects = sorted(result[1], key=itemgetter('slug'))
 
@@ -211,7 +214,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
 
         if project['description']:
             self.project_description_label.setText(
-                    self.tr(project['description'].encode('utf-8')))
+                    project['description'])
         else:
             self.project_description_label.setText(
                     self.tr(project['name'].encode('utf-8')))
@@ -254,6 +257,7 @@ class StepProjectDownload01(WizardStep, FORM_CLASS):
     def get_available_projects(self):
         """Get available projects."""
         self.throbber_loader.setVisible(True)
+        self.public_projects_checkbox.setEnabled(False)
         self.project_api = Project(
             on_finished=self.get_available_projects_finished)
 

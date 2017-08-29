@@ -1,4 +1,5 @@
-# coding=utf-8
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
 Cadasta project download step -**Cadasta Wizard**
 
@@ -37,6 +38,7 @@ from cadasta.utilities.utilities import Utilities
 from cadasta.api.api_connect import ApiConnect
 from cadasta.common.setting import get_url_instance
 from cadasta.vector import tools
+from cadasta.common.setting import get_setting
 
 __copyright__ = "Copyright 2016, Cadasta"
 __license__ = "GPL version 3"
@@ -71,7 +73,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         self.warning_label.setText(self.loading_label_string)
         self.get_project_spatial(
             self.project['organization']['slug'], self.project['slug'])
-        self.parent.next_button.setEnabled(False)
+        self.parent.next_button.setEnabled(True)
 
     def validate_step(self):
         """Check if the step is valid.
@@ -118,25 +120,48 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
                     organization_slug,
                     project_slug)
             self.progress_bar.setValue(50)
-            relationship_layer = self.relationships_layer(vlayers)
-            self.progress_bar.setValue(80)
-            party_layer = self.parties_layer()
+
+            download_relationship_and_party = False
+
+            if self.project['access'] == 'public':
+                # Get organization
+                status, results = self.organisation_api.summary_organization(
+                        organization_slug)
+
+                if status and 'users' in results:
+                    for user in results['users']:
+                        if user['username'] == get_setting('username'):
+                            download_relationship_and_party = True
+                            break
+            else:
+                download_relationship_and_party = True
+
+            relationship_layer_id = None
             party_layer_id = None
-            if party_layer:
-                party_layer_id = party_layer.id()
+
+            if download_relationship_and_party:
+                relationship_layer = self.relationships_layer(vlayers)
+                if relationship_layer:
+                    relationship_layer_id = relationship_layer.id()
+
+                party_layer = self.parties_layer()
+                if party_layer:
+                    party_layer_id = party_layer.id()
+
+            self.progress_bar.setValue(80)
 
             QCoreApplication.processEvents()
             Utilities.save_project_basic_information(
                 self.project,
                 vlayers,
-                relationship_layer.id(),
+                relationship_layer_id,
                 party_layer_id
             )
         else:
             pass
         self.progress_bar.setValue(self.progress_bar.maximum())
-        self.parent.next_button.setEnabled(True)
         self.warning_label.setText(self.loaded_label_string)
+        self.parent.close()
 
     def save_organizations(self):
         """Save organizations of user.
@@ -166,6 +191,7 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         :param vector_layer: QGS vector layer in memory
         :type vector_layer: QgsVectorLayer
         """
+
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
         attribute = 'parties'
@@ -175,8 +201,8 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         if os.path.isfile(csv_path):
             os.remove(csv_path)
 
-        api = '/api/v1/organizations/{organization_slug}/projects/' \
-              '{project_slug}/parties/'.format(
+        api = u'/api/v1/organizations/{organization_slug}/projects/' \
+              u'{project_slug}/parties/'.format(
                 organization_slug=organization_slug,
                 project_slug=project_slug)
 
@@ -308,12 +334,13 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
         :return: Relationship layer
         :rtype: QgsVectorLayer
         """
+
         organization_slug = self.project['organization']['slug']
         project_slug = self.project['slug']
         attribute = 'relationships'
 
-        api = '/api/v1/organizations/{organization_slug}/projects/' \
-              '{project_slug}/spatial/{spatial_unit_id}/relationships/'
+        api = u'/api/v1/organizations/{organization_slug}/projects/' \
+              u'{project_slug}/spatial/{spatial_unit_id}/relationships/'
 
         csv_path = get_csv_path(
             organization_slug,
@@ -346,10 +373,11 @@ class StepProjectDownload02(WizardStep, FORM_CLASS):
 
             for index, feature in enumerate(vector_layer.getFeatures()):
                 attributes = feature.attributes()
+                spatial_unit_id = attributes[spatial_id_index]
                 spatial_api = api.format(
                     organization_slug=organization_slug,
                     project_slug=project_slug,
-                    spatial_unit_id=attributes[spatial_id_index]
+                    spatial_unit_id=spatial_unit_id
                 )
                 connector = ApiConnect(get_url_instance() + spatial_api)
                 status, results = connector.get(paginated=True)

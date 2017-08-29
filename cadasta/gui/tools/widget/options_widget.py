@@ -79,7 +79,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
             tr('Clear')
         )
 
-        self.clear_button.setEnabled(False)
+        self.clear_button.setEnabled(True)
         self.clear_button.clicked.connect(
             self.clear_information
         )
@@ -90,9 +90,16 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
             self.auth_token = get_authtoken()
 
         if self.auth_token:
-            self.clear_button.setEnabled(True)
             self.test_connection_button.setEnabled(False)
             self.username_input.setText(get_setting('username'))
+            self.username_input.setReadOnly(True)
+            self.password_input.setReadOnly(True)
+            self.username_input.setStyleSheet(
+                "QLineEdit { background-color: '#d9d9d9'; color: '#5b5b5b'; "
+                "selection-background-color: '#969292'; }")
+            self.password_input.setStyleSheet(
+                "QLineEdit { background-color: '#d9d9d9'; color: '#5b5b5b'; "
+                "selection-background-color: '#969292'; }")
             self.token_status.setText(
                 tr('Auth token is saved.')
             )
@@ -103,11 +110,15 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
 
     def clear_information(self):
         """Clear login information."""
+        self.username_input.setReadOnly(False)
+        self.password_input.setReadOnly(False)
+        self.username_input.setStyleSheet("")
+        self.password_input.setStyleSheet("")
         self.username_input.clear()
         self.password_input.clear()
+        self.ok_label.clear()
         delete_authtoken()
         delete_setting('username')
-        self.clear_button.setEnabled(False)
         self.test_connection_button.setEnabled(True)
         self.token_status.setText(
             tr(
@@ -166,6 +177,7 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
         """On finished function when tools request is finished."""
 
         self.ok_label.setVisible(True)
+        self.clear_button.setEnabled(True)
         if 'auth_token' in result:
             self.auth_token = result['auth_token']
             self.save_button.setEnabled(True)
@@ -191,6 +203,14 @@ class OptionsWidget(WidgetBase, FORM_CLASS):
             save_url_instance(self.url)
             self.save_button.setEnabled(False)
             self.save_organizations()
+            self.username_input.setReadOnly(True)
+            self.password_input.setReadOnly(True)
+            self.username_input.setStyleSheet(
+                "QLineEdit { background-color: '#d9d9d9'; color: '#5b5b5b'; "
+                "selection-background-color: '#969292'; }")
+            self.password_input.setStyleSheet(
+                "QLineEdit { background-color: '#d9d9d9'; color: '#5b5b5b'; "
+                "selection-background-color: '#969292'; }")
 
     def save_organizations(self):
         """Save organizations of user.
